@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="corners.h" />
+    <ClInclude Include="edges_center.h" />
+    <ClInclude Include="neighbours.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="corners.cpp" />
+    <ClCompile Include="tables.h" />
+    <ClCompile Include="edges_center.cpp" />
+    <ClCompile Include="neighbours.cpp" />
+  </ItemGroup>
+</Project>

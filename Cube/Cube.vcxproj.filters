@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="cube2x2.h" />
+    <ClCompile Include="cube3x3.cpp" />
+    <ClCompile Include="cube4x4.cpp" />
+    <ClCompile Include="cube5x5.cpp" />
+    <ClCompile Include="byte.cpp" />
+    <ClCompile Include="corners.cpp" />
+    <ClCompile Include="edges_center.cpp" />
+    <ClCompile Include="edges_side.cpp" />
+    <ClCompile Include="faces_center.cpp" />
+    <ClCompile Include="faces_side.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="cube.h" />
+    <ClInclude Include="cube3x3.h" />
+    <ClInclude Include="cube4x4.h" />
+    <ClInclude Include="cube5x5.h" />
+    <ClInclude Include="byte.h" />
+    <ClInclude Include="corners.h" />
+    <ClInclude Include="cubies.h" />
+    <ClInclude Include="edges_center.h" />
+    <ClInclude Include="edges_side.h" />
+    <ClInclude Include="faces_center.h" />
+    <ClInclude Include="faces_side.h" />
+    <ClInclude Include="random.h" />
+  </ItemGroup>
+</Project>
