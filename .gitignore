@@ -3,6 +3,7 @@ Debug/
 Release/
 bin/
 bin_debug/
+packages/
 
 # Prerequisites
 *.d
