@@ -10,6 +10,17 @@ const std::array<Cube3x3::Twist, 18> Cube3x3::twists = {
 	Twist::B1, Twist::B2, Twist::B3
 };
 
+Cube3x3 Cube3x3::superflip()
+{
+	// From https://en.wikipedia.org/wiki/Superflip
+	return Cube3x3().U1().R2().F1().B1().R1().B2().R1().U2().L1().B2().R1().U3().D3().R2().F1().R3().L1().B2().U2().F2();
+}
+
+Cube3x3 Cube3x3::impossible()
+{
+	return Cube3x3(Corners(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 1), EdgesCenter());
+}
+
 bool Cube3x3::operator==(const Cube3x3& o) const
 {
 	return c == o.c && e == o.e;
@@ -25,6 +36,11 @@ bool Cube3x3::operator<(const Cube3x3& o) const
 	if (c != o.c)
 		return c < o.c;
 	return e < o.e;
+}
+
+bool Cube3x3::in_H() const
+{
+	return c.ori_index() == 0 && e.ori_index() == 0 && e.cubie(8) >= 8 && e.cubie(9) >= 8 && e.cubie(10) >= 8 && e.cubie(11) >= 8;
 }
 
 Cube3x3 Cube3x3::twisted(Twist t) const

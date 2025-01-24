@@ -25,6 +25,8 @@ public:
 	static const std::array<Twist, 18> twists;
 
 	Cube3x3() noexcept = default;
+	static Cube3x3 superflip();
+	static Cube3x3 impossible();
 
 	bool operator==(const Cube3x3&) const;
 	bool operator!=(const Cube3x3&) const;
@@ -34,6 +36,7 @@ public:
 	const EdgesCenter& edges() const { return e; }
 
 	bool is_solved() const { return c.is_solved() && e.is_solved(); }
+	bool in_H() const;
 
 	Cube3x3 L1() const { return Cube3x3(c.L1(), e.L1()); }
 	Cube3x3 L2() const { return Cube3x3(c.L2(), e.L2()); }
