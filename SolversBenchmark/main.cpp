@@ -1,37 +1,77 @@
 #include "benchmark/benchmark.h"
 #include "Solvers/solvers.h"
+#include <algorithm>
 #include <chrono>
 #include <iostream>
+#include <numeric>
+#include <vector>
 
-void solution_distance(const std::vector<Corners>& corners)
-{
-	auto start = std::chrono::high_resolution_clock::now();
-	for (const Corners& c : corners)
-		benchmark::DoNotOptimize(solution_distance(c));
-	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
-	std::cout << "solution_distance(Corners): " << corners.size() / 1000 / duration << " M/s" << std::endl;
-}
-
-void solution(const std::vector<Corners>& corners)
-{
-	auto start = std::chrono::high_resolution_clock::now();
-	for (const Corners& c : corners)
-		benchmark::DoNotOptimize(solution(c));
-	auto stop = std::chrono::high_resolution_clock::now();
-	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
-	std::cout << "solution(Corners): " << corners.size() / duration << " k/s" << std::endl;
-}
+using namespace std::chrono_literals;
 
 int main()
 {
-	RandomCubeGenerator<Corners> rnd(565248); // arbitrary seed
-	std::vector<Corners> cubes;
-	std::size_t size = 1'000'000;
-	cubes.reserve(size);
-	for (int i = 0; i < size; i++)
-		cubes.push_back(rnd());
+	const CornersDistanceTable corners_dst;
+	const CloseSolutionTable<Cube3x3> solution_table(7, 0x10000000);
+	TranspositionTable<Cube3x3, int> tt(10'000'000, Cube3x3::impossible(), 0);
+	OnePhaseOptimalSolver solver(corners_dst, solution_table, tt);
 
-	solution_distance(cubes);
-	solution(cubes);
+	std::vector<Corners> rnd_corners = RandomCubes<Corners>(1'000'000, /*seed*/565248);
+	std::vector<Cube3x3> rnd_cubes = RandomCubes<Cube3x3>(1'000, /*seed*/3812301);
+
+	// CornersDistanceTable::operator[]
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		for (const Corners& c : rnd_corners)
+			benchmark::DoNotOptimize(corners_dst[c]);
+		auto stop = std::chrono::high_resolution_clock::now();
+		std::cout << "CornersDistanceTable::operator[]: " << (stop - start) / rnd_corners.size() << std::endl;
+	}
+
+	// CornersDistanceTable::solve
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		for (const Corners& c : rnd_corners)
+			benchmark::DoNotOptimize(corners_dst.solve(c));
+		auto stop = std::chrono::high_resolution_clock::now();
+		std::cout << "CornersDistanceTable::solve: " << (stop - start) / rnd_corners.size() << std::endl;
+	}
+
+	// CloseSolutionTable::operator[] hit
+	{
+		std::vector<Cube3x3> hit_cubes;
+		for (int dst = 0; dst <= solution_table.max_distance(); dst++)
+			for (const Cube3x3& cube : cube3x3_of_distance[dst])
+				hit_cubes.push_back(cube);
+		auto start = std::chrono::high_resolution_clock::now();
+		for (const Cube3x3& cube : hit_cubes)
+			benchmark::DoNotOptimize(solution_table[cube]);
+		auto stop = std::chrono::high_resolution_clock::now();
+		std::cout << "CloseSolutionTable::operator[] hit: " << (stop - start) / hit_cubes.size() << std::endl;
+	}
+
+	// CloseSolutionTable::operator[] miss
+	{
+		std::vector<Cube3x3> miss_cubes;
+		for (int dst = solution_table.max_distance() + 1; dst <= cube3x3_of_distance.size(); dst++)
+			for (const Cube3x3& cube : rnd_cubes)
+				miss_cubes.push_back(cube);
+		auto start = std::chrono::high_resolution_clock::now();
+		for (const Cube3x3& cube : miss_cubes)
+			benchmark::DoNotOptimize(solution_table[cube]);
+		auto stop = std::chrono::high_resolution_clock::now();
+		std::cout << "CloseSolutionTable::operator[] miss: " << (stop - start) / miss_cubes.size() << std::endl;
+	}
+
+	// OnePhaseOptimalSolver::solve
+	{
+		for (int dst = 0; dst < cube3x3_of_distance.size(); dst++)
+		{
+			auto start = std::chrono::high_resolution_clock::now();
+			for (const Cube3x3& cube : cube3x3_of_distance[dst])
+				benchmark::DoNotOptimize(solver.solve(cube, dst));
+			auto stop = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+			std::cout << "OnePhaseOptimalSolver::solve(dst=" << dst << "): " << duration / cube3x3_of_distance[dst].size() << std::endl;
+		}
+	}
 }
