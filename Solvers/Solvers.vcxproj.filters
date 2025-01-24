@@ -2,12 +2,18 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="corners.cpp" />
-    <ClCompile Include="close_solution_3x3.cpp" />
+    <ClCompile Include="two_phase.cpp" />
+    <ClCompile Include="brute_force.cpp" />
+    <ClCompile Include="one_phase.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="corners.h" />
     <ClInclude Include="solvers.h" />
     <ClInclude Include="neighbours.h" />
-    <ClInclude Include="close_solution_3x3.h" />
+    <ClInclude Include="close_solution.h" />
+    <ClInclude Include="two_phase.h" />
+    <ClInclude Include="transposition_table.h" />
+    <ClInclude Include="brute_force.h" />
+    <ClInclude Include="one_phase.h" />
   </ItemGroup>
 </Project>

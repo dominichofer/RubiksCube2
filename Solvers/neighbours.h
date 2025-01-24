@@ -3,43 +3,77 @@
 #include <unordered_map>
 #include <vector>
 
-namespace
+template <typename Cube, typename Twists>
+class NeighbourGenerator
 {
-	template <typename Cube>
-	void add_neighbours(
-		std::unordered_map<Cube, std::vector<typename Cube::Twist>>& map,
-		const Cube& cube,
-		const std::vector<typename Cube::Twist>& twists,
-		int max_distance)
+	Twists possible_twists;
+	std::vector<typename Cube::Twist> twists;
+	std::unordered_map<Cube, std::vector<typename Cube::Twist>> map;
+
+	void add_neighbours(const Cube& cube, int max_distance)
 	{
-		auto result = map.insert({ cube, twists });
+		bool inserted = map.insert({ cube, twists }).second;
 
 		if (max_distance == 0)
 			return;
 
-		if (!result.second) // already exists in map
+		if (!inserted) // already exists in map
 		{
-			std::size_t current_size = result.first->second.size();
+			std::size_t current_size = map[cube].size();
 			std::size_t new_size = twists.size();
-			if (new_size >= current_size)
+			if (new_size < current_size)
+				map[cube] = twists;
+			else
 				return;
-			result.first->second = twists;
 		}
 
-		for (typename Cube::Twist t : Cube::twists)
+		for (const auto& t : possible_twists)
 		{
-			auto new_twists = twists;
-			new_twists.push_back(t);
-			add_neighbours(map, cube.twisted(t), new_twists, max_distance - 1);
+			twists.push_back(t);
+			add_neighbours(cube.twisted(t), max_distance - 1);
+			twists.pop_back();
 		}
 	}
-}
+public:
+	explicit NeighbourGenerator(Twists twists) : possible_twists(std::move(twists)) {}
 
-// Returns a map of all possible cubes and their solutions, up to a certain distance.
-template <typename Cube>
-std::unordered_map<Cube, std::vector<typename Cube::Twist>> neighbours(Cube origin, int max_distance)
+	std::unordered_map<Cube, std::vector<typename Cube::Twist>> generate(const Cube& origin, int min_distance, int max_distance)
+	{
+		twists.clear();
+		twists.reserve(max_distance);
+		map.clear();
+
+		add_neighbours(origin, max_distance);
+
+		// Remove cubes that are too close
+		for (auto it = map.begin(); it != map.end();)
+		{
+			if (it->second.size() < min_distance)
+				it = map.erase(it);
+			else
+				++it;
+		}
+		return map;
+	}
+};
+
+// Returns a map of all possible cubes and their solutions, with a distance between min_distance and max_distance.
+template <typename Cube, typename Twists>
+std::unordered_map<Cube, std::vector<typename Cube::Twist>>
+neighbours(
+	Cube origin,
+	int min_distance,
+	int max_distance,
+	Twists twists)
 {
-	std::unordered_map<Cube, std::vector<typename Cube::Twist>> map;
-	add_neighbours(map, origin, {}, max_distance);
-	return map;
+	return NeighbourGenerator<Cube, Twists>{ std::move(twists) }.generate(origin, min_distance, max_distance);
+}
+template <typename Cube>
+std::unordered_map<Cube, std::vector<typename Cube::Twist>>
+neighbours(
+	Cube origin,
+	int min_distance,
+	int max_distance)
+{
+	return NeighbourGenerator<Cube, decltype(Cube::twists)>{ Cube::twists }.generate(origin, min_distance, max_distance);
 }

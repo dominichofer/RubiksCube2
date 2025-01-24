@@ -1,17 +1,15 @@
 #include "corners.h"
-#include <cmath>
-#include <cstdint>
+#include <algorithm>
 #include <fstream>
-#include <string>
-#include <vector>
 
-std::vector<uint8_t> CreateCornerTable()
+CornersDistanceTable::CornersDistanceTable() noexcept
 {
 	const uint8_t sentinel = 0xFF;
-	std::vector<uint8_t> table(Corners::index_size, sentinel);
+	table = std::vector<uint8_t>(Corners::index_size, sentinel);
 
 	// The solved state is at distance 0
 	table[Corners().index()] = 0;
+
 	std::vector<Corners> last = { Corners() };
 	std::vector<Corners> next;
 	for (uint8_t distance = 1; !last.empty(); ++distance)
@@ -37,46 +35,32 @@ std::vector<uint8_t> CreateCornerTable()
 		}
 		std::swap(last, next);
 	}
+
+	max_distance_ = *std::max_element(table.begin(), table.end());
+}
+
+CornersDistanceTable CornersDistanceTable::from_file(std::filesystem::path path) noexcept
+{
+	CornersDistanceTable table;
+	std::ifstream file(path, std::ios::binary);
+	file.read(reinterpret_cast<char*>(table.table.data()), Corners::index_size);
 	return table;
 }
 
-class DistanceTable
+void CornersDistanceTable::save(std::filesystem::path path) const
 {
-	std::vector<uint8_t> table;
-public:
-	DistanceTable() noexcept
-	{
-		std::string filename = "corners_table.bin";
-		if (std::ifstream(filename).good())
-		{
-			table.resize(Corners::index_size);
-			std::ifstream file(filename, std::ios::binary);
-			file.read(reinterpret_cast<char*>(table.data()), Corners::index_size);
-		}
-		else
-		{
-			table = CreateCornerTable();
-			std::ofstream file(filename, std::ios::binary);
-			file.write(reinterpret_cast<const char*>(table.data()), Corners::index_size);
-		}
-	}
-
-	uint8_t operator[](const Corners& c) const noexcept
-	{
-		return table[c.index()];
-	}
-};
-
-static const DistanceTable distance_table;
-
-int solution_distance(Corners c)
-{
-	return distance_table[c];
+	std::ofstream file(path, std::ios::binary);
+	file.write(reinterpret_cast<const char*>(table.data()), Corners::index_size);
 }
 
-std::vector<Corners::Twist> solution(Corners c)
+uint8_t CornersDistanceTable::operator[](const Corners& c) const
 {
-	int dst = solution_distance(c);
+	return table[c.index()];
+}
+
+std::vector<Corners::Twist> CornersDistanceTable::solve(Corners c) const
+{
+	int dst = this->operator[](c);
 
 	std::vector<Corners::Twist> solution;
 	solution.reserve(dst);
@@ -84,13 +68,28 @@ std::vector<Corners::Twist> solution(Corners c)
 	for (int d = dst; d > 0; --d)
 		for (Corners::Twist twist : Corners::twists)
 		{
-			Corners n = c.twisted(twist);
-			if (solution_distance(n) == d - 1)
+			Corners next = c.twisted(twist);
+			if (this->operator[](next) == d - 1)
 			{
 				solution.push_back(twist);
-				c = n;
+				c = next;
 				break;
 			}
 		}
 	return solution;
+}
+
+int CornersDistanceTable::max_distance() const
+{
+	return max_distance_;
+}
+
+std::vector<uint8_t>::const_iterator CornersDistanceTable::begin() const
+{
+	return table.begin();
+}
+
+std::vector<uint8_t>::const_iterator CornersDistanceTable::end() const
+{
+	return table.end();
 }
