@@ -77,11 +77,8 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.vcxproj">
-      <Project>{ae833c89-daa9-4cd0-9193-78973c2fbdd1}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\Tables\Tables.vcxproj">
-      <Project>{8e13bc6b-4c6b-4574-bb36-7cdf513aa2de}</Project>
+    <ProjectReference Include="..\Solvers\Solvers.vcxproj">
+      <Project>{954b9d15-d42d-4a2d-99f1-e42025183e67}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
