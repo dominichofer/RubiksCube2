@@ -1,5 +1,6 @@
 #pragma once
 #include <random>
+#include <vector>
 
 template <typename T>
 class RandomCubeGenerator
@@ -11,10 +12,10 @@ public:
 
 	T operator()(int rotations = 100)
 	{
-		T t;
+		T ret;
 		for (int i = 0; i < rotations; i++)
-			t = t.twisted(T::twists[dist(rng)]);
-		return t;
+			ret = ret.twisted(T::twists[dist(rng)]);
+		return ret;
 	}
 };
 
@@ -22,4 +23,15 @@ template <typename T>
 T RandomCube(unsigned int seed = std::random_device{}())
 {
 	return RandomCubeGenerator<T>{ seed }();
+}
+
+template <typename T>
+std::vector<T> RandomCubes(std::size_t count, unsigned int seed = std::random_device{}())
+{
+	RandomCubeGenerator<T> rnd(seed);
+	std::vector<T> cubes;
+	cubes.reserve(count);
+	for (std::size_t i = 0; i < count; i++)
+		cubes.push_back(rnd());
+	return cubes;
 }
