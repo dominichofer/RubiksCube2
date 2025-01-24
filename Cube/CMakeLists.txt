@@ -1,0 +1,32 @@
+add_library(
+    Cube STATIC
+    byte.cpp
+    byte.h
+    corners.cpp
+    corners.h
+    cube_of_distance.h
+    cube.h
+    cube2x2.h
+    cube3x3.cpp
+    cube3x3.h
+    cube4x4.cpp
+    cube4x4.h
+    cube5x5.cpp
+    cube5x5.h
+    edges_center.cpp
+    edges_center.h
+    edges_side.cpp
+    edges_side.h
+    faces_center.cpp
+    faces_center.h
+    faces_side.cpp
+    faces_side.h
+    random.h
+    twist.h
+)
+
+target_link_libraries(
+    Cube
+    Math
+    gtest_main
+)

@@ -1,6 +1,7 @@
 #include "brute_force.h"
 #include <chrono>
 #include <iostream>
+#include <utility>
 
 BruteForceSolver::BruteForceSolver() noexcept
 {

@@ -1,9 +1,10 @@
-#include "corners.h"
 #include "byte.h"
+#include "corners.h"
+#include "intrin.h"
 #include "Math/math.h"
 #include <array>
-#include <intrin.h>
 #include <sstream>
+#include <utility>
 
 const std::array<Corners::Twist, 18> Corners::twists = {
 	Twist::L1, Twist::L2, Twist::L3,

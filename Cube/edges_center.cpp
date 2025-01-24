@@ -2,6 +2,7 @@
 #include "Math/math.h"
 #include <array>
 #include <sstream>
+#include <utility>
 
 const std::array<EdgesCenter::Twist, 18> EdgesCenter::twists = {
     Twist::L1, Twist::L2, Twist::L3,

@@ -1,5 +1,6 @@
 #include "one_phase.h"
 #include "corners.h"
+#include <utility>
 
 OnePhaseOptimalSolver::OnePhaseOptimalSolver(
 	const CornersDistanceTable& corners_dst,

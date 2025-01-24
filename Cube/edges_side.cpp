@@ -3,6 +3,7 @@
 #include "Math/math.h"
 #include <array>
 #include <sstream>
+#include <utility>
 
 const std::array<EdgesSide::Twist, 36> EdgesSide::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,

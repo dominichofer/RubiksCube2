@@ -2,8 +2,9 @@
 #include "byte.h"
 #include "Math/math.h"
 #include <array>
-#include <intrin.h>
+#include "intrin.h"
 #include <sstream>
+#include <utility>
 
 const std::array<FacesSide::Twist, 36> FacesSide::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,

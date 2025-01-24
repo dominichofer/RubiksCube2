@@ -1,5 +1,5 @@
 #include "byte.h"
-#include <intrin.h>
+#include "intrin.h"
 
 uint64_t set_epi8(uint8_t b0, uint8_t b1, uint8_t b2, uint8_t b3, uint8_t b4, uint8_t b5, uint8_t b6, uint8_t b7)
 {
@@ -33,7 +33,7 @@ std::pair<uint64_t, uint64_t> byte_shuffle(
 	int b0, int b1, int b2, int b3, int b4, int b5, int b6, int b7)
 {
 	__m128i x = _mm_shuffle_epi8(
-		_mm_setr_epi64x(a, b),
+		_mm_set_epi64x(b, a),
 		_mm_setr_epi8(
 			a0, a1, a2, a3, a4, a5, a6, a7,
 			b0, b1, b2, b3, b4, b5, b6, b7

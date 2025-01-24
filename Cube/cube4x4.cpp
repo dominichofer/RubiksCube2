@@ -1,5 +1,6 @@
 #include "cube4x4.h"
 #include <sstream>
+#include <utility>
 
 const std::array<Cube4x4::Twist, 36> Cube4x4::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
