@@ -399,13 +399,15 @@ EdgesSide EdgesSide::twisted(const std::vector<Twist>& twists) const
 
 uint64_t EdgesSide::prm_index() const
 {
-	return permutation_index(
-		cubie(0), cubie(1), cubie(2), cubie(3),
-		cubie(4), cubie(5), cubie(6), cubie(7),
-		cubie(8), cubie(9), cubie(10), cubie(11),
-		cubie(12), cubie(13), cubie(14), cubie(15),
-		cubie(16), cubie(17), cubie(18), cubie(19),
-		cubie(20), cubie(21), cubie(22), cubie(23));
+	return 0;
+	// TODO!
+	//return permutation_index(
+	//	cubie(0), cubie(1), cubie(2), cubie(3),
+	//	cubie(4), cubie(5), cubie(6), cubie(7),
+	//	cubie(8), cubie(9), cubie(10), cubie(11),
+	//	cubie(12), cubie(13), cubie(14), cubie(15),
+	//	cubie(16), cubie(17), cubie(18), cubie(19),
+	//	cubie(20), cubie(21), cubie(22), cubie(23));
 }
 
 uint64_t EdgesSide::index() const
