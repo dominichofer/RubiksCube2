@@ -37,20 +37,19 @@ EdgesCenter::EdgesCenter(
 	uint8_t o8, uint8_t o9, uint8_t o10, uint8_t o11) noexcept
 {
     state = _mm_set_epi8(
-        0, 0,
-        o11 << 4 | e11,
-        o10 << 4 | e10,
-        o9 << 4 | e9,
-        o8 << 4 | e8,
-        o7 << 4 | e7,
-        o6 << 4 | e6,
-        0, 0,
-        o5 << 4 | e5,
-        o4 << 4 | e4,
-        o3 << 4 | e3,
-        o2 << 4 | e2,
-        o1 << 4 | e1,
-        o0 << 4 | e0);
+        0, 0, 0, 0,
+        o11 << 7 | e11,
+        o10 << 7 | e10,
+        o9 << 7 | e9,
+        o8 << 7 | e8,
+        o7 << 7 | e7,
+        o6 << 7 | e6,
+        o5 << 7 | e5,
+        o4 << 7 | e4,
+        o3 << 7 | e3,
+        o2 << 7 | e2,
+        o1 << 7 | e1,
+        o0 << 7 | e0);
 }
 
 bool EdgesCenter::operator==(const EdgesCenter& o) const
@@ -77,22 +76,40 @@ bool EdgesCenter::operator<(const EdgesCenter& o) const
 
 int EdgesCenter::cubie(int index) const
 {
-    uint64_t lo = _mm_extract_epi64(state, 0);
-    uint64_t hi = _mm_extract_epi64(state, 1);
-    if (index > 5)
-        return hi >> ((index - 6) * 8) & 0x0F;
-    else
-        return lo >> (index * 8) & 0x0F;
+    switch (index)
+    {
+    case 0: return _mm_extract_epi8(state, 0) & 0x0F;
+    case 1: return _mm_extract_epi8(state, 1) & 0x0F;
+    case 2: return _mm_extract_epi8(state, 2) & 0x0F;
+    case 3: return _mm_extract_epi8(state, 3) & 0x0F;
+    case 4: return _mm_extract_epi8(state, 4) & 0x0F;
+    case 5: return _mm_extract_epi8(state, 5) & 0x0F;
+    case 6: return _mm_extract_epi8(state, 6) & 0x0F;
+    case 7: return _mm_extract_epi8(state, 7) & 0x0F;
+    case 8: return _mm_extract_epi8(state, 8) & 0x0F;
+    case 9: return _mm_extract_epi8(state, 9) & 0x0F;
+    case 10: return _mm_extract_epi8(state, 10) & 0x0F;
+    case 11: return _mm_extract_epi8(state, 11) & 0x0F;
+    }
 }
 
 int EdgesCenter::orientation(int index) const
 {
-    uint64_t lo = _mm_extract_epi64(state, 0);
-    uint64_t hi = _mm_extract_epi64(state, 1);
-    if (index > 5)
-        return hi >> ((index - 6) * 8 + 4) & 0x01;
-    else
-        return lo >> (index * 8 + 4) & 0x01;
+    switch (index)
+    {
+    case 0: return _mm_extract_epi8(state, 0) >> 7;
+    case 1: return _mm_extract_epi8(state, 1) >> 7;
+    case 2: return _mm_extract_epi8(state, 2) >> 7;
+    case 3: return _mm_extract_epi8(state, 3) >> 7;
+    case 4: return _mm_extract_epi8(state, 4) >> 7;
+    case 5: return _mm_extract_epi8(state, 5) >> 7;
+    case 6: return _mm_extract_epi8(state, 6) >> 7;
+    case 7: return _mm_extract_epi8(state, 7) >> 7;
+    case 8: return _mm_extract_epi8(state, 8) >> 7;
+    case 9: return _mm_extract_epi8(state, 9) >> 7;
+    case 10: return _mm_extract_epi8(state, 10) >> 7;
+    case 11: return _mm_extract_epi8(state, 11) >> 7;
+    }
 }
 
 bool EdgesCenter::is_solved() const
@@ -100,107 +117,108 @@ bool EdgesCenter::is_solved() const
     return *this == EdgesCenter();
 }
 
-__m128i byte_shuffle(__m128i state, int index_0, int index_1, int index_2, int index_3, int index_4, int index_5, int index_6, int index_7, int index_8, int index_9, int index_10, int index_11)
+__m128i byte_shuffle(__m128i state, int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11) noexcept
 {
-    return _mm_shuffle_epi8(
-        state,
-        _mm_set_epi8(15, 15, index_11, index_10, index_9, index_8, index_7, index_6, 15, 15, index_5, index_4, index_3, index_2, index_1, index_0));
+	return _mm_shuffle_epi8(
+		state,
+		_mm_set_epi8(15, 14, 13, 12, i11, i10, i9, i8, i7, i6, i5, i4, i3, i2, i1, i0));
 }
-
-const __m128i F_mask = _mm_set_epi8(0x00, 0x00, 0x00, 0x00, 0x10, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x10);
-const __m128i B_mask = _mm_set_epi8(0x00, 0x00, 0x10, 0x10, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00, 0x00, 0x00, 0x00, 0x10, 0x00, 0x00);
 
 EdgesCenter EdgesCenter::L1() const
 {
-    return byte_shuffle(state, 0, 1, 2, 13, 4, 5, 8, 10, 3, 11, 12, 9);
+    return byte_shuffle(state, 0, 1, 2, 11, 4, 5, 6, 8, 3, 9, 10, 7);
 }
 
 EdgesCenter EdgesCenter::L2() const
 {
-    return byte_shuffle(state, 0, 1, 2, 9, 4, 5, 8, 3, 13, 11, 12, 10);
+    return byte_shuffle(state, 0, 1, 2, 7, 4, 5, 6, 3, 11, 9, 10, 8);
 }
 
 EdgesCenter EdgesCenter::L3() const
 {
-    return byte_shuffle(state, 0, 1, 2, 10, 4, 5, 8, 13, 9, 11, 12, 3);
+    return byte_shuffle(state, 0, 1, 2, 8, 4, 5, 6, 11, 7, 9, 10, 3);
 }
 
 EdgesCenter EdgesCenter::R1() const
 {
-    return byte_shuffle(state, 0, 11, 2, 3, 4, 12, 8, 9, 10, 5, 1, 13);
+    return byte_shuffle(state, 0, 9, 2, 3, 4, 10, 6, 7, 8, 5, 1, 11);
 }
 
 EdgesCenter EdgesCenter::R2() const
 {
-    return byte_shuffle(state, 0, 5, 2, 3, 4, 1, 8, 9, 10, 12, 11, 13);
+    return byte_shuffle(state, 0, 5, 2, 3, 4, 1, 6, 7, 8, 10, 9, 11);
 }
 
 EdgesCenter EdgesCenter::R3() const
 {
-    return byte_shuffle(state, 0, 12, 2, 3, 4, 11, 8, 9, 10, 1, 5, 13);
+    return byte_shuffle(state, 0, 10, 2, 3, 4, 9, 6, 7, 8, 1, 5, 11);
 }
 
 EdgesCenter EdgesCenter::U1() const
 {
-    return byte_shuffle(state, 1, 2, 3, 0, 4, 5, 8, 9, 10, 11, 12, 13);
+    return byte_shuffle(state, 1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11);
 }
 
 EdgesCenter EdgesCenter::U2() const
 {
-    return byte_shuffle(state, 2, 3, 0, 1, 4, 5, 8, 9, 10, 11, 12, 13);
+    return byte_shuffle(state, 2, 3, 0, 1, 4, 5, 6, 7, 8, 9, 10, 11);
 }
 
 EdgesCenter EdgesCenter::U3() const
 {
-    return byte_shuffle(state, 3, 0, 1, 2, 4, 5, 8, 9, 10, 11, 12, 13);
+    return byte_shuffle(state, 3, 0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11);
 }
 
 EdgesCenter EdgesCenter::D1() const
 {
-    return byte_shuffle(state, 0, 1, 2, 3, 9, 4, 5, 8, 10, 11, 12, 13);
+    return byte_shuffle(state, 0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11);
 }
 
 EdgesCenter EdgesCenter::D2() const
 {
-    return byte_shuffle(state, 0, 1, 2, 3, 8, 9, 4, 5, 10, 11, 12, 13);
+    return byte_shuffle(state, 0, 1, 2, 3, 6, 7, 4, 5, 8, 9, 10, 11);
 }
 
 EdgesCenter EdgesCenter::D3() const
 {
-    return byte_shuffle(state, 0, 1, 2, 3, 5, 8, 9, 4, 10, 11, 12, 13);
+    return byte_shuffle(state, 0, 1, 2, 3, 5, 6, 7, 4, 8, 9, 10, 11);
 }
 
 EdgesCenter EdgesCenter::F1() const
 {
-    auto s = byte_shuffle(state, 10, 1, 2, 3, 11, 5, 8, 9, 4, 0, 12, 13);
+    const __m128i F_mask = _mm_set_epi8(0, 0, 0, 0, 0, 0, 0x80, 0x80, 0, 0, 0, 0x80, 0, 0, 0, 0x80);
+    auto s = byte_shuffle(state, 8, 1, 2, 3, 9, 5, 6, 7, 4, 0, 10, 11);
     return _mm_xor_si128(s, F_mask);
 }
 
 EdgesCenter EdgesCenter::F2() const
 {
-    return byte_shuffle(state, 4, 1, 2, 3, 0, 5, 8, 9, 11, 10, 12, 13);
+    return byte_shuffle(state, 4, 1, 2, 3, 0, 5, 6, 7, 9, 8, 10, 11);
 }
 
 EdgesCenter EdgesCenter::F3() const
 {
-    auto s = byte_shuffle(state, 11, 1, 2, 3, 10, 5, 8, 9, 0, 4, 12, 13);
+    const __m128i F_mask = _mm_set_epi8(0, 0, 0, 0, 0, 0, 0x80, 0x80, 0, 0, 0, 0x80, 0, 0, 0, 0x80);
+    auto s = byte_shuffle(state, 9, 1, 2, 3, 8, 5, 6, 7, 0, 4, 10, 11);
     return _mm_xor_si128(s, F_mask);
 }
 
 EdgesCenter EdgesCenter::B1() const
 {
-    auto s = byte_shuffle(state, 0, 1, 12, 3, 4, 5, 13, 9, 10, 11, 8, 2);
+    const __m128i B_mask = _mm_set_epi8(0, 0, 0, 0, 0x80, 0x80, 0, 0, 0, 0x80, 0, 0, 0, 0x80, 0, 0);
+    auto s = byte_shuffle(state, 0, 1, 10, 3, 4, 5, 11, 7, 8, 9, 6, 2);
     return _mm_xor_si128(s, B_mask);
 }
 
 EdgesCenter EdgesCenter::B2() const
 {
-    return byte_shuffle(state, 0, 1, 8, 3, 4, 5, 2, 9, 10, 11, 13, 12);
+    return byte_shuffle(state, 0, 1, 6, 3, 4, 5, 2, 7, 8, 9, 11, 10);
 }
 
 EdgesCenter EdgesCenter::B3() const
 {
-    auto s = byte_shuffle(state, 0, 1, 13, 3, 4, 5, 12, 9, 10, 11, 2, 8);
+    const __m128i B_mask = _mm_set_epi8(0, 0, 0, 0, 0x80, 0x80, 0, 0, 0, 0x80, 0, 0, 0, 0x80, 0, 0);
+    auto s = byte_shuffle(state, 0, 1, 11, 3, 4, 5, 10, 7, 8, 9, 2, 6);
     return _mm_xor_si128(s, B_mask);
 }
 
@@ -240,30 +258,12 @@ EdgesCenter EdgesCenter::twisted(const std::vector<Twist>& twists) const
 
 uint64_t EdgesCenter::prm_index() const
 {
-    uint64_t lo = _mm_extract_epi64(state, 0);
-    uint64_t hi = _mm_extract_epi64(state, 1);
-	int e0 = lo & 0x0F;
-	int e1 = lo >> 8 & 0x0F;
-	int e2 = lo >> 16 & 0x0F;
-	int e3 = lo >> 24 & 0x0F;
-	int e4 = lo >> 32 & 0x0F;
-	int e5 = lo >> 40 & 0x0F;
-	int e6 = hi & 0x0F;
-	int e7 = hi >> 8 & 0x0F;
-	int e8 = hi >> 16 & 0x0F;
-	int e9 = hi >> 24 & 0x0F;
-	int e10 = hi >> 32 & 0x0F;
-	int e11 = hi >> 40 & 0x0F;
-	return permutation_index(e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11);
+	return permutation_index(cubie(0), cubie(1), cubie(2), cubie(3), cubie(4), cubie(5), cubie(6), cubie(7), cubie(8), cubie(9), cubie(10), cubie(11));
 }
 
 uint64_t EdgesCenter::ori_index() const
 {
-    uint64_t lo = _mm_extract_epi64(state, 0);
-    uint64_t hi = _mm_extract_epi64(state, 1);
-    uint64_t index_0 = _pext_u64(lo, 0x00'00'10'10'10'10'10'10ULL);
-    uint64_t index_1 = _pext_u64(hi, 0x00'00'00'10'10'10'10'10ULL);
-    return index_0 | (index_1 << 6);
+	return _mm_movemask_epi8(state) & 0x7FF;
 }
 
 uint64_t EdgesCenter::index() const
