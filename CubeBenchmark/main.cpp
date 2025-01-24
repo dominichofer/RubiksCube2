@@ -2,15 +2,16 @@
 #include "Cube/cube.h"
 #include <chrono>
 #include <iostream>
+#include <iomanip>
 
 #define BENCH(cls, func) \
-void cls##_##func(benchmark::State& state) \
+void func##_##cls(benchmark::State& state) \
 { \
 	auto cube = RandomCube<cls>(); \
 	for (auto _ : state) \
 		benchmark::DoNotOptimize(cube.func()); \
 } \
-BENCHMARK(cls##_##func);
+BENCHMARK(func##_##cls);
 
 #define BENCH_OUTER_TWISTS(cls) \
 BENCH(cls, L1) \
@@ -78,10 +79,10 @@ BENCH(FacesSide, index)
 
 void EdgesCenter_lt(benchmark::State& state)
 {
-	auto cube = RandomCube<EdgesCenter>();
+	auto cube1 = RandomCube<EdgesCenter>();
 	auto cube2 = RandomCube<EdgesCenter>();
 	for (auto _ : state)
-		benchmark::DoNotOptimize(cube < cube2);
+		benchmark::DoNotOptimize(cube1 < cube2);
 }
 BENCHMARK(EdgesCenter_lt);
 
@@ -161,7 +162,7 @@ void perft()
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 		if (duration > 100)
 		{
-			std::cout << typeid(T).name() << "\t" << counter / 1000 / duration << " MN/s" << std::endl;
+            std::cout << std::left << std::setw(13) << typeid(T).name() + 6 << counter / 1000 / duration << " MN/s" << std::endl;
 			break;
 		}
 	}
