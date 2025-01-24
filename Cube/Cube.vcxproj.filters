@@ -25,5 +25,7 @@
     <ClInclude Include="faces_center.h" />
     <ClInclude Include="faces_side.h" />
     <ClInclude Include="random.h" />
+    <ClInclude Include="twist.h" />
+    <ClInclude Include="cube_of_distance.h" />
   </ItemGroup>
 </Project>
