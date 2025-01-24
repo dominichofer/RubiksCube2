@@ -1,3 +1,9 @@
+build/
+Debug/
+Release/
+bin/
+bin_debug/
+
 # Prerequisites
 *.d
 
