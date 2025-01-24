@@ -162,7 +162,7 @@ void perft()
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
 		if (duration > 100)
 		{
-            std::cout << std::left << std::setw(13) << typeid(T).name() + 6 << counter / 1000 / duration << " MN/s" << std::endl;
+            std::cout << std::left << std::setw(13) << typeid(T).name() << counter / 1000 / duration << " MN/s" << std::endl;
 			break;
 		}
 	}
