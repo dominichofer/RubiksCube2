@@ -33,7 +33,7 @@ FetchContent_Declare(googlebenchmark
 FetchContent_MakeAvailable(googlebenchmark)
 
 # OpenMP
-find_package(OpenMP)
+find_package(OpenMP REQUIRED COMPONENTS CXX)
 link_libraries(OpenMP::OpenMP_CXX)
 
 include_directories(.)
@@ -42,3 +42,6 @@ add_subdirectory(CubeTest)
 add_subdirectory(CubeBenchmark)
 add_subdirectory(Math)
 add_subdirectory(MathTest)
+add_subdirectory(Solvers)
+add_subdirectory(SolversTest)
+add_subdirectory(SolversBenchmark)
