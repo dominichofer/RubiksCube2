@@ -4,7 +4,7 @@ enable_testing()
 
 set(CMAKE_CXX_STANDARD 23)
 if (MSVC)
-	set(CMAKE_CXX_FLAGS "/std:c++23 /EHsc /MP")
+	set(CMAKE_CXX_FLAGS "/std:c++latest /EHsc /MP")
 	set(CMAKE_CXX_FLAGS_DEBUG "/Od /MDd")
 	set(CMAKE_CXX_FLAGS_RELEASE "/Ox /MD /GL")
 else()
@@ -33,7 +33,7 @@ FetchContent_Declare(googlebenchmark
 FetchContent_MakeAvailable(googlebenchmark)
 
 # OpenMP
-find_package(OpenMP REQUIRED COMPONENTS CXX)
+find_package(OpenMP)
 link_libraries(OpenMP::OpenMP_CXX)
 
 include_directories(.)
