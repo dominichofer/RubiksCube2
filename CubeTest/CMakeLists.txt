@@ -10,10 +10,11 @@ add_executable(
     faces_center.cpp
     faces_side.cpp
     pch.cpp
-    pch.h
     random.cpp
     twist.cpp
 )
+
+target_precompile_headers(CubeTest PRIVATE pch.h)
 
 target_link_libraries(
     CubeTest

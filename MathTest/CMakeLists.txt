@@ -1,10 +1,11 @@
 add_executable(
     MathTest
     pch.cpp
-    pch.h
     permutation.cpp
     statistic.cpp
 )
+
+target_precompile_headers(MathTest PRIVATE pch.h)
 
 target_link_libraries(
     MathTest
