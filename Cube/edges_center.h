@@ -39,6 +39,7 @@ public:
         uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3,
         uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7,
         uint8_t o8, uint8_t o9, uint8_t o10, uint8_t o11) noexcept;
+    static EdgesCenter impossible();
 
     bool operator==(const EdgesCenter&) const;
     bool operator!=(const EdgesCenter&) const;
@@ -79,10 +80,12 @@ public:
     uint64_t prm_index() const;
     uint64_t ori_index() const;
     uint64_t index() const;
+    uint64_t ud_slice_index() const;
 
 	static const uint64_t prm_size = 479'001'600; // 12!
 	static const uint64_t ori_size = 2'048; // 2^11
 	static const uint64_t index_size = prm_size * ori_size;
+    static const uint64_t ud_slice_size = 495; // 12 choose 4
 
     uint64_t hash() const;
 };

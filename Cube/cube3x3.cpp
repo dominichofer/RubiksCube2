@@ -21,7 +21,7 @@ Cube3x3 Cube3x3::superflip()
 
 Cube3x3 Cube3x3::impossible()
 {
-	return Cube3x3(Corners(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 1), EdgesCenter());
+	return Cube3x3{Corners{}, EdgesCenter::impossible()};
 }
 
 bool Cube3x3::operator==(const Cube3x3& o) const
@@ -46,12 +46,15 @@ bool Cube3x3::in_H() const
 	return c.ori_index() == 0 && e.ori_index() == 0 && e.cubie(8) >= 8 && e.cubie(9) >= 8 && e.cubie(10) >= 8 && e.cubie(11) >= 8;
 }
 
-std::size_t Cube3x3::coset_index() const
+std::size_t Cube3x3::H_coset_index() const
 {
-	return 0;
+	auto corner_ori = c.ori_index();
+	auto edge_ori = e.ori_index();
+	auto ud_index = e.ud_slice_index();
+	return corner_ori * EdgesCenter::ori_size * EdgesCenter::ud_slice_size + edge_ori * EdgesCenter::ud_slice_size + ud_index;
 }
 
-std::size_t Cube3x3::set_index() const
+std::size_t Cube3x3::H_subset_index() const
 {
 	auto corner_prm = c.prm_index();
 	auto ud_edge_prm = permutation_index(e.cubie(0), e.cubie(1), e.cubie(2), e.cubie(3), e.cubie(4), e.cubie(5), e.cubie(6), e.cubie(7));

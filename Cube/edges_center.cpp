@@ -1,4 +1,5 @@
 #include "edges_center.h"
+#include "bit.h"
 #include "Math/math.h"
 #include <array>
 #include <sstream>
@@ -51,6 +52,11 @@ EdgesCenter::EdgesCenter(
         o2 << 7 | e2,
         o1 << 7 | e1,
         o0 << 7 | e0);
+}
+
+EdgesCenter EdgesCenter::impossible()
+{
+    return EdgesCenter(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 bool EdgesCenter::operator==(const EdgesCenter& o) const
@@ -273,6 +279,18 @@ uint64_t EdgesCenter::ori_index() const
 uint64_t EdgesCenter::index() const
 {
 	return prm_index() * 2'048 + ori_index();
+}
+
+uint64_t EdgesCenter::ud_slice_index() const
+{
+    uint64_t mask = _mm_movemask_epi8(_mm_cmpgt_epi8(state, _mm_set1_epi8(7)));
+    std::vector<int> combination(4);
+    for (int i = 0; i < 4; i++)
+    {
+        combination[i] = std::countr_zero(mask);
+        ClearLSB(mask);
+    }
+    return combination_index(12, combination);
 }
 
 uint64_t EdgesCenter::hash() const

@@ -1,5 +1,6 @@
 #pragma once
 #include "Math/math.h"
+#include "bit.h"
 #include "byte.h"
 #include "cube_of_distance.h"
 #include "cube2x2.h"
