@@ -4,7 +4,7 @@
 #include <sstream>
 #include <utility>
 
-const std::array<EdgesCenter::Twist, 18> EdgesCenter::twists = {
+const std::vector<EdgesCenter::Twist> EdgesCenter::twists = {
     Twist::L1, Twist::L2, Twist::L3,
     Twist::R1, Twist::R2, Twist::R3,
     Twist::U1, Twist::U2, Twist::U3,
@@ -91,6 +91,7 @@ int EdgesCenter::cubie(int index) const
     case 9: return _mm_extract_epi8(state, 9) & 0x0F;
     case 10: return _mm_extract_epi8(state, 10) & 0x0F;
     case 11: return _mm_extract_epi8(state, 11) & 0x0F;
+	default: throw std::out_of_range("index out of range");
     }
 }
 
@@ -110,6 +111,7 @@ int EdgesCenter::orientation(int index) const
     case 9: return _mm_extract_epi8(state, 9) >> 7;
     case 10: return _mm_extract_epi8(state, 10) >> 7;
     case 11: return _mm_extract_epi8(state, 11) >> 7;
+    default: throw std::out_of_range("index out of range");
     }
 }
 
@@ -187,7 +189,7 @@ EdgesCenter EdgesCenter::D3() const
 
 EdgesCenter EdgesCenter::F1() const
 {
-    const __m128i F_mask = _mm_set_epi8(0, 0, 0, 0, 0, 0, 0x80, 0x80, 0, 0, 0, 0x80, 0, 0, 0, 0x80);
+    const __m128i F_mask = _mm_set_epi8(0, 0, 0, 0, 0, 0, 0x80u, 0x80u, 0, 0, 0, 0x80u, 0, 0, 0, 0x80u);
     auto s = byte_shuffle(state, 8, 1, 2, 3, 9, 5, 6, 7, 4, 0, 10, 11);
     return _mm_xor_si128(s, F_mask);
 }
@@ -199,14 +201,14 @@ EdgesCenter EdgesCenter::F2() const
 
 EdgesCenter EdgesCenter::F3() const
 {
-    const __m128i F_mask = _mm_set_epi8(0, 0, 0, 0, 0, 0, 0x80, 0x80, 0, 0, 0, 0x80, 0, 0, 0, 0x80);
+    const __m128i F_mask = _mm_set_epi8(0, 0, 0, 0, 0, 0, 0x80u, 0x80u, 0, 0, 0, 0x80u, 0, 0, 0, 0x80u);
     auto s = byte_shuffle(state, 9, 1, 2, 3, 8, 5, 6, 7, 0, 4, 10, 11);
     return _mm_xor_si128(s, F_mask);
 }
 
 EdgesCenter EdgesCenter::B1() const
 {
-    const __m128i B_mask = _mm_set_epi8(0, 0, 0, 0, 0x80, 0x80, 0, 0, 0, 0x80, 0, 0, 0, 0x80, 0, 0);
+    const __m128i B_mask = _mm_set_epi8(0, 0, 0, 0, 0x80u, 0x80u, 0, 0, 0, 0x80u, 0, 0, 0, 0x80u, 0, 0);
     auto s = byte_shuffle(state, 0, 1, 10, 3, 4, 5, 11, 7, 8, 9, 6, 2);
     return _mm_xor_si128(s, B_mask);
 }
@@ -218,7 +220,7 @@ EdgesCenter EdgesCenter::B2() const
 
 EdgesCenter EdgesCenter::B3() const
 {
-    const __m128i B_mask = _mm_set_epi8(0, 0, 0, 0, 0x80, 0x80, 0, 0, 0, 0x80, 0, 0, 0, 0x80, 0, 0);
+    const __m128i B_mask = _mm_set_epi8(0, 0, 0, 0, 0x80u, 0x80u, 0, 0, 0, 0x80u, 0, 0, 0, 0x80u, 0, 0);
     auto s = byte_shuffle(state, 0, 1, 11, 3, 4, 5, 10, 7, 8, 9, 2, 6);
     return _mm_xor_si128(s, B_mask);
 }
@@ -246,6 +248,7 @@ EdgesCenter EdgesCenter::twisted(Twist r) const
     case Twist::B2: return B2();
     case Twist::B3: return B3();
     case Twist::None: return *this;
+    default: throw std::invalid_argument("Invalid twist");
 	}
 }
 

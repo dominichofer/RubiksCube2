@@ -1,80 +1,64 @@
 #include "Solvers/solvers.h"
-#include <vector>
-#include <unordered_set>
 #include <iostream>
-#include <chrono>
+#include <vector>
+#include <intrin0.h>
 
-struct Solution
-{
-	Cube3x3 cube;
-	std::vector<Cube3x3::Twist> twists;
+static void const volatile* volatile global_force_escape_pointer;
 
-	bool operator==(const Solution& o) const
-	{
-		return cube == o.cube && twists == o.twists;
-	}
-};
+// FIXME: Verify if LTO still messes this up?
+void UseCharPointer(char const volatile* const v) {
+	// We want to escape the pointer `v` so that the compiler can not eliminate
+	// computations that produced it. To do that, we escape the pointer by storing
+	// it into a volatile variable, since generally, volatile store, is not
+	// something the compiler is allowed to elide.
+	global_force_escape_pointer = reinterpret_cast<void const volatile*>(v);
+}
 
-namespace std
-{
-	template <>
-	struct hash<Solution>
-	{
-		std::size_t operator()(const Solution& s) const
-		{
-			return s.cube.hash();
-		}
-	};
+template <class Tp>
+inline void DoNotOptimize(Tp const& value) {
+	UseCharPointer(&reinterpret_cast<char const volatile&>(value));
+	_ReadWriteBarrier();
 }
 
 int main()
 {
-	RandomCubeGenerator<Cube3x3> rnd(2872312);
-	const CornersDistanceTable corners_dst;
-	const CloseSolutionTable<Cube3x3> solution_table(7, 0x10000000);
+	unsigned long long min_time = 10000;
+	int min_size = 0;
 
-	for (int twists = 16; twists <= 20; twists++)
+	for (int size = 10000000; size <= 1'000'000'000; size += 10000000)
 	{
-		std::unordered_set<Solution> solutions;
+		const CloseSolutionTable<Cube3x3> table(7, size);
+
+		std::vector<Cube3x3> hit_cubes;
+		for (int dst = 0; dst <= table.max_distance(); dst++)
+			for (const Cube3x3& cube : cube3x3_of_distance[dst])
+				hit_cubes.push_back(cube);
+
+		std::vector<Cube3x3> miss_cubes;
+		for (int dst = table.max_distance() + 1; dst < cube3x3_of_distance.size(); dst++)
+			for (const Cube3x3& cube : cube3x3_of_distance[dst])
+				miss_cubes.push_back(cube);
+
 		auto start = std::chrono::high_resolution_clock::now();
-		#pragma omp parallel
-		{
-			TranspositionTable<Cube3x3, int> tt(10'000'000, Cube3x3::impossible(), 0);
-			while (solutions.size() < 20)
-			{
-				tt.clear();
-				OnePhaseOptimalSolver solver(corners_dst, solution_table, tt);
-				Cube3x3 cube;
-
-				#pragma omp critical
-				cube = rnd();
-				try
-				{
-					auto solution = solver.solve(cube, twists);
-					if (solution.size() == twists)
-					{
-						#pragma omp critical
-						{
-							solutions.insert({ cube, solution });
-							std::cout << solutions.size() << std::endl;
-						}
-					}
-				}
-				catch (const std::runtime_error&)
-				{
-				}
-			}
-		}
+		for (int i = 0; i < 100; i++)
+			for (const Cube3x3& cube : hit_cubes)
+				DoNotOptimize(table[cube]);
 		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-		std::cout << "Twists: " << twists << " Time: " << duration << std::endl;
+		auto avg_hit = (stop - start) / hit_cubes.size();
 
-		for (const Solution& s : solutions)
+		start = std::chrono::high_resolution_clock::now();
+		for (int i = 0; i < 100; i++)
+			for (const Cube3x3& cube : miss_cubes)
+				DoNotOptimize(table[cube]);
+		stop = std::chrono::high_resolution_clock::now();
+		auto avg_miss = (stop - start) / miss_cubes.size();
+
+		auto avg = avg_hit + avg_miss;
+		if (avg.count() / 100 < min_time)
 		{
-			std::cout << "Cube3x3()";
-			for (auto t : s.twists)
-				std::cout << "." << to_string(t) << "()";
-			std::cout << std::endl;
+			min_time = avg.count() / 100;
+			min_size = size;
+			std::cout << min_time << " " << min_size << std::endl;
 		}
 	}
 }

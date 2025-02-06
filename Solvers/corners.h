@@ -1,7 +1,6 @@
 #pragma once
 #include "Cube/cube.h"
 #include <cstdint>
-#include <filesystem>
 #include <vector>
 
 class CornersDistanceTable
@@ -10,9 +9,6 @@ class CornersDistanceTable
 	std::vector<uint8_t> table;
 public:
 	CornersDistanceTable() noexcept;
-	static CornersDistanceTable from_file(std::filesystem::path) noexcept;
-
-	void save(std::filesystem::path) const;
 
 	uint8_t operator[](const Corners&) const;
 	std::vector<Corners::Twist> solve(Corners) const;

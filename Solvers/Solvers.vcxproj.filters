@@ -5,6 +5,7 @@
     <ClCompile Include="two_phase.cpp" />
     <ClCompile Include="brute_force.cpp" />
     <ClCompile Include="one_phase.cpp" />
+    <ClCompile Include="distance.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="corners.h" />
@@ -15,5 +16,6 @@
     <ClInclude Include="transposition_table.h" />
     <ClInclude Include="brute_force.h" />
     <ClInclude Include="one_phase.h" />
+    <ClInclude Include="distance.h" />
   </ItemGroup>
 </Project>

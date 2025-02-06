@@ -2,7 +2,7 @@
 #include <sstream>
 #include <utility>
 
-const std::array<Cube5x5::Twist, 36> Cube5x5::twists = {
+const std::vector<Cube5x5::Twist> Cube5x5::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
 	Twist::R1, Twist::R2, Twist::R3, Twist::r1, Twist::r2, Twist::r3,
 	Twist::U1, Twist::U2, Twist::U3, Twist::u1, Twist::u2, Twist::u3,

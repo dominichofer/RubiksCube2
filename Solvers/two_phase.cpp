@@ -6,9 +6,11 @@
 
 TwoPhaseOptimalSolver::TwoPhaseOptimalSolver(
 	const CornersDistanceTable& corners_dst,
-	const CloseSolutionTable<Cube3x3>& solution_table) noexcept
+	const CloseSolutionTable<Cube3x3>& solution_table,
+	TranspositionTable<Cube3x3, int>& tt) noexcept
 	: corners_dst(corners_dst)
 	, solution_table(solution_table)
+	, tt(tt)
 {
 	twists.reserve(20);
 }
@@ -73,7 +75,7 @@ void TwoPhaseOptimalSolver::solve(const Cube3x3& cube, int depth, Cube3x3::Twist
 		twists.pop_back();
 }
 
-std::vector<Cube3x3::Twist> TwoPhaseOptimalSolver::solve(const Cube3x3& cube)
+std::vector<Cube3x3::Twist> TwoPhaseOptimalSolver::solve(const Cube3x3& cube, int max_depth)
 {
 	twists.clear();
 	try

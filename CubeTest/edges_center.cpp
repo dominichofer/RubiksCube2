@@ -181,7 +181,7 @@ TEST(EdgesCenter, ori_index)
 TEST(EdgesCenter, rotation_fuzzing)
 {
 	std::mt19937_64 rng;
-	std::uniform_int_distribution<> dist{ 0, EdgesCenter::twists.size() - 1 };
+	std::uniform_int_distribution<std::size_t> dist{ 0, EdgesCenter::twists.size() - 1 };
 	EdgesCenter c;
 	for (int i = 0; i < 1'000'000; i++)
 	{

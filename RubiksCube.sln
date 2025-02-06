@@ -5,15 +5,9 @@ VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "App1", "App1\App1.vcxproj", "{56A58023-6579-45B2-8A30-A54288537605}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Tables", "Tables\Tables.vcxproj", "{8E13BC6B-4C6B-4574-BB36-7CDF513AA2DE}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "apps", "apps", "{7B793FB1-6447-422F-9955-5A7112CFC87B}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{9BFCD8E5-001E-47A1-8CC8-FDF5B89F3AD9}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tables", "Tables", "{A4EFC094-BB5D-49BE-96B7-C86C1FEE4385}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TablesBenchmark", "TablesBenchmark\TablesBenchmark.vcxproj", "{B5658DF0-D069-4789-A739-D1909F9D8A43}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SolverCube2x2", "SolverCube2x2\SolverCube2x2.vcxproj", "{05F54A86-A6EF-4627-9C40-97F27F075844}"
 EndProject
@@ -44,9 +38,7 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
-		Debug|x86 = Debug|x86
 		Release|x64 = Release|x64
-		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{56A58023-6579-45B2-8A30-A54288537605}.Debug|x64.ActiveCfg = Debug|x64

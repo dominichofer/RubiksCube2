@@ -1,6 +1,5 @@
 #include "corners.h"
 #include <algorithm>
-#include <fstream>
 
 CornersDistanceTable::CornersDistanceTable() noexcept
 {
@@ -35,22 +34,7 @@ CornersDistanceTable::CornersDistanceTable() noexcept
 		}
 		std::swap(last, next);
 	}
-
 	max_distance_ = *std::max_element(table.begin(), table.end());
-}
-
-CornersDistanceTable CornersDistanceTable::from_file(std::filesystem::path path) noexcept
-{
-	CornersDistanceTable table;
-	std::ifstream file(path, std::ios::binary);
-	file.read(reinterpret_cast<char*>(table.table.data()), Corners::index_size);
-	return table;
-}
-
-void CornersDistanceTable::save(std::filesystem::path path) const
-{
-	std::ofstream file(path, std::ios::binary);
-	file.write(reinterpret_cast<const char*>(table.data()), Corners::index_size);
 }
 
 uint8_t CornersDistanceTable::operator[](const Corners& c) const

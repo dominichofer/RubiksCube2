@@ -2,7 +2,7 @@
 #include <sstream>
 #include <utility>
 
-const std::array<Cube4x4::Twist, 36> Cube4x4::twists = {
+const std::vector<Cube4x4::Twist> Cube4x4::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
 	Twist::R1, Twist::R2, Twist::R3, Twist::r1, Twist::r2, Twist::r3,
 	Twist::U1, Twist::U2, Twist::U3, Twist::u1, Twist::u2, Twist::u3,
@@ -69,6 +69,7 @@ Cube4x4 Cube4x4::twisted(Twist t) const
 	case Twist::b2: return b2();
 	case Twist::b3: return b3();
 	case Twist::None: return *this;
+	default: throw std::invalid_argument("Invalid twist");
 	}
 }
 

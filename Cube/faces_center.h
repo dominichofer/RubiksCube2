@@ -62,7 +62,7 @@ public:
 		B1, B2, B3, b1, b2, b3,
 		None
 	};
-	static const std::array<Twist, 36> twists;
+	static const std::vector<Twist> twists;
 
 	FacesCenter() noexcept;
 	FacesCenter(

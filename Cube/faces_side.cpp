@@ -6,7 +6,7 @@
 #include <sstream>
 #include <utility>
 
-const std::array<FacesSide::Twist, 36> FacesSide::twists = {
+const std::vector<FacesSide::Twist> FacesSide::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
 	Twist::R1, Twist::R2, Twist::R3, Twist::r1, Twist::r2, Twist::r3,
 	Twist::U1, Twist::U2, Twist::U3, Twist::u1, Twist::u2, Twist::u3,

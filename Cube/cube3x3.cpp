@@ -1,8 +1,10 @@
 #include "cube3x3.h"
+#include "Math/math.h"
+#include <array>
 #include <sstream>
 #include <utility>
 
-const std::array<Cube3x3::Twist, 18> Cube3x3::twists = {
+const std::vector<Cube3x3::Twist> Cube3x3::twists = {
 	Twist::L1, Twist::L2, Twist::L3,
 	Twist::R1, Twist::R2, Twist::R3,
 	Twist::U1, Twist::U2, Twist::U3,
@@ -44,6 +46,19 @@ bool Cube3x3::in_H() const
 	return c.ori_index() == 0 && e.ori_index() == 0 && e.cubie(8) >= 8 && e.cubie(9) >= 8 && e.cubie(10) >= 8 && e.cubie(11) >= 8;
 }
 
+std::size_t Cube3x3::coset_index() const
+{
+	return 0;
+}
+
+std::size_t Cube3x3::set_index() const
+{
+	auto corner_prm = c.prm_index();
+	auto ud_edge_prm = permutation_index(e.cubie(0), e.cubie(1), e.cubie(2), e.cubie(3), e.cubie(4), e.cubie(5), e.cubie(6), e.cubie(7));
+	auto ud_slice_edge_prm = permutation_index(e.cubie(8) - 8, e.cubie(9) - 8, e.cubie(10) - 8, e.cubie(11) - 8);
+	return corner_prm * factorial(8) * factorial(4) + ud_edge_prm * factorial(4) + ud_slice_edge_prm;
+}
+
 Cube3x3 Cube3x3::twisted(Twist t) const
 {
 	switch (t)
@@ -67,6 +82,7 @@ Cube3x3 Cube3x3::twisted(Twist t) const
 	case Twist::B2: return B2();
 	case Twist::B3: return B3();
 	case Twist::None: return *this;
+	default: throw std::invalid_argument("Invalid twist");
 	}
 }
 

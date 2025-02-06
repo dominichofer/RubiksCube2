@@ -2,7 +2,7 @@
 #include <algorithm>
 
 const CornersDistanceTable corners_dst;
-const CloseSolutionTable<Cube3x3> solution_table(5, 0x100000);
+const CloseSolutionTable<Cube3x3> solution_table(5, 2'000'001);
 TranspositionTable<Cube3x3, int> tt(100, Cube3x3::impossible(), 0);
 OnePhaseOptimalSolver solver(corners_dst, solution_table, tt);
 

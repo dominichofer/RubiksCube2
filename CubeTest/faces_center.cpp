@@ -255,7 +255,7 @@ TEST(FacesCenter, prm_index)
 TEST(FacesCenter, rotation_fuzzing)
 {
 	std::mt19937_64 rng;
-	std::uniform_int_distribution<> dist{ 0, FacesCenter::twists.size() - 1 };
+	std::uniform_int_distribution<std::size_t> dist{ 0, FacesCenter::twists.size() - 1 };
 	FacesCenter c;
 	for (int i = 0; i < 1'000'000; i++)
 	{

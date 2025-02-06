@@ -7,10 +7,8 @@
 TEST(factorial, recursive)
 {
 	EXPECT_EQ(factorial(0), 1);
-	for (int i = 1; i < 21; i++)
-	{
+	for (int i = 1; i <= 20; i++)
 		EXPECT_EQ(factorial(i), factorial(i - 1) * i);
-	}
 }
 
 TEST(permutation_index, size_1)

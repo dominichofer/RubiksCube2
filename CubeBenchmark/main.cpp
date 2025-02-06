@@ -102,67 +102,30 @@ BENCH_INNER_TWISTS(Cube5x5)
 
 uint64_t counter;
 
-template <typename T>
-void perft(const T& cube, int depth)
+template <typename Cube>
+void perft(const Cube& cube, int depth)
 {
 	if (depth == 0) {
 		counter++;
 		return;
 	}
-	perft(cube.L1(), depth - 1);
-	perft(cube.L2(), depth - 1);
-	perft(cube.L3(), depth - 1);
-	perft(cube.R1(), depth - 1);
-	perft(cube.R2(), depth - 1);
-	perft(cube.R3(), depth - 1);
-	perft(cube.U1(), depth - 1);
-	perft(cube.U2(), depth - 1);
-	perft(cube.U3(), depth - 1);
-	perft(cube.D1(), depth - 1);
-	perft(cube.D2(), depth - 1);
-	perft(cube.D3(), depth - 1);
-	perft(cube.F1(), depth - 1);
-	perft(cube.F2(), depth - 1);
-	perft(cube.F3(), depth - 1);
-	perft(cube.B1(), depth - 1);
-	perft(cube.B2(), depth - 1);
-	perft(cube.B3(), depth - 1);
-	if constexpr (cube.twists.size() > 18)
-	{
-		perft(cube.l1(), depth - 1);
-		perft(cube.l2(), depth - 1);
-		perft(cube.l3(), depth - 1);
-		perft(cube.r1(), depth - 1);
-		perft(cube.r2(), depth - 1);
-		perft(cube.r3(), depth - 1);
-		perft(cube.u1(), depth - 1);
-		perft(cube.u2(), depth - 1);
-		perft(cube.u3(), depth - 1);
-		perft(cube.d1(), depth - 1);
-		perft(cube.d2(), depth - 1);
-		perft(cube.d3(), depth - 1);
-		perft(cube.f1(), depth - 1);
-		perft(cube.f2(), depth - 1);
-		perft(cube.f3(), depth - 1);
-		perft(cube.b1(), depth - 1);
-		perft(cube.b2(), depth - 1);
-		perft(cube.b3(), depth - 1);
-	}
+	for (const auto& t : Cube::twists)
+		perft(cube.twisted(t), depth - 1);
 }
 
-template <typename T>
+template <typename Cube>
 void perft()
 {
 	counter = 0;
 	for (int i = 0; i < 10; i++)
 	{
 		auto start = std::chrono::high_resolution_clock::now();
-		perft(T{}, i);
+		perft(Cube{}, i);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
-		if (duration > 100)
+		if (duration > 0)
 		{
-            std::cout << std::left << std::setw(13) << typeid(T).name() << counter / 1000 / duration << " MN/s" << std::endl;
+            std::cout << typeid(Cube).name() << " " << counter / 1000 / duration << " MN/s" << std::endl;
 			break;
 		}
 	}

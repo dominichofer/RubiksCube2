@@ -1,7 +1,6 @@
 #pragma once
 #include "corners.h"
 #include "edges_center.h"
-#include <array>
 #include <string>
 #include <vector>
 
@@ -22,7 +21,7 @@ public:
 		B1, B2, B3,
 		None
 	};
-	static const std::array<Twist, 18> twists;
+	static const std::vector<Twist> twists;
 
 	Cube3x3() noexcept = default;
 	static Cube3x3 superflip();
@@ -37,6 +36,9 @@ public:
 
 	bool is_solved() const { return c.is_solved() && e.is_solved(); }
 	bool in_H() const;
+
+	std::size_t coset_index() const;
+	std::size_t set_index() const;
 
 	Cube3x3 L1() const { return Cube3x3(c.L1(), e.L1()); }
 	Cube3x3 L2() const { return Cube3x3(c.L2(), e.L2()); }

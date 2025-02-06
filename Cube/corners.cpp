@@ -2,11 +2,10 @@
 #include "corners.h"
 #include "intrin.h"
 #include "Math/math.h"
-#include <array>
 #include <sstream>
 #include <utility>
 
-const std::array<Corners::Twist, 18> Corners::twists = {
+const std::vector<Corners::Twist> Corners::twists = {
 	Twist::L1, Twist::L2, Twist::L3,
 	Twist::R1, Twist::R2, Twist::R3,
 	Twist::U1, Twist::U2, Twist::U3,
@@ -230,6 +229,7 @@ Corners Corners::twisted(Twist r) const
     case Twist::B2: return B2();
     case Twist::B3: return B3();
 	case Twist::None: return *this;
+	default: throw std::invalid_argument("Invalid twist");
     }
 }
 

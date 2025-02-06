@@ -1,5 +1,4 @@
 #include "pch.h"
-#include <array>
 #include <numeric>
 #include <vector>
 
@@ -96,7 +95,7 @@ std::size_t sum_pos_at_dst_QT(std::size_t min, std::size_t max)
 	return std::accumulate(pos_at_dst_QT.begin() + min, pos_at_dst_QT.begin() + max + 1, 0);
 }
 
-std::array<Cube3x3::Twist, 12> QT = {
+std::vector<Cube3x3::Twist> QT = {
 	Cube3x3::Twist::L1, Cube3x3::Twist::L3,
 	Cube3x3::Twist::R1, Cube3x3::Twist::R3,
 	Cube3x3::Twist::U1, Cube3x3::Twist::U3,

@@ -5,7 +5,7 @@
 #include <sstream>
 #include <utility>
 
-const std::array<EdgesSide::Twist, 36> EdgesSide::twists = {
+const std::vector<EdgesSide::Twist> EdgesSide::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
 	Twist::R1, Twist::R2, Twist::R3, Twist::r1, Twist::r2, Twist::r3,
 	Twist::U1, Twist::U2, Twist::U3, Twist::u1, Twist::u2, Twist::u3,
@@ -387,6 +387,7 @@ EdgesSide EdgesSide::twisted(Twist t) const
 	case Twist::b2: return b2();
 	case Twist::b3: return b3();
 	case Twist::None: return *this;
+	default: throw std::invalid_argument("Invalid twist");
 	}
 }
 

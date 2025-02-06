@@ -1,6 +1,6 @@
 #include "pch.h"
 
-const auto table = CloseSolutionTable<Cube3x3>(5, 0x100000);
+const auto table = CloseSolutionTable<Cube3x3>(5, 2'000'001);
 
 TEST(CloseSolutionTable_Cube3x3, finds_all_solutions)
 {

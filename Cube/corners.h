@@ -24,7 +24,7 @@ public:
         B1, B2, B3,
         None
     };
-    static const std::array<Twist, 18> twists;
+    static const std::vector<Twist> twists;
 
     Corners() noexcept;
     Corners(

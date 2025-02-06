@@ -65,6 +65,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="binomial.cpp" />
     <ClCompile Include="permutation.cpp" />
     <ClCompile Include="statistic.cpp" />
     <ClCompile Include="pch.cpp">
