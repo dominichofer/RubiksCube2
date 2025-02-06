@@ -3,7 +3,8 @@
 #include <iostream>
 #include <utility>
 
-BruteForceSolver::BruteForceSolver() noexcept
+BruteForceSolver::BruteForceSolver(std::vector<Cube3x3::Twist> generating_twists) noexcept
+	: generating_twists(std::move(generating_twists))
 {
 	twists.reserve(20);
 }

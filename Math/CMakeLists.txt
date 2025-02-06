@@ -1,7 +1,8 @@
 add_library(
     Math STATIC
     math.h
-    permutation.cpp
+    binomial.cpp
+    binomial.h
     permutation.h
     statistic.h
 )
