@@ -35,10 +35,6 @@ public:
 	const EdgesCenter& edges() const { return e; }
 
 	bool is_solved() const { return c.is_solved() && e.is_solved(); }
-	bool in_H() const;
-
-	std::size_t H_coset_index() const;
-	std::size_t H_subset_index() const;
 
 	Cube3x3 L1() const { return Cube3x3(c.L1(), e.L1()); }
 	Cube3x3 L2() const { return Cube3x3(c.L2(), e.L2()); }
