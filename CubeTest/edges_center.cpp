@@ -43,23 +43,23 @@ TEST(EdgesCenter, orientations)
 	}
 }
 
-TEST(EdgesCenter, ud_slice_index)
+TEST(EdgesCenter, ud_slice_prm_index)
 {
-	EXPECT_EQ(EdgesCenter().ud_slice_index(), 0);
+	EXPECT_EQ(EdgesCenter().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
 
 	// H = { L2,R2,F2,B2,U,D } twists preserve the UD slice location.
-	EXPECT_EQ(EdgesCenter().L2().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().R2().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().F2().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().B2().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().U1().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().U2().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().U3().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().D1().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().D2().ud_slice_index(), 0);
-	EXPECT_EQ(EdgesCenter().D3().ud_slice_index(), 0);
+	EXPECT_EQ(EdgesCenter().L2().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().R2().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().F2().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().B2().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().U1().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().U2().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().U3().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().D1().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().D2().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
+	EXPECT_EQ(EdgesCenter().D3().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
 
-	EXPECT_EQ(EdgesCenter(11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).ud_slice_index(), 0);
+	EXPECT_EQ(EdgesCenter(11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).ud_slice_prm_index(), 0);
 }
 
 TEST(EdgesCenter, L1) {

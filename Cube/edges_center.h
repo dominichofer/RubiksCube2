@@ -80,7 +80,7 @@ public:
     uint64_t prm_index() const;
     uint64_t ori_index() const;
     uint64_t index() const;
-    uint64_t ud_slice_index() const;
+    uint64_t ud_slice_prm_index() const;
 
 	static const uint64_t prm_size = 479'001'600; // 12!
 	static const uint64_t ori_size = 2'048; // 2^11

@@ -281,9 +281,10 @@ uint64_t EdgesCenter::index() const
 	return prm_index() * 2'048 + ori_index();
 }
 
-uint64_t EdgesCenter::ud_slice_index() const
+uint64_t EdgesCenter::ud_slice_prm_index() const
 {
-    uint64_t mask = _mm_movemask_epi8(_mm_cmpgt_epi8(state, _mm_set1_epi8(7)));
+    __m128i prm = state & _mm_set1_epi8(0x0F);
+    uint64_t mask = _mm_movemask_epi8(_mm_cmpgt_epi8(prm, _mm_set1_epi8(7)));
     std::vector<int> combination(4);
     for (int i = 0; i < 4; i++)
     {
