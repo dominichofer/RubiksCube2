@@ -1,5 +1,19 @@
 #include "pch.h"
 
+TEST(clear_lsb, non_zero_input)
+{
+	uint64_t b = 1;
+	clear_lsb(b);
+	EXPECT_EQ(b, 0);
+}
+
+TEST(clear_lsb, zero_input)
+{
+	uint64_t b = 0;
+	clear_lsb(b);
+	EXPECT_EQ(b, 0);
+}
+
 TEST(set_epi8, sets_bytes)
 {
 	EXPECT_EQ(set_epi8(0, 1, 2, 3, 4, 5, 6, 7), 0x0706050403020100);

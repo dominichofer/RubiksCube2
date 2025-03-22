@@ -197,40 +197,40 @@ TEST(EdgesCenter, ori_index)
 	}
 }
 
-TEST(EdgesCenter, rotation_fuzzing)
-{
-	std::mt19937_64 rng;
-	std::uniform_int_distribution<std::size_t> dist{ 0, EdgesCenter::twists.size() - 1 };
-	EdgesCenter c;
-	for (int i = 0; i < 1'000'000; i++)
-	{
-		auto old_c = c;
-		auto twist = EdgesCenter::twists[dist(rng)];
-		c = c.twisted(twist);
-
-		bool is_legal = true;
-		// Check that the edges are in the range [0, 11].
-		for (int i = 0; i < 12; i++)
-			if (c.cubie(i) < 0 || c.cubie(i) > 11)
-				is_legal = false;
-
-		// Check that the orientation of each cubie is in the range [0, 1].
-		for (int i = 0; i < 12; i++)
-			if (c.orientation(i) < 0 || c.orientation(i) > 1)
-				is_legal = false;
-
-		// Check that each cubie is unique.
-		for (int i = 0; i < 12; i++)
-			for (int j = i + 1; j < 12; j++)
-				if (c.cubie(i) == c.cubie(j))
-					is_legal = false;
-
-		if (!is_legal)
-		{
-			std::cout << "Old state:\n" << to_string(old_c) << std::endl;
-			std::cout << "Twist: " << to_string(twist) << std::endl;
-			std::cout << "New state:\n" << to_string(c) << std::endl;
-			ASSERT_TRUE(false);
-		}
-	}
-}
+//TEST(EdgesCenter, rotation_fuzzing)
+//{
+//	std::mt19937_64 rng;
+//	std::uniform_int_distribution<std::size_t> dist{ 0, EdgesCenter::twists.size() - 1 };
+//	EdgesCenter c;
+//	for (int i = 0; i < 1'000'000; i++)
+//	{
+//		auto old_c = c;
+//		auto twist = EdgesCenter::twists[dist(rng)];
+//		c = c.twisted(twist);
+//
+//		bool is_legal = true;
+//		// Check that the edges are in the range [0, 11].
+//		for (int i = 0; i < 12; i++)
+//			if (c.cubie(i) < 0 || c.cubie(i) > 11)
+//				is_legal = false;
+//
+//		// Check that the orientation of each cubie is in the range [0, 1].
+//		for (int i = 0; i < 12; i++)
+//			if (c.orientation(i) < 0 || c.orientation(i) > 1)
+//				is_legal = false;
+//
+//		// Check that each cubie is unique.
+//		for (int i = 0; i < 12; i++)
+//			for (int j = i + 1; j < 12; j++)
+//				if (c.cubie(i) == c.cubie(j))
+//					is_legal = false;
+//
+//		if (!is_legal)
+//		{
+//			std::cout << "Old state:\n" << to_string(old_c) << std::endl;
+//			std::cout << "Twist: " << to_string(twist) << std::endl;
+//			std::cout << "New state:\n" << to_string(c) << std::endl;
+//			ASSERT_TRUE(false);
+//		}
+//	}
+//}

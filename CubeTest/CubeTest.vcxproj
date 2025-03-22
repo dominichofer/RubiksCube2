@@ -65,8 +65,9 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="byte.cpp" />
+    <ClCompile Include="bit.cpp" />
     <ClCompile Include="corners.cpp" />
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="cube2x2.cpp" />
     <ClCompile Include="cube3x3.cpp" />
     <ClCompile Include="cube4x4.cpp" />
@@ -80,6 +81,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="random.cpp" />
+    <ClCompile Include="subset.cpp" />
     <ClCompile Include="twist.cpp" />
   </ItemGroup>
   <ItemGroup>

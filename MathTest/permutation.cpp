@@ -76,8 +76,9 @@ TEST(nth_permutation, small_sets)
 	}
 }
 
+// Tests that nth_permutation is the inverse of permutation_index.
 // Fuzz test
-TEST(permutation, large_sets)
+TEST(nth_permutation, is_inverse_of_permutation_index)
 {
 	std::mt19937 rnd(/*arbitrary*/ 123);
 	std::array<int, 20> p;
@@ -90,5 +91,34 @@ TEST(permutation, large_sets)
 		nth_permutation(q, permutation_index(p));
 		for (int j = 0; j < 20; ++j)
 			EXPECT_EQ(p[j], q[j]);
+	}
+}
+
+// Tests that permutation_index/2 is a bijection,
+// between even permutations and [0, factorial(n)/2);
+// and between odd permutations and [0, factorial(n)/2).
+TEST(permutation_index_half, is_bijection)
+{
+	for (int size = 0; size < 11; ++size)
+	{
+		std::vector<int> p(size);
+		std::iota(p.begin(), p.end(), 0);
+		int even_permutations = 0;
+		int odd_permutations = 0;
+		for (int i = 0; i < factorial(size); ++i)
+		{
+			std::iota(p.begin(), p.end(), 0);
+			nth_permutation(p, i);
+			if (is_even_permutation(p))
+			{
+				EXPECT_EQ(permutation_index(p) / 2, even_permutations);
+				++even_permutations;
+			}
+			else
+			{
+				EXPECT_EQ(permutation_index(p) / 2, odd_permutations);
+				++odd_permutations;
+			}
+		}
 	}
 }

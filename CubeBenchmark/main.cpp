@@ -71,7 +71,7 @@ BENCH(FacesSide, prm_index)
 BENCH(Corners, ori_index)
 BENCH(EdgesCenter, ori_index)
 
-BENCH(EdgesCenter, nd_slice_index)
+BENCH(EdgesCenter, ud_slice_prm_index)
 
 BENCH(Corners, index)
 BENCH(EdgesCenter, index)

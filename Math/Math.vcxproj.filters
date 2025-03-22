@@ -5,8 +5,10 @@
     <ClInclude Include="statistic.h" />
     <ClInclude Include="permutation.h" />
     <ClInclude Include="binomial.h" />
+    <ClInclude Include="graph.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="binomial.cpp" />
+    <ClCompile Include="permutation.cpp" />
   </ItemGroup>
 </Project>

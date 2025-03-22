@@ -1,7 +1,5 @@
 #include "pch.h"
-#include <array>
 #include <numeric>
-#include <random>
 #include <vector>
 
 TEST(binomial, small_values)
@@ -58,57 +56,51 @@ TEST(combination_index, small_values)
 	EXPECT_EQ(combination_index(4, { 2, 3 }), 5);
 }
 
-template <typename... T>
-std::vector<int> vec(T... args)
-{
-	return std::vector<int>{ args... };
-}
-
 TEST(nth_combination, small_values)
 {
 	// 1 choose 0
-	EXPECT_EQ(nth_combination(1, 0, 0), vec());
+	EXPECT_EQ(nth_combination(1, 0, 0), (std::vector<int>{}));
 
 	// 2 choose 1
-	EXPECT_EQ(nth_combination(2, 1, 0), vec(0));
-	EXPECT_EQ(nth_combination(2, 1, 1), vec(1));
+	EXPECT_EQ(nth_combination(2, 1, 0), (std::vector<int>{0}));
+	EXPECT_EQ(nth_combination(2, 1, 1), (std::vector<int>{1}));
 
 	// 2 choose 2
-	EXPECT_EQ(nth_combination(2, 2, 0), vec(0, 1));
+	EXPECT_EQ(nth_combination(2, 2, 0), (std::vector<int>{0, 1}));
 
 	// 3 choose 1
-	EXPECT_EQ(nth_combination(3, 1, 0), vec(0));
-	EXPECT_EQ(nth_combination(3, 1, 1), vec(1));
-	EXPECT_EQ(nth_combination(3, 1, 2), vec(2));
+	EXPECT_EQ(nth_combination(3, 1, 0), (std::vector<int>{0}));
+	EXPECT_EQ(nth_combination(3, 1, 1), (std::vector<int>{1}));
+	EXPECT_EQ(nth_combination(3, 1, 2), (std::vector<int>{2}));
 
 	// 3 choose 2
-	EXPECT_EQ(nth_combination(3, 2, 0), vec(0, 1));
-	EXPECT_EQ(nth_combination(3, 2, 1), vec(0, 2));
-	EXPECT_EQ(nth_combination(3, 2, 2), vec(1, 2));
+	EXPECT_EQ(nth_combination(3, 2, 0), (std::vector<int>{0, 1}));
+	EXPECT_EQ(nth_combination(3, 2, 1), (std::vector<int>{0, 2}));
+	EXPECT_EQ(nth_combination(3, 2, 2), (std::vector<int>{1, 2}));
 
 	// 3 choose 3
-	EXPECT_EQ(nth_combination(3, 3, 0), vec(0, 1, 2));
+	EXPECT_EQ(nth_combination(3, 3, 0), (std::vector<int>{0, 1, 2}));
 
 	// 4 choose 1
-	EXPECT_EQ(nth_combination(4, 1, 0), vec(0));
-	EXPECT_EQ(nth_combination(4, 1, 1), vec(1));
-	EXPECT_EQ(nth_combination(4, 1, 2), vec(2));
-	EXPECT_EQ(nth_combination(4, 1, 3), vec(3));
+	EXPECT_EQ(nth_combination(4, 1, 0), (std::vector<int>{0}));
+	EXPECT_EQ(nth_combination(4, 1, 1), (std::vector<int>{1}));
+	EXPECT_EQ(nth_combination(4, 1, 2), (std::vector<int>{2}));
+	EXPECT_EQ(nth_combination(4, 1, 3), (std::vector<int>{3}));
 
 	// 4 choose 2
-	EXPECT_EQ(nth_combination(4, 2, 0), vec(0, 1));
-	EXPECT_EQ(nth_combination(4, 2, 1), vec(0, 2));
-	EXPECT_EQ(nth_combination(4, 2, 2), vec(0, 3));
-	EXPECT_EQ(nth_combination(4, 2, 3), vec(1, 2));
-	EXPECT_EQ(nth_combination(4, 2, 4), vec(1, 3));
-	EXPECT_EQ(nth_combination(4, 2, 5), vec(2, 3));
+	EXPECT_EQ(nth_combination(4, 2, 0), (std::vector<int>{0, 1}));
+	EXPECT_EQ(nth_combination(4, 2, 1), (std::vector<int>{0, 2}));
+	EXPECT_EQ(nth_combination(4, 2, 2), (std::vector<int>{0, 3}));
+	EXPECT_EQ(nth_combination(4, 2, 3), (std::vector<int>{1, 2}));
+	EXPECT_EQ(nth_combination(4, 2, 4), (std::vector<int>{1, 3}));
+	EXPECT_EQ(nth_combination(4, 2, 5), (std::vector<int>{2, 3}));
 
 	// 4 choose 3
-	EXPECT_EQ(nth_combination(4, 3, 0), vec(0, 1, 2));
-	EXPECT_EQ(nth_combination(4, 3, 1), vec(0, 1, 3));
-	EXPECT_EQ(nth_combination(4, 3, 2), vec(0, 2, 3));
-	EXPECT_EQ(nth_combination(4, 3, 3), vec(1, 2, 3));
+	EXPECT_EQ(nth_combination(4, 3, 0), (std::vector<int>{0, 1, 2}));
+	EXPECT_EQ(nth_combination(4, 3, 1), (std::vector<int>{0, 1, 3}));
+	EXPECT_EQ(nth_combination(4, 3, 2), (std::vector<int>{0, 2, 3}));
+	EXPECT_EQ(nth_combination(4, 3, 3), (std::vector<int>{1, 2, 3}));
 
 	// 4 choose 4
-	EXPECT_EQ(nth_combination(4, 4, 0), vec(0, 1, 2, 3));
+	EXPECT_EQ(nth_combination(4, 4, 0), (std::vector<int>{0, 1, 2, 3}));
 }

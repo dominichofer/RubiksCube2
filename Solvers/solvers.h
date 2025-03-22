@@ -1,9 +1,8 @@
 #pragma once
 #include "Cube/cube.h"
-#include "brute_force.h"
-#include "close_solution.h"
-#include "corners.h"
 #include "neighbours.h"
-#include "one_phase.h"
+#include "tables.h"
 #include "transposition_table.h"
+#include "brute_force.h"
+#include "one_phase.h"
 #include "two_phase.h"

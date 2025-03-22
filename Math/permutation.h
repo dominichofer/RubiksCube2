@@ -33,6 +33,32 @@ constexpr uint64_t factorial(uint64_t n)
 	}
 }
 
+bool is_even_permutation(const std::vector<int>& permutation);
+bool is_odd_permutation(const std::vector<int>& permutation);
+
+template <typename T>
+uint64_t permutation_index(const std::vector<T>& permutation)
+{
+	std::size_t size = permutation.size();
+	uint64_t index = 0;
+	uint32_t bitboard = 0;
+	for (std::size_t i = 0; i < size; ++i)
+	{
+		uint32_t mask = 1 << permutation[i];
+
+		// Number of remaining elements smaller than the current element
+		// (total number of elements smaller than the current element) - (number of visited elements smaller than the current element)
+		uint64_t smaller = permutation[i] - std::popcount(bitboard & (mask - 1));
+
+		// Total number of elements bigger than the current element
+		std::size_t bigger = size - i - 1;
+
+		index += smaller * factorial(bigger);
+		bitboard |= mask;
+	}
+	return index;
+}
+
 template <typename T, std::size_t Size>
 uint64_t permutation_index(const std::array<T, Size>& permutation)
 {

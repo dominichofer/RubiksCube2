@@ -7,7 +7,7 @@
 int main()
 {
 	RandomCubeGenerator<Cube3x3> rnd(4829);
-	CloseSolutionTable<Cube3x3> table(5, 0x100000);
+	CloseSolutionTable<Cube3x3> table(5);
 	TwoPhaseOptimalSolver solver(table);
 	for (int i = 0; i < 100; i++)
 	{

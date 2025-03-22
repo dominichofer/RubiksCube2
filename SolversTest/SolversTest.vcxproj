@@ -65,7 +65,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="close_solution.cpp" />
+    <ClCompile Include="tables.cpp" />
     <ClCompile Include="corners.cpp" />
     <ClCompile Include="neighbours.cpp" />
     <ClCompile Include="one_phase.cpp" />

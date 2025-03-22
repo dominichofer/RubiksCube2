@@ -74,7 +74,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="byte.cpp" />
+    <ClCompile Include="bit.cpp" />
     <ClCompile Include="corners.cpp" />
     <ClCompile Include="cube2x2.h" />
     <ClCompile Include="cube3x3.cpp" />
@@ -84,21 +84,23 @@
     <ClCompile Include="edges_side.cpp" />
     <ClCompile Include="faces_center.cpp" />
     <ClCompile Include="faces_side.cpp" />
+    <ClCompile Include="subset.cpp" />
+    <ClCompile Include="twist.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="byte.h" />
+    <ClInclude Include="bit.h" />
     <ClInclude Include="corners.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="cube3x3.h" />
     <ClInclude Include="cube4x4.h" />
     <ClInclude Include="cube5x5.h" />
     <ClInclude Include="cube_of_distance.h" />
-    <ClInclude Include="cubies.h" />
     <ClInclude Include="edges_center.h" />
     <ClInclude Include="edges_side.h" />
     <ClInclude Include="faces_center.h" />
     <ClInclude Include="faces_side.h" />
     <ClInclude Include="random.h" />
+    <ClInclude Include="subset.h" />
     <ClInclude Include="twist.h" />
   </ItemGroup>
   <ItemGroup>

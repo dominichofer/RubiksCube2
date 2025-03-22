@@ -1,10 +1,11 @@
 #include "pch.h"
+#include <cstdint>
 #include <numeric>
 #include <vector>
 
 // Number of positions of the Rubik's cube at a distance of n moves from the solved state, in the half-turn metric.
 // From https://oeis.org/A080601
-const std::vector<std::size_t> pos_at_dst_HT = {
+const std::vector<uint64_t> pos_at_dst_HT = {
 	1,
 	18,
 	243,
@@ -23,52 +24,52 @@ const std::vector<std::size_t> pos_at_dst_HT = {
 	91365146187124313,
 };
 
-std::size_t sum_pos_at_dst_HT(std::size_t min, std::size_t max)
+uint64_t sum_pos_at_dst_HT(int min, int max)
 {
 	return std::accumulate(pos_at_dst_HT.begin() + min, pos_at_dst_HT.begin() + max + 1, 0);
 }
 
-TEST(neighbours, num_distance_0_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 0).size(), pos_at_dst_HT[0]); }
-TEST(neighbours, num_distance_1_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 1, 1).size(), pos_at_dst_HT[1]); }
-TEST(neighbours, num_distance_2_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 2, 2).size(), pos_at_dst_HT[2]); }
-TEST(neighbours, num_distance_3_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 3, 3).size(), pos_at_dst_HT[3]); }
-TEST(neighbours, num_distance_4_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 4, 4).size(), pos_at_dst_HT[4]); }
-TEST(neighbours, num_distance_5_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 5, 5).size(), pos_at_dst_HT[5]); }
+TEST(neighbours, num_distance_0_HTM) { EXPECT_EQ(neighbours(0, 0, Cube3x3{}).size(), pos_at_dst_HT[0]); }
+TEST(neighbours, num_distance_1_HTM) { EXPECT_EQ(neighbours(1, 1, Cube3x3{}).size(), pos_at_dst_HT[1]); }
+TEST(neighbours, num_distance_2_HTM) { EXPECT_EQ(neighbours(2, 2, Cube3x3{}).size(), pos_at_dst_HT[2]); }
+TEST(neighbours, num_distance_3_HTM) { EXPECT_EQ(neighbours(3, 3, Cube3x3{}).size(), pos_at_dst_HT[3]); }
+TEST(neighbours, num_distance_4_HTM) { EXPECT_EQ(neighbours(4, 4, Cube3x3{}).size(), pos_at_dst_HT[4]); }
+TEST(neighbours, num_distance_5_HTM) { EXPECT_EQ(neighbours(5, 5, Cube3x3{}).size(), pos_at_dst_HT[5]); }
 
-TEST(neighbours, num_max_distance_0_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 0).size(), sum_pos_at_dst_HT(0, 0)); }
-TEST(neighbours, num_max_distance_1_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 1).size(), sum_pos_at_dst_HT(0, 1)); }
-TEST(neighbours, num_max_distance_2_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 2).size(), sum_pos_at_dst_HT(0, 2)); }
-TEST(neighbours, num_max_distance_3_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 3).size(), sum_pos_at_dst_HT(0, 3)); }
-TEST(neighbours, num_max_distance_4_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 4).size(), sum_pos_at_dst_HT(0, 4)); }
-TEST(neighbours, num_max_distance_5_HTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 5).size(), sum_pos_at_dst_HT(0, 5)); }
+TEST(neighbours, num_max_distance_0_HTM) { EXPECT_EQ(neighbours(0, 0, Cube3x3{}).size(), sum_pos_at_dst_HT(0, 0)); }
+TEST(neighbours, num_max_distance_1_HTM) { EXPECT_EQ(neighbours(0, 1, Cube3x3{}).size(), sum_pos_at_dst_HT(0, 1)); }
+TEST(neighbours, num_max_distance_2_HTM) { EXPECT_EQ(neighbours(0, 2, Cube3x3{}).size(), sum_pos_at_dst_HT(0, 2)); }
+TEST(neighbours, num_max_distance_3_HTM) { EXPECT_EQ(neighbours(0, 3, Cube3x3{}).size(), sum_pos_at_dst_HT(0, 3)); }
+TEST(neighbours, num_max_distance_4_HTM) { EXPECT_EQ(neighbours(0, 4, Cube3x3{}).size(), sum_pos_at_dst_HT(0, 4)); }
+TEST(neighbours, num_max_distance_5_HTM) { EXPECT_EQ(neighbours(0, 5, Cube3x3{}).size(), sum_pos_at_dst_HT(0, 5)); }
 
-TEST(neighbours, num_distance_2_to_5) { EXPECT_EQ(neighbours(Cube3x3(), 2, 5).size(), sum_pos_at_dst_HT(2, 5)); }
-TEST(neighbours, num_distance_3_to_4) { EXPECT_EQ(neighbours(Cube3x3(), 3, 4).size(), sum_pos_at_dst_HT(3, 4)); }
+TEST(neighbours, num_distance_2_to_5) { EXPECT_EQ(neighbours(2, 5, Cube3x3{}).size(), sum_pos_at_dst_HT(2, 5)); }
+TEST(neighbours, num_distance_3_to_4) { EXPECT_EQ(neighbours(3, 4, Cube3x3{}).size(), sum_pos_at_dst_HT(3, 4)); }
 
-TEST(neighbours, twists_match_cube_of_max_distance_5)
+TEST(path_to_neighbours, twists_match_cube_of_max_distance_5)
 {
-	auto n = neighbours(Cube3x3(), 0, 5);
-	for (const auto& [cube, twists] : n)
-		EXPECT_EQ(Cube3x3().twisted(twists), cube);
+	auto map = path_to_neighbours(5, Cube3x3{});
+	for (const auto& [cube, twists] : map)
+		EXPECT_EQ(Cube3x3{}.twisted(twists), cube);
 }
 
-TEST(neighbours, twists_match_cube_of_distance_2_to_5)
+TEST(path_to_neighbours, twists_match_cube_of_distance_2_to_5)
 {
-	auto n = neighbours(Cube3x3(), 2, 5);
-	for (const auto& [cube, twists] : n)
-		EXPECT_EQ(Cube3x3().twisted(twists), cube);
+	auto map = path_to_neighbours(2, 5, Cube3x3{});
+	for (const auto& [cube, twists] : map)
+		EXPECT_EQ(Cube3x3{}.twisted(twists), cube);
 }
 
-TEST(neighbours, twists_match_cube_max_of_distance_3_to_4)
+TEST(path_to_neighbours, twists_match_cube_max_of_distance_3_to_4)
 {
-	auto n = neighbours(Cube3x3(), 3, 4);
-	for (const auto& [cube, twists] : n)
-		EXPECT_EQ(Cube3x3().twisted(twists), cube);
+	auto map = path_to_neighbours(3, 4, Cube3x3{});
+	for (const auto& [cube, twists] : map)
+		EXPECT_EQ(Cube3x3{}.twisted(twists), cube);
 }
 
 // Number of positions of the Rubik's cube at a distance of n moves from the solved state, in the half-turn metric.
 // From https://oeis.org/A080601
-const std::vector<std::size_t> pos_at_dst_QT = {
+const std::vector<uint64_t> pos_at_dst_QT = {
 	1,
 	12,
 	114,
@@ -90,31 +91,31 @@ const std::vector<std::size_t> pos_at_dst_QT = {
 	368071526203620348,
 };
 
-std::size_t sum_pos_at_dst_QT(std::size_t min, std::size_t max)
+uint64_t sum_pos_at_dst_QT(int min, int max)
 {
 	return std::accumulate(pos_at_dst_QT.begin() + min, pos_at_dst_QT.begin() + max + 1, 0);
 }
 
-std::vector<Cube3x3::Twist> QT = {
-	Cube3x3::Twist::L1, Cube3x3::Twist::L3,
-	Cube3x3::Twist::R1, Cube3x3::Twist::R3,
-	Cube3x3::Twist::U1, Cube3x3::Twist::U3,
-	Cube3x3::Twist::D1, Cube3x3::Twist::D3,
-	Cube3x3::Twist::F1, Cube3x3::Twist::F3,
-	Cube3x3::Twist::B1, Cube3x3::Twist::B3,
+std::vector<Twist> QT = {
+	Twist::L1, Twist::L3,
+	Twist::R1, Twist::R3,
+	Twist::U1, Twist::U3,
+	Twist::D1, Twist::D3,
+	Twist::F1, Twist::F3,
+	Twist::B1, Twist::B3,
 };
 
-TEST(neighbours, num_distance_0_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 0, QT).size(), pos_at_dst_QT[0]); }
-TEST(neighbours, num_distance_1_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 1, 1, QT).size(), pos_at_dst_QT[1]); }
-TEST(neighbours, num_distance_2_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 2, 2, QT).size(), pos_at_dst_QT[2]); }
-TEST(neighbours, num_distance_3_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 3, 3, QT).size(), pos_at_dst_QT[3]); }
-TEST(neighbours, num_distance_4_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 4, 4, QT).size(), pos_at_dst_QT[4]); }
-TEST(neighbours, num_distance_5_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 5, 5, QT).size(), pos_at_dst_QT[5]); }
-TEST(neighbours, num_distance_6_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 6, 6, QT).size(), pos_at_dst_QT[6]); }
+TEST(neighbours, num_distance_0_QTM) { EXPECT_EQ(neighbours(0, 0, Cube3x3{}, QT).size(), pos_at_dst_QT[0]); }
+TEST(neighbours, num_distance_1_QTM) { EXPECT_EQ(neighbours(1, 1, Cube3x3{}, QT).size(), pos_at_dst_QT[1]); }
+TEST(neighbours, num_distance_2_QTM) { EXPECT_EQ(neighbours(2, 2, Cube3x3{}, QT).size(), pos_at_dst_QT[2]); }
+TEST(neighbours, num_distance_3_QTM) { EXPECT_EQ(neighbours(3, 3, Cube3x3{}, QT).size(), pos_at_dst_QT[3]); }
+TEST(neighbours, num_distance_4_QTM) { EXPECT_EQ(neighbours(4, 4, Cube3x3{}, QT).size(), pos_at_dst_QT[4]); }
+TEST(neighbours, num_distance_5_QTM) { EXPECT_EQ(neighbours(5, 5, Cube3x3{}, QT).size(), pos_at_dst_QT[5]); }
+TEST(neighbours, num_distance_6_QTM) { EXPECT_EQ(neighbours(6, 6, Cube3x3{}, QT).size(), pos_at_dst_QT[6]); }
 
-TEST(neighbours, num_max_distance_0_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 0, QT).size(), sum_pos_at_dst_QT(0, 0)); }
-TEST(neighbours, num_max_distance_1_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 1, QT).size(), sum_pos_at_dst_QT(0, 1)); }
-TEST(neighbours, num_max_distance_2_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 2, QT).size(), sum_pos_at_dst_QT(0, 2)); }
-TEST(neighbours, num_max_distance_3_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 3, QT).size(), sum_pos_at_dst_QT(0, 3)); }
-TEST(neighbours, num_max_distance_4_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 4, QT).size(), sum_pos_at_dst_QT(0, 4)); }
-TEST(neighbours, num_max_distance_5_QTM) { EXPECT_EQ(neighbours(Cube3x3(), 0, 5, QT).size(), sum_pos_at_dst_QT(0, 5)); }
+TEST(neighbours, num_max_distance_0_QTM) { EXPECT_EQ(neighbours(0, 0, Cube3x3{}, QT).size(), sum_pos_at_dst_QT(0, 0)); }
+TEST(neighbours, num_max_distance_1_QTM) { EXPECT_EQ(neighbours(0, 1, Cube3x3{}, QT).size(), sum_pos_at_dst_QT(0, 1)); }
+TEST(neighbours, num_max_distance_2_QTM) { EXPECT_EQ(neighbours(0, 2, Cube3x3{}, QT).size(), sum_pos_at_dst_QT(0, 2)); }
+TEST(neighbours, num_max_distance_3_QTM) { EXPECT_EQ(neighbours(0, 3, Cube3x3{}, QT).size(), sum_pos_at_dst_QT(0, 3)); }
+TEST(neighbours, num_max_distance_4_QTM) { EXPECT_EQ(neighbours(0, 4, Cube3x3{}, QT).size(), sum_pos_at_dst_QT(0, 4)); }
+TEST(neighbours, num_max_distance_5_QTM) { EXPECT_EQ(neighbours(0, 5, Cube3x3{}, QT).size(), sum_pos_at_dst_QT(0, 5)); }

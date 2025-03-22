@@ -1,64 +1,24 @@
 #include "Solvers/solvers.h"
 #include <iostream>
 #include <vector>
-#include <intrin0.h>
-
-static void const volatile* volatile global_force_escape_pointer;
-
-// FIXME: Verify if LTO still messes this up?
-void UseCharPointer(char const volatile* const v) {
-	// We want to escape the pointer `v` so that the compiler can not eliminate
-	// computations that produced it. To do that, we escape the pointer by storing
-	// it into a volatile variable, since generally, volatile store, is not
-	// something the compiler is allowed to elide.
-	global_force_escape_pointer = reinterpret_cast<void const volatile*>(v);
-}
-
-template <class Tp>
-inline void DoNotOptimize(Tp const& value) {
-	UseCharPointer(&reinterpret_cast<char const volatile&>(value));
-	_ReadWriteBarrier();
-}
 
 int main()
 {
-	unsigned long long min_time = 10000;
-	int min_size = 0;
-
-	for (int size = 10000000; size <= 1'000'000'000; size += 10000000)
+	Corners c;
+	std::mt19937_64 rng(std::random_device{}());
+	std::uniform_int_distribution<std::size_t> dist(0, Corners::twists.size() - 1);
+	for (int i = 0; i < 100; i++)
 	{
-		const CloseSolutionTable<Cube3x3> table(7, size);
-
-		std::vector<Cube3x3> hit_cubes;
-		for (int dst = 0; dst <= table.max_distance(); dst++)
-			for (const Cube3x3& cube : cube3x3_of_distance[dst])
-				hit_cubes.push_back(cube);
-
-		std::vector<Cube3x3> miss_cubes;
-		for (int dst = table.max_distance() + 1; dst < cube3x3_of_distance.size(); dst++)
-			for (const Cube3x3& cube : cube3x3_of_distance[dst])
-				miss_cubes.push_back(cube);
-
-		auto start = std::chrono::high_resolution_clock::now();
-		for (int i = 0; i < 100; i++)
-			for (const Cube3x3& cube : hit_cubes)
-				DoNotOptimize(table[cube]);
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto avg_hit = (stop - start) / hit_cubes.size();
-
-		start = std::chrono::high_resolution_clock::now();
-		for (int i = 0; i < 100; i++)
-			for (const Cube3x3& cube : miss_cubes)
-				DoNotOptimize(table[cube]);
-		stop = std::chrono::high_resolution_clock::now();
-		auto avg_miss = (stop - start) / miss_cubes.size();
-
-		auto avg = avg_hit + avg_miss;
-		if (avg.count() / 100 < min_time)
-		{
-			min_time = avg.count() / 100;
-			min_size = size;
-			std::cout << min_time << " " << min_size << std::endl;
-		}
+		auto o0 = c.orientation(0);
+		auto o1 = c.orientation(1);
+		auto o2 = c.orientation(2);
+		auto o3 = c.orientation(3);
+		auto o4 = c.orientation(4);
+		auto o5 = c.orientation(5);
+		auto o6 = c.orientation(6);
+		auto o7 = c.orientation(7);
+		auto sum = o0 + o1 + o2 + o3 + o4 + o5 + o6 + o7;
+		std::cout << o0 << " " << o1 << " " << o2 << " " << o3 << " " << o4 << " " << o5 << " " << o6 << " " << o7 << " " << sum << std::endl;
+		c = c.twisted(Corners::twists[dist(rng)]);
 	}
 }

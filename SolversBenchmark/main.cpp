@@ -10,8 +10,8 @@ using namespace std::chrono_literals;
 
 int main()
 {
-	const CornersDistanceTable corners_dst;
-	const CloseSolutionTable<Cube3x3> solution_table(5, 2'000'001);
+	const DistanceTable<Corners> corners_dst;
+	const SolutionTable<Cube3x3> solution_table{ 5 };
 	TranspositionTable<Cube3x3, int> tt(10'000'000, Cube3x3::impossible(), 0);
 	OnePhaseOptimalSolver solver(corners_dst, solution_table, tt);
 
@@ -21,31 +21,31 @@ int main()
 	// neighbours
 	{
 		auto start = std::chrono::high_resolution_clock::now();
-		benchmark::DoNotOptimize(neighbours(Cube3x3{}, 0, 5));
+		benchmark::DoNotOptimize(neighbours(5, Cube3x3{}));
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
 		std::cout << "neighbours: " << duration << std::endl;
 	}
 
-	// CornersDistanceTable::operator[]
+	// DistanceTable::operator[]
 	{
 		auto start = std::chrono::high_resolution_clock::now();
 		for (const Corners& c : rnd_corners)
 			benchmark::DoNotOptimize(corners_dst[c]);
 		auto stop = std::chrono::high_resolution_clock::now();
-		std::cout << "CornersDistanceTable::operator[]: " << (stop - start) / rnd_corners.size() << std::endl;
+		std::cout << "DistanceTable::operator[]: " << (stop - start) / rnd_corners.size() << std::endl;
 	}
 
-	// CornersDistanceTable::solve
+	// DistanceTable::solution
 	{
 		auto start = std::chrono::high_resolution_clock::now();
 		for (const Corners& c : rnd_corners)
-			benchmark::DoNotOptimize(corners_dst.solve(c));
+			benchmark::DoNotOptimize(corners_dst.solution(c));
 		auto stop = std::chrono::high_resolution_clock::now();
-		std::cout << "CornersDistanceTable::solve: " << (stop - start) / rnd_corners.size() << std::endl;
+		std::cout << "DistanceTable::solve: " << (stop - start) / rnd_corners.size() << std::endl;
 	}
 
-	// CloseSolutionTable::operator[] hit
+	// SolutionTable::operator[] hit
 	{
 		std::vector<Cube3x3> hit_cubes;
 		for (int dst = 0; dst <= solution_table.max_distance(); dst++)
@@ -55,10 +55,10 @@ int main()
 		for (const Cube3x3& cube : hit_cubes)
 			benchmark::DoNotOptimize(solution_table[cube]);
 		auto stop = std::chrono::high_resolution_clock::now();
-		std::cout << "CloseSolutionTable::operator[] hit: " << (stop - start) / hit_cubes.size() << std::endl;
+		std::cout << "SolutionTable::operator[] hit: " << (stop - start) / hit_cubes.size() << std::endl;
 	}
 
-	// CloseSolutionTable::operator[] miss
+	// SolutionTable::operator[] miss
 	{
 		std::vector<Cube3x3> miss_cubes;
 		for (int dst = solution_table.max_distance() + 1; dst < cube3x3_of_distance.size(); dst++)
@@ -68,7 +68,7 @@ int main()
 		for (const Cube3x3& cube : miss_cubes)
 			benchmark::DoNotOptimize(solution_table[cube]);
 		auto stop = std::chrono::high_resolution_clock::now();
-		std::cout << "CloseSolutionTable::operator[] miss: " << (stop - start) / miss_cubes.size() << std::endl;
+		std::cout << "SolutionTable::operator[] miss: " << (stop - start) / miss_cubes.size() << std::endl;
 	}
 
 	// OnePhaseOptimalSolver::solve
