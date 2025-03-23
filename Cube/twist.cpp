@@ -1,6 +1,5 @@
 #include "twist.h"
 #include <stdexcept>
-#include <utility>
 
 std::string to_string(Twist twist)
 {

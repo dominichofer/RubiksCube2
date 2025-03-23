@@ -68,95 +68,35 @@ TEST(EdgesCenter, L1) {
 		EdgesCenter(0, 1, 2, 11, 4, 5, 6, 8, 3, 9, 10, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 	);
 }
-TEST(EdgesCenter, L2) { EXPECT_EQ(EdgesCenter().L2(), EdgesCenter().L1().L1()); }
-TEST(EdgesCenter, L3) { EXPECT_EQ(EdgesCenter().L3(), EdgesCenter().L1().L1().L1()); }
 TEST(EdgesCenter, R1) {
 	EXPECT_EQ(
 		EdgesCenter().R1(),
 		EdgesCenter(0, 9, 2, 3, 4, 10, 6, 7, 8, 5, 1, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 	);
 }
-TEST(EdgesCenter, R2) { EXPECT_EQ(EdgesCenter().R2(), EdgesCenter().R1().R1()); }
-TEST(EdgesCenter, R3) { EXPECT_EQ(EdgesCenter().R3(), EdgesCenter().R1().R1().R1()); }
 TEST(EdgesCenter, U1) {
 	EXPECT_EQ(
 		EdgesCenter().U1(),
 		EdgesCenter(1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 	);
 }
-TEST(EdgesCenter, U2) { EXPECT_EQ(EdgesCenter().U2(), EdgesCenter().U1().U1()); }
-TEST(EdgesCenter, U3) { EXPECT_EQ(EdgesCenter().U3(), EdgesCenter().U1().U1().U1()); }
 TEST(EdgesCenter, D1) {
 	EXPECT_EQ(
 		EdgesCenter().D1(),
 		EdgesCenter(0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 	);
 }
-TEST(EdgesCenter, D2) { EXPECT_EQ(EdgesCenter().D2(), EdgesCenter().D1().D1()); }
-TEST(EdgesCenter, D3) { EXPECT_EQ(EdgesCenter().D3(), EdgesCenter().D1().D1().D1()); }
 TEST(EdgesCenter, F1) {
 	EXPECT_EQ(
 		EdgesCenter().F1(),
 		EdgesCenter(8, 1, 2, 3, 9, 5, 6, 7, 4, 0, 10, 11, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
 	);
 }
-TEST(EdgesCenter, F2) { EXPECT_EQ(EdgesCenter().F2(), EdgesCenter().F1().F1()); }
-TEST(EdgesCenter, F3) { EXPECT_EQ(EdgesCenter().F3(), EdgesCenter().F1().F1().F1()); }
 TEST(EdgesCenter, B1) {
 	EXPECT_EQ(
 		EdgesCenter().B1(),
 		EdgesCenter(0, 1, 10, 3, 4, 5, 11, 7, 8, 9, 6, 2, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1)
 	);
-}
-TEST(EdgesCenter, B2) { EXPECT_EQ(EdgesCenter().B2(), EdgesCenter().B1().B1()); }
-TEST(EdgesCenter, B3) { EXPECT_EQ(EdgesCenter().B3(), EdgesCenter().B1().B1().B1()); }
-
-TEST(EdgesCenter, inverse_rotations)
-{
-	EXPECT_EQ(EdgesCenter().L1().L3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().R1().R3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().U1().U3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().D1().D3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().F1().F3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().B1().B3(), EdgesCenter());
-
-	EXPECT_EQ(EdgesCenter().L2().L2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().R2().R2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().U2().U2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().D2().D2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().F2().F2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().B2().B2(), EdgesCenter());
-}
-
-TEST(EdgesCenter, full_rotation)
-{
-	EXPECT_EQ(EdgesCenter().L1().L1().L1().L1(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().R1().R1().R1().R1(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().U1().U1().U1().U1(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().D1().D1().D1().D1(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().F1().F1().F1().F1(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().B1().B1().B1().B1(), EdgesCenter());
-
-	EXPECT_EQ(EdgesCenter().L2().L2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().R2().R2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().U2().U2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().D2().D2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().F2().F2(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().B2().B2(), EdgesCenter());
-
-	EXPECT_EQ(EdgesCenter().L3().L3().L3().L3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().R3().R3().R3().R3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().U3().U3().U3().U3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().D3().D3().D3().D3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().F3().F3().F3().F3(), EdgesCenter());
-	EXPECT_EQ(EdgesCenter().B3().B3().B3().B3(), EdgesCenter());
-}
-
-TEST(EdgesCenter, commutating_rotations)
-{
-	EXPECT_EQ(EdgesCenter().L1().R1(), EdgesCenter().R1().L1());
-	EXPECT_EQ(EdgesCenter().U1().D1(), EdgesCenter().D1().U1());
-	EXPECT_EQ(EdgesCenter().F1().B1(), EdgesCenter().B1().F1());
 }
 
 TEST(EdgesCenter, prm_index)

@@ -28,87 +28,14 @@ TEST(Corners, state)
 	EXPECT_EQ(c.orientation(6), 1);
 	EXPECT_EQ(c.orientation(7), 2);
 }
-//
-//class C : public Corners
-//{
-//public:
-//	C() : Corners(Corners::solved()) {}
-//	C(const Corners& c) : Corners(c) {}
-//	C L1() const { return twisted(Twist::L1); }
-//	C L2() const { return twisted(Twist::L2); }
-//	C L3() const { return twisted(Twist::L3); }
-//	C R1() const { return twisted(Twist::R1); }
-//	C R2() const { return twisted(Twist::R2); }
-//	C R3() const { return twisted(Twist::R3); }
-//	C U1() const { return twisted(Twist::U1); }
-//	C U2() const { return twisted(Twist::U2); }
-//	C U3() const { return twisted(Twist::U3); }
-//	C D1() const { return twisted(Twist::D1); }
-//	C D2() const { return twisted(Twist::D2); }
-//	C D3() const { return twisted(Twist::D3); }
-//	C F1() const { return twisted(Twist::F1); }
-//	C F2() const { return twisted(Twist::F2); }
-//	C F3() const { return twisted(Twist::F3); }
-//	C B1() const { return twisted(Twist::B1); }
-//	C B2() const { return twisted(Twist::B2); }
-//	C B3() const { return twisted(Twist::B3); }
-//};
-//
-//const Corners x;
-//TEST(Corners, L1) { EXPECT_EQ(x.L1(), Corners(2, 1, 6, 3, 0, 5, 4, 7, 2, 0, 2, 0, 2, 0, 2, 0)); }
-//TEST(Corners, R1) { EXPECT_EQ(x.R1(), Corners(0, 5, 2, 1, 4, 7, 6, 3, 0, 2, 0, 2, 0, 2, 0, 2)); }
-//TEST(Corners, U1) { EXPECT_EQ(x.U1(), Corners(1, 3, 0, 2, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0)); }
-//TEST(Corners, D1) { EXPECT_EQ(x.D1(), Corners(0, 1, 2, 3, 6, 4, 7, 5, 0, 0, 0, 0, 0, 0, 0, 0)); }
-//TEST(Corners, F1) { EXPECT_EQ(x.F1(), Corners(4, 0, 2, 3, 5, 1, 6, 7, 1, 1, 0, 0, 1, 1, 0, 0)); }
-//TEST(Corners, B1) { EXPECT_EQ(x.B1(), Corners(0, 1, 3, 7, 4, 5, 2, 6, 0, 0, 1, 1, 0, 0, 1, 1)); }
-//
-//TEST(Corners, invese_rotation)
-//{
-//	EXPECT_EQ(x.L1().L3(), x);
-//	EXPECT_EQ(x.R1().R3(), x);
-//	EXPECT_EQ(x.U1().U3(), x);
-//	EXPECT_EQ(x.D1().D3(), x);
-//	EXPECT_EQ(x.F1().F3(), x);
-//	EXPECT_EQ(x.B1().B3(), x);
-//
-//	EXPECT_EQ(x.L2().L2(), x);
-//	EXPECT_EQ(x.R2().R2(), x);
-//	EXPECT_EQ(x.U2().U2(), x);
-//	EXPECT_EQ(x.D2().D2(), x);
-//	EXPECT_EQ(x.F2().F2(), x);
-//	EXPECT_EQ(x.B2().B2(), x);
-//}
-//
-//TEST(Corners, full_rotation)
-//{
-//	EXPECT_EQ(x.L1().L1().L1().L1(), x);
-//	EXPECT_EQ(x.R1().R1().R1().R1(), x);
-//	EXPECT_EQ(x.U1().U1().U1().U1(), x);
-//	EXPECT_EQ(x.D1().D1().D1().D1(), x);
-//	EXPECT_EQ(x.F1().F1().F1().F1(), x);
-//	EXPECT_EQ(x.B1().B1().B1().B1(), x);
-//
-//	EXPECT_EQ(x.L2().L2(), x);
-//	EXPECT_EQ(x.R2().R2(), x);
-//	EXPECT_EQ(x.U2().U2(), x);
-//	EXPECT_EQ(x.D2().D2(), x);
-//	EXPECT_EQ(x.F2().F2(), x);
-//	EXPECT_EQ(x.B2().B2(), x);
-//
-//	EXPECT_EQ(x.L3().L3().L3().L3(), x);
-//	EXPECT_EQ(x.R3().R3().R3().R3(), x);
-//	EXPECT_EQ(x.U3().U3().U3().U3(), x);
-//	EXPECT_EQ(x.D3().D3().D3().D3(), x);
-//	EXPECT_EQ(x.F3().F3().F3().F3(), x);
-//	EXPECT_EQ(x.B3().B3().B3().B3(), x);
-//}
-//
-//TEST(Corners, commutating_rotations)
-//{
-//	EXPECT_EQ(x.L1().R1(), x.R1().L1());
-//	EXPECT_EQ(x.U1().D1(), x.D1().U1());
-//	EXPECT_EQ(x.F1().B1(), x.B1().F1());
-//}
+
+const Corners x;
+TEST(Corners, L1) { EXPECT_EQ(x.L1(), Corners(2, 1, 6, 3, 0, 5, 4, 7, 2, 0, 2, 0, 2, 0, 2, 0)); }
+TEST(Corners, R1) { EXPECT_EQ(x.R1(), Corners(0, 5, 2, 1, 4, 7, 6, 3, 0, 2, 0, 2, 0, 2, 0, 2)); }
+TEST(Corners, U1) { EXPECT_EQ(x.U1(), Corners(1, 3, 0, 2, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0)); }
+TEST(Corners, D1) { EXPECT_EQ(x.D1(), Corners(0, 1, 2, 3, 6, 4, 7, 5, 0, 0, 0, 0, 0, 0, 0, 0)); }
+TEST(Corners, F1) { EXPECT_EQ(x.F1(), Corners(4, 0, 2, 3, 5, 1, 6, 7, 1, 1, 0, 0, 1, 1, 0, 0)); }
+TEST(Corners, B1) { EXPECT_EQ(x.B1(), Corners(0, 1, 3, 7, 4, 5, 2, 6, 0, 0, 1, 1, 0, 0, 1, 1)); }
 
 TEST(Corners, prm_index)
 {

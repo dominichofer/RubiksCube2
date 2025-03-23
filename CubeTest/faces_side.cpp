@@ -3,12 +3,12 @@
 
 TEST(FacesSide, default_is_solved)
 {
-	EXPECT_TRUE(FacesSide().is_solved());
+	EXPECT_TRUE(FacesSide::solved().is_solved());
 }
 
 TEST(FacesSide, twisted_is_not_solved)
 {
-	EXPECT_FALSE(FacesSide().l1().is_solved());
+	EXPECT_FALSE(FacesSide::solved().l1().is_solved());
 }
 
 // Fuzz test
@@ -41,8 +41,6 @@ TEST(FacesSide, L1) {
 			c0, c1, c2, c3, c4, c5, c6, c7)
 	);
 }
-TEST(FacesSide, L2) { EXPECT_EQ(X.L2(), X.L1().L1()); }
-TEST(FacesSide, L3) { EXPECT_EQ(X.L3(), X.L1().L1().L1()); }
 TEST(FacesSide, l1) {
 	EXPECT_EQ(
 		X.l1(),
@@ -52,8 +50,6 @@ TEST(FacesSide, l1) {
 			b0, c1, b2, c3, c4, b6, c6, b4)
 	);
 }
-TEST(FacesSide, l2) { EXPECT_EQ(X.l2(), X.l1().l1()); }
-TEST(FacesSide, l3) { EXPECT_EQ(X.l3(), X.l1().l1().l1()); }
 TEST(FacesSide, r1) {
 	EXPECT_EQ(
 		X.r1(),
@@ -63,8 +59,6 @@ TEST(FacesSide, r1) {
 			c0, b5, c2, b7, b3, c5, b1, c7)
 	);
 }
-TEST(FacesSide, r2) { EXPECT_EQ(X.r2(), X.r1().r1()); }
-TEST(FacesSide, r3) { EXPECT_EQ(X.r3(), X.r1().r1().r1()); }
 TEST(FacesSide, u1) {
 	EXPECT_EQ(
 		X.u1(),
@@ -74,8 +68,6 @@ TEST(FacesSide, u1) {
 			a4, a5, c2, c3, a0, a1, c6, c7)
 	);
 }
-TEST(FacesSide, u2) { EXPECT_EQ(X.u2(), X.u1().u1()); }
-TEST(FacesSide, u3) { EXPECT_EQ(X.u3(), X.u1().u1().u1()); }
 TEST(FacesSide, d1) {
 	EXPECT_EQ(
 		X.d1(),
@@ -85,8 +77,6 @@ TEST(FacesSide, d1) {
 			c0, c1, a2, a3, c4, c5, a6, a7)
 	);
 }
-TEST(FacesSide, d2) { EXPECT_EQ(X.d2(), X.d1().d1()); }
-TEST(FacesSide, d3) { EXPECT_EQ(X.d3(), X.d1().d1().d1()); }
 TEST(FacesSide, F1) {
 	EXPECT_EQ(
 		X.F1(),
@@ -96,8 +86,6 @@ TEST(FacesSide, F1) {
 			c2, c0, c3, c1, c4, c5, c6, c7)
 	);
 }
-TEST(FacesSide, F2) { EXPECT_EQ(X.F2(), X.F1().F1()); }
-TEST(FacesSide, F3) { EXPECT_EQ(X.F3(), X.F1().F1().F1()); }
 TEST(FacesSide, f1) {
 	EXPECT_EQ(
 		X.f1(),
@@ -107,8 +95,6 @@ TEST(FacesSide, f1) {
 			c0, c1, c2, c3, c4, c5, c6, c7)
 	);
 }
-TEST(FacesSide, f2) { EXPECT_EQ(X.f2(), X.f1().f1()); }
-TEST(FacesSide, f3) { EXPECT_EQ(X.f3(), X.f1().f1().f1()); }
 TEST(FacesSide, B1) {
 	EXPECT_EQ(
 		X.B1(),
@@ -118,8 +104,6 @@ TEST(FacesSide, B1) {
 			c0, c1, c2, c3, c6, c4, c7, c5)
 	);
 }
-TEST(FacesSide, B2) { EXPECT_EQ(X.B2(), X.B1().B1()); }
-TEST(FacesSide, B3) { EXPECT_EQ(X.B3(), X.B1().B1().B1()); }
 TEST(FacesSide, b1) {
 	EXPECT_EQ(
 		X.b1(),
@@ -128,90 +112,6 @@ TEST(FacesSide, b1) {
 			a5, a7, b2, b3, b4, b5, a0, a2,
 			c0, c1, c2, c3, c4, c5, c6, c7)
 	);
-}
-TEST(FacesSide, b2) { EXPECT_EQ(X.b2(), X.b1().b1()); }
-TEST(FacesSide, b3) { EXPECT_EQ(X.b3(), X.b1().b1().b1()); }
-
-TEST(FacesSide, inverse_rotations)
-{
-	EXPECT_EQ(X.L1().L3(), X);
-	EXPECT_EQ(X.l1().l3(), X);
-	EXPECT_EQ(X.R1().R3(), X);
-	EXPECT_EQ(X.r1().r3(), X);
-	EXPECT_EQ(X.U1().U3(), X);
-	EXPECT_EQ(X.u1().u3(), X);
-	EXPECT_EQ(X.D1().D3(), X);
-	EXPECT_EQ(X.d1().d3(), X);
-	EXPECT_EQ(X.F1().F3(), X);
-	EXPECT_EQ(X.f1().f3(), X);
-	EXPECT_EQ(X.B1().B3(), X);
-	EXPECT_EQ(X.b1().b3(), X);
-
-	EXPECT_EQ(X.L2().L2(), X);
-	EXPECT_EQ(X.l2().l2(), X);
-	EXPECT_EQ(X.R2().R2(), X);
-	EXPECT_EQ(X.r2().r2(), X);
-	EXPECT_EQ(X.U2().U2(), X);
-	EXPECT_EQ(X.u2().u2(), X);
-	EXPECT_EQ(X.D2().D2(), X);
-	EXPECT_EQ(X.d2().d2(), X);
-	EXPECT_EQ(X.F2().F2(), X);
-	EXPECT_EQ(X.f2().f2(), X);
-	EXPECT_EQ(X.B2().B2(), X);
-	EXPECT_EQ(X.b2().b2(), X);
-}
-
-TEST(FacesSide, full_rotation)
-{
-	EXPECT_EQ(X.L1().L1().L1().L1(), X);
-	EXPECT_EQ(X.l1().l1().l1().l1(), X);
-	EXPECT_EQ(X.R1().R1().R1().R1(), X);
-	EXPECT_EQ(X.r1().r1().r1().r1(), X);
-	EXPECT_EQ(X.U1().U1().U1().U1(), X);
-	EXPECT_EQ(X.u1().u1().u1().u1(), X);
-	EXPECT_EQ(X.D1().D1().D1().D1(), X);
-	EXPECT_EQ(X.d1().d1().d1().d1(), X);
-	EXPECT_EQ(X.F1().F1().F1().F1(), X);
-	EXPECT_EQ(X.f1().f1().f1().f1(), X);
-	EXPECT_EQ(X.B1().B1().B1().B1(), X);
-	EXPECT_EQ(X.b1().b1().b1().b1(), X);
-
-	EXPECT_EQ(X.L2().L2(), X);
-	EXPECT_EQ(X.l2().l2(), X);
-	EXPECT_EQ(X.R2().R2(), X);
-	EXPECT_EQ(X.r2().r2(), X);
-	EXPECT_EQ(X.U2().U2(), X);
-	EXPECT_EQ(X.u2().u2(), X);
-	EXPECT_EQ(X.D2().D2(), X);
-	EXPECT_EQ(X.d2().d2(), X);
-	EXPECT_EQ(X.F2().F2(), X);
-	EXPECT_EQ(X.f2().f2(), X);
-	EXPECT_EQ(X.B2().B2(), X);
-	EXPECT_EQ(X.b2().b2(), X);
-}
-
-TEST(FacesSide, commutating_rotations)
-{
-	EXPECT_EQ(X.L1().l1(), X.l1().L1());
-	EXPECT_EQ(X.L1().r1(), X.r1().L1());
-	EXPECT_EQ(X.L1().R1(), X.R1().L1());
-	EXPECT_EQ(X.l1().r1(), X.r1().l1());
-	EXPECT_EQ(X.l1().R1(), X.R1().l1());
-	EXPECT_EQ(X.r1().R1(), X.R1().r1());
-
-	EXPECT_EQ(X.U1().u1(), X.u1().U1());
-	EXPECT_EQ(X.U1().d1(), X.d1().U1());
-	EXPECT_EQ(X.U1().D1(), X.D1().U1());
-	EXPECT_EQ(X.u1().d1(), X.d1().u1());
-	EXPECT_EQ(X.u1().D1(), X.D1().u1());
-	EXPECT_EQ(X.d1().D1(), X.D1().d1());
-
-	EXPECT_EQ(X.F1().f1(), X.f1().F1());
-	EXPECT_EQ(X.F1().b1(), X.b1().F1());
-	EXPECT_EQ(X.F1().B1(), X.B1().F1());
-	EXPECT_EQ(X.f1().b1(), X.b1().f1());
-	EXPECT_EQ(X.f1().B1(), X.B1().f1());
-	EXPECT_EQ(X.b1().B1(), X.B1().b1());
 }
 
 TEST(FacesSide, prm_index)

@@ -1,7 +1,7 @@
 add_library(
     Cube STATIC
-    byte.cpp
-    byte.h
+    bit.cpp
+    bit.h
     corners.cpp
     corners.h
     cube_of_distance.h
@@ -21,7 +21,11 @@ add_library(
     faces_center.h
     faces_side.cpp
     faces_side.h
+    intrin.h
     random.h
+    subset.cpp
+    subset.h
+    twist.cpp
     twist.h
 )
 
