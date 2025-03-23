@@ -25,7 +25,7 @@ FacesSide::FacesSide(
 	c = set_epi8(f16, f17, f18, f19, f20, f21, f22, f23);
 }
 
-FacesSide solved()
+FacesSide FacesSide::solved()
 {
 	return FacesSide(
 		0, 0, 0, 0,
@@ -36,7 +36,7 @@ FacesSide solved()
 		5, 5, 5, 5);
 }
 
-FacesSide impossible()
+FacesSide FacesSide::impossible()
 {
 	return FacesSide(
 		0, 0, 0, 0,
@@ -49,7 +49,7 @@ FacesSide impossible()
 
 bool FacesSide::is_solved() const
 {
-	return *this == FacesSide();
+	return *this == FacesSide::solved();
 }
 
 int FacesSide::cubie(int i) const
@@ -61,10 +61,9 @@ int FacesSide::cubie(int i) const
 	return extract_epi8(c, i - 16);
 }
 
-static const int i0 = 8, i1 = 9, i2 = 10, i3 = 11, i4 = 12, i5 = 13, i6 = 14, i7 = 15;
-
 FacesSide FacesSide::twisted(Twist t) const
 {
+	const int i0 = 8, i1 = 9, i2 = 10, i3 = 11, i4 = 12, i5 = 13, i6 = 14, i7 = 15;
 	uint64_t A, B, C;
 	switch (t)
 	{

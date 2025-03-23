@@ -74,7 +74,7 @@ FacesCenter impossible()
 
 bool FacesCenter::is_solved() const
 {
-	return *this == FacesCenter();
+	return *this == FacesCenter::solved();
 }
 
 int FacesCenter::cubie(int i) const
@@ -86,10 +86,9 @@ int FacesCenter::cubie(int i) const
 	return extract_epi8(c, i - 16);
 }
 
-static const int i0 = 8, i1 = 9, i2 = 10, i3 = 11, i4 = 12, i5 = 13, i6 = 14, i7 = 15;
-
 FacesCenter FacesCenter::twisted(Twist t) const
 {
+	const int i0 = 8, i1 = 9, i2 = 10, i3 = 11, i4 = 12, i5 = 13, i6 = 14, i7 = 15;
 	uint64_t A, B, C;
 	switch (t)
 	{

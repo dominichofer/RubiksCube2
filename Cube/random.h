@@ -44,7 +44,10 @@ public:
 
 	Cube operator()(int twist_count = 100)
 	{
-		return this->node(twist_count);
+		Cube cube = origin;
+		for (int i = 0; i < twist_count; i++)
+			cube = cube.twisted(rnd_twists());
+		return cube;
 	}
 };
 

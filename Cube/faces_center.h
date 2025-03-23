@@ -71,9 +71,10 @@ public:
 	bool is_solved() const;
 	int cubie(int) const;
 
+	using Twistable::twisted;
 	FacesCenter twisted(Twist) const;
 
 	uint64_t prm_index() const;
 	uint64_t index() const;
-	uint64_t hash() const;
+	uint64_t hash() const override;
 };

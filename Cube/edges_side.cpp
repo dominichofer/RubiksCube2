@@ -29,7 +29,7 @@ EdgesSide EdgesSide::impossible() { return EdgesSide(0, 0, 0, 0, 0, 0, 0, 0, 0, 
 
 bool EdgesSide::is_solved() const
 {
-	return *this == EdgesSide();
+	return *this == EdgesSide::solved();
 }
 
 int EdgesSide::cubie(int i) const
@@ -41,10 +41,9 @@ int EdgesSide::cubie(int i) const
 	return extract_epi8(c, i - 16);
 }
 
-static const int i0 = 8, i1 = 9, i2 = 10, i3 = 11, i4 = 12, i5 = 13, i6 = 14, i7 = 15;
-
 EdgesSide EdgesSide::twisted(Twist t) const
 {
+	const int i0 = 8, i1 = 9, i2 = 10, i3 = 11, i4 = 12, i5 = 13, i6 = 14, i7 = 15;
 	uint64_t A, B, C;
 	switch (t)
 	{

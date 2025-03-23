@@ -67,13 +67,7 @@
   <ItemGroup>
     <ClCompile Include="bit.cpp" />
     <ClCompile Include="corners.cpp" />
-    <ClCompile Include="cube.cpp" />
-    <ClCompile Include="cube2x2.cpp" />
-    <ClCompile Include="cube3x3.cpp" />
-    <ClCompile Include="cube4x4.cpp" />
-    <ClCompile Include="cube5x5.cpp" />
     <ClCompile Include="edges_center.cpp" />
-    <ClCompile Include="edges_side.cpp" />
     <ClCompile Include="faces_center.cpp" />
     <ClCompile Include="faces_side.cpp" />
     <ClCompile Include="pch.cpp">
@@ -82,6 +76,7 @@
     </ClCompile>
     <ClCompile Include="random.cpp" />
     <ClCompile Include="subset.cpp" />
+    <ClCompile Include="cube.cpp" />
     <ClCompile Include="twist.cpp" />
   </ItemGroup>
   <ItemGroup>

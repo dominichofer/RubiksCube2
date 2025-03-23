@@ -14,10 +14,21 @@ enum class Twist : uint8_t
 	None
 };
 
+static const std::vector<Twist> all_twists = {
+	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
+	Twist::R1, Twist::R2, Twist::R3, Twist::r1, Twist::r2, Twist::r3,
+	Twist::U1, Twist::U2, Twist::U3, Twist::u1, Twist::u2, Twist::u3,
+	Twist::D1, Twist::D2, Twist::D3, Twist::d1, Twist::d2, Twist::d3,
+	Twist::F1, Twist::F2, Twist::F3, Twist::f1, Twist::f2, Twist::f3,
+	Twist::B1, Twist::B2, Twist::B3, Twist::b1, Twist::b2, Twist::b3,
+	Twist::None
+};
+
 std::string to_string(Twist);
 
 Twist inversed(Twist);
 std::vector<Twist> inversed(const std::vector<Twist>&);
+
 
 template <typename Derived>
 class Twistable
@@ -26,6 +37,7 @@ public:
 	auto operator<=>(const Twistable&) const = default;
 
 	virtual Derived twisted(Twist) const = 0;
+
 	Derived twisted(const std::vector<Twist>& twists) const
 	{
 		auto result = static_cast<const Derived&>(*this);
@@ -33,6 +45,7 @@ public:
 			result = result.twisted(twist);
 		return result;
 	}
+
 	template <typename... Twists>
 	Derived twisted(Twist twist, Twists... twists) const
 	{
@@ -75,4 +88,18 @@ public:
 	Derived b1() const { return twisted(Twist::b1); }
 	Derived b2() const { return twisted(Twist::b2); }
 	Derived b3() const { return twisted(Twist::b3); }
+
+	virtual uint64_t hash() const = 0;
 };
+
+namespace std
+{
+	template <typename Derived>
+	struct hash<Twistable<Derived>>
+	{
+		std::size_t operator()(const Twistable<Derived>& t) const
+		{
+			return t.hash();
+		}
+	};
+}

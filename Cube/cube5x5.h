@@ -26,13 +26,14 @@ public:
 
 	auto operator<=>(const Cube5x5&) const = default;
 
-	bool is_solved() const { return c.is_solved() && ec.is_solved() && es.is_solved() && fc.is_solved() && fs.is_solved(); }
+	bool is_solved() const;
 	const Corners& corners() const { return c; }
 	const EdgesCenter& edges_center() const { return ec; }
 	const EdgesSide& edges_side() const { return es; }
 	const FacesCenter& faces_center() const { return fc; }
 	const FacesSide& faces_side() const { return fs; }
 
+	using Twistable::twisted;
 	Cube5x5 twisted(Twist) const;
 
 	uint64_t hash() const;

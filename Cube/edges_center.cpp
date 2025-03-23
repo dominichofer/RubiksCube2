@@ -43,7 +43,7 @@ EdgesCenter EdgesCenter::solved()
 
 EdgesCenter EdgesCenter::impossible()
 {
-    return EdgesCenter(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    return EdgesCenter(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 }
 
 bool EdgesCenter::operator==(const EdgesCenter& o) const
@@ -70,7 +70,7 @@ bool EdgesCenter::operator<(const EdgesCenter& o) const
 
 bool EdgesCenter::is_solved() const
 {
-    return *this == EdgesCenter();
+	return *this == EdgesCenter::solved();
 }
 
 int EdgesCenter::cubie(int index) const

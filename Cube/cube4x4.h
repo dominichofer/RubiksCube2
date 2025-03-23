@@ -27,7 +27,7 @@ public:
 	const EdgesSide& edges() const { return e; }
 	const FacesSide& faces() const { return f; }
 
-
+	using Twistable::twisted;
 	Cube4x4 twisted(Twist) const;
 
 	uint64_t hash() const;

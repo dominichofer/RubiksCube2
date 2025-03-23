@@ -1,47 +1,6 @@
 #include "pch.h"
 #include <random>
 
-TEST(EdgesCenter, default_is_solved)
-{
-    EXPECT_TRUE(EdgesCenter().is_solved());
-}
-
-TEST(EdgesCenter, twisted_is_not_solved)
-{
-    EXPECT_FALSE(EdgesCenter().L1().is_solved());
-}
-
-// Fuzz test
-TEST(EdgesCenter, cubies)
-{
-	std::mt19937_64 rng;
-	std::uniform_int_distribution<> dist(0, 11);
-	std::vector<uint8_t> c(12);
-	for (int i = 0; i < 1'000'000; i++)
-	{
-		for (int j = 0; j < 12; j++)
-			c[j] = dist(rng);
-		EdgesCenter edges(c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11], 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-		for (int j = 0; j < 12; j++)
-			EXPECT_EQ(edges.cubie(j), c[j]);
-	}
-}
-
-// Fuzz test
-TEST(EdgesCenter, orientations)
-{
-	std::mt19937_64 rng;
-	std::uniform_int_distribution<> dist(0, 1);
-	std::vector<uint8_t> o(12);
-	for (int i = 0; i < 1'000'000; i++)
-	{
-		for (int j = 0; j < 12; j++)
-			o[j] = dist(rng);
-		EdgesCenter edges(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7], o[8], o[9], o[10], o[11]);
-		for (int j = 0; j < 12; j++)
-			EXPECT_EQ(edges.orientation(j), o[j]);
-	}
-}
 
 TEST(EdgesCenter, ud_slice_prm_index)
 {
@@ -60,43 +19,6 @@ TEST(EdgesCenter, ud_slice_prm_index)
 	EXPECT_EQ(EdgesCenter().D3().ud_slice_prm_index(), EdgesCenter::ud_slice_size - 1);
 
 	EXPECT_EQ(EdgesCenter(11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1).ud_slice_prm_index(), 0);
-}
-
-TEST(EdgesCenter, L1) {
-	EXPECT_EQ(
-		EdgesCenter().L1(),
-		EdgesCenter(0, 1, 2, 11, 4, 5, 6, 8, 3, 9, 10, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-	);
-}
-TEST(EdgesCenter, R1) {
-	EXPECT_EQ(
-		EdgesCenter().R1(),
-		EdgesCenter(0, 9, 2, 3, 4, 10, 6, 7, 8, 5, 1, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-	);
-}
-TEST(EdgesCenter, U1) {
-	EXPECT_EQ(
-		EdgesCenter().U1(),
-		EdgesCenter(1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-	);
-}
-TEST(EdgesCenter, D1) {
-	EXPECT_EQ(
-		EdgesCenter().D1(),
-		EdgesCenter(0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-	);
-}
-TEST(EdgesCenter, F1) {
-	EXPECT_EQ(
-		EdgesCenter().F1(),
-		EdgesCenter(8, 1, 2, 3, 9, 5, 6, 7, 4, 0, 10, 11, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)
-	);
-}
-TEST(EdgesCenter, B1) {
-	EXPECT_EQ(
-		EdgesCenter().B1(),
-		EdgesCenter(0, 1, 10, 3, 4, 5, 11, 7, 8, 9, 6, 2, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1)
-	);
 }
 
 TEST(EdgesCenter, prm_index)

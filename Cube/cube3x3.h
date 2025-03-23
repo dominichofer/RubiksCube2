@@ -25,7 +25,7 @@ public:
 	const Corners& corners() const { return c; }
 	const EdgesCenter& edges() const { return e; }
 
-	using Twistable<Cube3x3>::twisted;
+	using Twistable::twisted;
 	Cube3x3 twisted(Twist) const;
 
 	uint64_t hash() const;

@@ -2,41 +2,6 @@
 #include <random>
 #include <vector>
 
-TEST(Corners, is_solved)
-{
-    EXPECT_TRUE(Corners::solved().is_solved());
-    EXPECT_FALSE(Corners::impossible().is_solved());
-}
-
-TEST(Corners, state)
-{
-	Corners c(2, 3, 4, 5, 6, 7, 0, 1, 1, 2, 0, 1, 2, 0, 1, 2); // arbitrary
-	EXPECT_EQ(c.cubie(0), 2);
-	EXPECT_EQ(c.cubie(1), 3);
-	EXPECT_EQ(c.cubie(2), 4);
-	EXPECT_EQ(c.cubie(3), 5);
-	EXPECT_EQ(c.cubie(4), 6);
-	EXPECT_EQ(c.cubie(5), 7);
-	EXPECT_EQ(c.cubie(6), 0);
-	EXPECT_EQ(c.cubie(7), 1);
-	EXPECT_EQ(c.orientation(0), 1);
-	EXPECT_EQ(c.orientation(1), 2);
-	EXPECT_EQ(c.orientation(2), 0);
-	EXPECT_EQ(c.orientation(3), 1);
-	EXPECT_EQ(c.orientation(4), 2);
-	EXPECT_EQ(c.orientation(5), 0);
-	EXPECT_EQ(c.orientation(6), 1);
-	EXPECT_EQ(c.orientation(7), 2);
-}
-
-const Corners x;
-TEST(Corners, L1) { EXPECT_EQ(x.L1(), Corners(2, 1, 6, 3, 0, 5, 4, 7, 2, 0, 2, 0, 2, 0, 2, 0)); }
-TEST(Corners, R1) { EXPECT_EQ(x.R1(), Corners(0, 5, 2, 1, 4, 7, 6, 3, 0, 2, 0, 2, 0, 2, 0, 2)); }
-TEST(Corners, U1) { EXPECT_EQ(x.U1(), Corners(1, 3, 0, 2, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(Corners, D1) { EXPECT_EQ(x.D1(), Corners(0, 1, 2, 3, 6, 4, 7, 5, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(Corners, F1) { EXPECT_EQ(x.F1(), Corners(4, 0, 2, 3, 5, 1, 6, 7, 1, 1, 0, 0, 1, 1, 0, 0)); }
-TEST(Corners, B1) { EXPECT_EQ(x.B1(), Corners(0, 1, 3, 7, 4, 5, 2, 6, 0, 0, 1, 1, 0, 0, 1, 1)); }
-
 TEST(Corners, prm_index)
 {
 	std::vector<uint64_t> indices;

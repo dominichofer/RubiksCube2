@@ -31,6 +31,11 @@ Cube5x5 Cube5x5::impossible()
 	};
 }
 
+bool Cube5x5::is_solved() const
+{
+	return c.is_solved() && ec.is_solved() && es.is_solved() && fc.is_solved() && fs.is_solved();
+}
+
 Cube5x5 Cube5x5::twisted(Twist t) const
 {
 	return Cube5x5{
