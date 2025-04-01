@@ -67,6 +67,7 @@
   <ItemGroup>
     <ClCompile Include="binomial.cpp" />
     <ClCompile Include="graph.cpp" />
+    <ClCompile Include="hash.cpp" />
     <ClCompile Include="permutation.cpp" />
     <ClCompile Include="statistic.cpp" />
     <ClCompile Include="pch.cpp">

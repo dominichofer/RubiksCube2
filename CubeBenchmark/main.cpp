@@ -2,82 +2,34 @@
 #include "Cube/cube.h"
 #include <chrono>
 #include <iostream>
-#include <iomanip>
 
-#define BENCH(cls, func) \
-void func##_##cls(benchmark::State& state) \
-{ \
-	auto cube = RandomCube<cls>(); \
-	for (auto _ : state) \
-		benchmark::DoNotOptimize(cube.func()); \
-} \
-BENCHMARK(func##_##cls);
+template <typename Cube>
+uint64_t perft(const Cube& cube, int depth)
+{
+	if (depth == 0)
+		return 1;
+	uint64_t sum = 0;
+	for (Twist t : Cube::twists)
+		sum += perft(cube.twisted(t), depth - 1);
+	return sum;
+}
 
-#define BENCH_OUTER_TWISTS(cls) \
-BENCH(cls, L1) \
-BENCH(cls, L2) \
-BENCH(cls, L3) \
-BENCH(cls, R1) \
-BENCH(cls, R2) \
-BENCH(cls, R3) \
-BENCH(cls, U1) \
-BENCH(cls, U2) \
-BENCH(cls, U3) \
-BENCH(cls, D1) \
-BENCH(cls, D2) \
-BENCH(cls, D3) \
-BENCH(cls, F1) \
-BENCH(cls, F2) \
-BENCH(cls, F3) \
-BENCH(cls, B1) \
-BENCH(cls, B2) \
-BENCH(cls, B3)
-
-#define BENCH_INNER_TWISTS(cls) \
-BENCH(cls, l1) \
-BENCH(cls, l2) \
-BENCH(cls, l3) \
-BENCH(cls, r1) \
-BENCH(cls, r2) \
-BENCH(cls, r3) \
-BENCH(cls, u1) \
-BENCH(cls, u2) \
-BENCH(cls, u3) \
-BENCH(cls, d1) \
-BENCH(cls, d2) \
-BENCH(cls, d3) \
-BENCH(cls, f1) \
-BENCH(cls, f2) \
-BENCH(cls, f3) \
-BENCH(cls, b1) \
-BENCH(cls, b2) \
-BENCH(cls, b3)
-
-BENCH(Corners, hash)
-BENCH(EdgesCenter, hash)
-BENCH(EdgesSide, hash)
-BENCH(FacesCenter, hash)
-BENCH(FacesSide, hash)
-BENCH(Cube3x3, hash)
-BENCH(Cube4x4, hash)
-BENCH(Cube5x5, hash)
-
-BENCH(Corners, prm_index)
-BENCH(EdgesCenter, prm_index)
-BENCH(EdgesSide, prm_index)
-BENCH(FacesCenter, prm_index)
-BENCH(FacesSide, prm_index)
-
-BENCH(Corners, ori_index)
-BENCH(EdgesCenter, ori_index)
-
-BENCH(EdgesCenter, ud_slice_prm_index)
-
-BENCH(Corners, index)
-BENCH(EdgesCenter, index)
-BENCH(EdgesSide, index)
-BENCH(FacesCenter, index)
-BENCH(FacesSide, index)
+template <typename Cube>
+void perft()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		auto start = std::chrono::high_resolution_clock::now();
+		uint64_t counter = perft(Cube::solved(), i);
+		auto stop = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
+		if (duration > 100)
+		{
+			std::cout << typeid(Cube).name() << " " << counter / 1000 / duration << " MN/s" << std::endl;
+			break;
+		}
+	}
+}
 
 void EdgesCenter_lt(benchmark::State& state)
 {
@@ -88,50 +40,72 @@ void EdgesCenter_lt(benchmark::State& state)
 }
 BENCHMARK(EdgesCenter_lt);
 
-BENCH_OUTER_TWISTS(Corners)
-BENCH_OUTER_TWISTS(EdgesCenter)
-BENCH_OUTER_TWISTS(EdgesSide)
-BENCH_INNER_TWISTS(EdgesSide)
-BENCH_OUTER_TWISTS(FacesCenter)
-BENCH_INNER_TWISTS(FacesCenter)
-BENCH_OUTER_TWISTS(FacesSide)
-BENCH_INNER_TWISTS(FacesSide)
-BENCH_OUTER_TWISTS(Cube3x3)
-BENCH_OUTER_TWISTS(Cube4x4)
-BENCH_INNER_TWISTS(Cube4x4)
-BENCH_OUTER_TWISTS(Cube5x5)
-BENCH_INNER_TWISTS(Cube5x5)
+#define BENCH(cls, func) \
+void func##_##cls(benchmark::State& state) \
+{ \
+	auto cube = RandomCube<cls>(); \
+	for (auto _ : state) \
+		benchmark::DoNotOptimize(cube.func()); \
+} \
+BENCHMARK(func##_##cls);
 
-uint64_t counter;
+//BENCH(Corners, hash)
+//BENCH(EdgesCenter, hash)
+//BENCH(EdgesSide, hash)
+//BENCH(FacesCenter, hash)
+//BENCH(FacesSide, hash)
+//BENCH(Cube3x3, hash)
+//BENCH(Cube4x4, hash)
+//BENCH(Cube5x5, hash)
+//
+//BENCH(Corners, prm_index)
+//BENCH(EdgesCenter, prm_index)
+//BENCH(EdgesSide, prm_index)
+//BENCH(FacesCenter, prm_index)
+//BENCH(FacesSide, prm_index)
+//
+//BENCH(Corners, ori_index)
+//BENCH(EdgesCenter, ori_index)
+//
+//BENCH(EdgesCenter, ud_slice_location_index)
+//
+//BENCH(Corners, index)
+//BENCH(EdgesCenter, index)
+//BENCH(EdgesSide, index)
+//BENCH(FacesCenter, index)
+//BENCH(FacesSide, index)
 
-template <typename Cube>
-void perft(const Cube& cube, int depth)
+void H0_subset_index(benchmark::State& state)
 {
-	if (depth == 0) {
-		counter++;
-		return;
-	}
-	for (const auto& t : Cube::twists)
-		perft(cube.twisted(t), depth - 1);
+	auto cube = RandomCube<Cube3x3>();
+	for (auto _ : state)
+		benchmark::DoNotOptimize(H0::subset_index(cube));
 }
+BENCHMARK(H0_subset_index);
 
-template <typename Cube>
-void perft()
+void H0_coset_index(benchmark::State& state)
 {
-	counter = 0;
-	for (int i = 0; i < 10; i++)
-	{
-		auto start = std::chrono::high_resolution_clock::now();
-		perft(Cube{}, i);
-		auto stop = std::chrono::high_resolution_clock::now();
-		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start).count();
-		if (duration > 0)
-		{
-            std::cout << typeid(Cube).name() << " " << counter / 1000 / duration << " MN/s" << std::endl;
-			break;
-		}
-	}
+	auto cube = RandomCube<Cube3x3>();
+	for (auto _ : state)
+		benchmark::DoNotOptimize(H0::coset_index(cube));
 }
+BENCHMARK(H0_coset_index);
+
+void H0_from_subset_index(benchmark::State& state)
+{
+	auto index = H0::subset_index(RandomCube<Cube3x3>());
+	for (auto _ : state)
+		benchmark::DoNotOptimize(H0::from_subset_index(index));
+}
+BENCHMARK(H0_from_subset_index);
+
+void H0_from_coset_index(benchmark::State& state)
+{
+	auto index = H0::coset_index(RandomCube<Cube3x3>());
+	for (auto _ : state)
+		benchmark::DoNotOptimize(H0::from_coset_index(index));
+}
+BENCHMARK(H0_from_coset_index);
 
 int main(int argc, char** argv)
 {
@@ -140,7 +114,6 @@ int main(int argc, char** argv)
 	perft<EdgesSide>();
 	perft<FacesCenter>();
 	perft<FacesSide>();
-	perft<Cube2x2>();
 	perft<Cube3x3>();
 	perft<Cube4x4>();
 	perft<Cube5x5>();

@@ -1,6 +1,7 @@
 #pragma once
 #include "intrin.h"
 #include "twist.h"
+#include "Math/math.h"
 #include <cstdint>
 #include <vector>
 
@@ -15,14 +16,14 @@ class EdgesCenter : public Twistable<EdgesCenter>
     //  8 /       9 /
     //  |7        |5
     //  +----4----+
-    __m128i state;
+	__m128i state{ _mm_setzero_si128() };
 
 	EdgesCenter(__m128i state) noexcept : state(state) {}
 public:
-    static const uint64_t prm_size = 479'001'600; // 12!
-    static const uint64_t ori_size = 2'048; // 2^11
+    static const uint64_t prm_size = factorial(12);
+    static const uint64_t ori_size = powi(2, 11);
     static const uint64_t index_size = prm_size * ori_size;
-    static const uint64_t ud_slice_size = 495; // 12 choose 4
+    static const uint64_t ud_slice_location_size = binomial(12, 4);
     static const std::vector<Twist> twists;
 
 	EdgesCenter() noexcept = default;
@@ -45,11 +46,25 @@ public:
     int orientation(int) const;
 
     using Twistable::twisted;
-    EdgesCenter twisted(Twist) const;
+    EdgesCenter twisted(Twist) const override;
 
     uint64_t prm_index() const;
     uint64_t ori_index() const;
     uint64_t index() const;
-    uint64_t ud_slice_prm_index() const;
-	uint64_t hash() const override;
+    uint64_t ud_slice_location_index() const;
+	uint64_t hash() const;
 };
+
+std::string to_string(const EdgesCenter&);
+
+namespace std
+{
+    template <>
+	struct hash<EdgesCenter>
+	{
+		size_t operator()(const EdgesCenter& c) const
+		{
+			return c.hash();
+		}
+	};
+}

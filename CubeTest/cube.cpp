@@ -1,168 +1,6 @@
 #include "pch.h"
 #include <vector>
 
-template <typename CubeType>
-class CubeTest : public testing::Test {};
-
-class NameGenerator {
-public:
-	template <typename T>
-	static std::string GetName(int) {
-		if constexpr (std::is_same_v<T, Corners>)
-			return "Corners";
-		else if constexpr (std::is_same_v<T, EdgesCenter>)
-			return "EdgesCenter";
-		else if constexpr (std::is_same_v<T, EdgesSide>)
-			return "EdgesSide";
-		else if constexpr (std::is_same_v<T, FacesCenter>)
-			return "FacesCenter";
-		else if constexpr (std::is_same_v<T, FacesSide>)
-			return "FacesSide";
-		else if constexpr (std::is_same_v<T, Cube2x2>)
-			return "Cube2x2";
-		else if constexpr (std::is_same_v<T, Cube3x3>)
-			return "Cube3x3";
-		else if constexpr (std::is_same_v<T, Cube4x4>)
-			return "Cube4x4";
-		else if constexpr (std::is_same_v<T, Cube5x5>)
-			return "Cube5x5";
-		else
-			static_assert(false);
-	}
-};
-
-using CubeTypes = ::testing::Types<Corners, EdgesCenter, EdgesSide, FacesCenter, FacesSide, Cube2x2, Cube3x3, Cube4x4, Cube5x5>;
-TYPED_TEST_CASE(CubeTest, CubeTypes, NameGenerator);
-
-TYPED_TEST(CubeTest, is_solved)
-{
-	EXPECT_TRUE(TypeParam::solved().is_solved());
-	EXPECT_FALSE(TypeParam::impossible().is_solved());
-}
-
-TYPED_TEST(CubeTest, composed_twists)
-{
-	const auto c = TypeParam::solved();
-	EXPECT_EQ(c.L2(), c.L1().L1());
-	EXPECT_EQ(c.L3(), c.L1().L1().L1());
-	EXPECT_EQ(c.R2(), c.R1().R1());
-	EXPECT_EQ(c.R3(), c.R1().R1().R1());
-	EXPECT_EQ(c.U2(), c.U1().U1());
-	EXPECT_EQ(c.U3(), c.U1().U1().U1());
-	EXPECT_EQ(c.D2(), c.D1().D1());
-	EXPECT_EQ(c.D3(), c.D1().D1().D1());
-	EXPECT_EQ(c.F2(), c.F1().F1());
-	EXPECT_EQ(c.F3(), c.F1().F1().F1());
-	EXPECT_EQ(c.B2(), c.B1().B1());
-	EXPECT_EQ(c.B3(), c.B1().B1().B1());
-	EXPECT_EQ(c.l2(), c.l1().l1());
-	EXPECT_EQ(c.l3(), c.l1().l1().l1());
-	EXPECT_EQ(c.r2(), c.r1().r1());
-	EXPECT_EQ(c.r3(), c.r1().r1().r1());
-	EXPECT_EQ(c.u2(), c.u1().u1());
-	EXPECT_EQ(c.u3(), c.u1().u1().u1());
-	EXPECT_EQ(c.d2(), c.d1().d1());
-	EXPECT_EQ(c.d3(), c.d1().d1().d1());
-	EXPECT_EQ(c.f2(), c.f1().f1());
-	EXPECT_EQ(c.f3(), c.f1().f1().f1());
-	EXPECT_EQ(c.b2(), c.b1().b1());
-	EXPECT_EQ(c.b3(), c.b1().b1().b1());
-}
-
-TYPED_TEST(CubeTest, inverse_twists)
-{
-	for (Twist t : all_twists)
-		EXPECT_TRUE(TypeParam::solved().twisted(t, inversed(t)).is_solved());
-}
-
-TYPED_TEST(CubeTest, twists_cycle)
-{
-	for (Twist t : all_twists)
-		EXPECT_TRUE(TypeParam::solved().twisted(t, t, t, t).is_solved());
-}
-
-template <typename Twistable>
-void expect_pairwise_commutation(const Twistable& t, Twist a, Twist b)
-{
-	EXPECT_EQ(t.twisted(a).twisted(b), t.twisted(b).twisted(a));
-}
-
-template <typename Twistable>
-void expect_pairwise_commutation(const Twistable& t, Twist a, Twist b, Twist c, Twist d)
-{
-	expect_pairwise_commutation(t, a, b);
-	expect_pairwise_commutation(t, a, c);
-	expect_pairwise_commutation(t, a, d);
-	expect_pairwise_commutation(t, b, c);
-	expect_pairwise_commutation(t, b, d);
-	expect_pairwise_commutation(t, c, d);
-}
-
-TYPED_TEST(CubeTest, commutation)
-{
-	const auto t = Cube5x5::solved();
-	expect_pairwise_commutation(t, Twist::L1, Twist::l1, Twist::R1, Twist::r1);
-	expect_pairwise_commutation(t, Twist::U1, Twist::u1, Twist::D1, Twist::d1);
-	expect_pairwise_commutation(t, Twist::F1, Twist::f1, Twist::B1, Twist::b1);
-}
-
-
-TEST(Corners, state)
-{
-	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 0, 1 }; // arbitrary
-	std::vector<uint8_t> o = { 1, 2, 0, 1, 2, 0, 1, 2 }; // arbitrary
-	Corners obj(
-		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7],
-		o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7]);
-	for (int i = 0; i < c.size(); i++)
-		EXPECT_EQ(obj.cubie(i), c[i]);
-	for (int i = 0; i < o.size(); i++)
-		EXPECT_EQ(obj.orientation(i), o[i]);
-}
-
-TEST(EdgesCenter, state)
-{
-	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3 }; // arbitrary
-	std::vector<uint8_t> o = { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }; // arbitrary
-	EdgesCenter obj(
-		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
-		o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7], o[8], o[9], o[10], o[11]);
-	for (int i = 0; i < c.size(); i++)
-		EXPECT_EQ(obj.cubie(i), c[i]);
-	for (int i = 0; i < o.size(); i++)
-		EXPECT_EQ(obj.orientation(i), o[i]);
-}
-
-TEST(EdgesSide, state)
-{
-	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3 }; // arbitrary
-	EdgesSide obj(
-		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
-		c[12], c[13], c[14], c[15], c[16], c[17], c[18], c[19], c[20], c[21], c[22], c[23]);
-	for (int i = 0; i < c.size(); i++)
-		EXPECT_EQ(obj.cubie(i), c[i]);
-}
-
-TEST(FacesCenter, state)
-{
-	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3 }; // arbitrary
-	FacesCenter obj(
-		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
-		c[12], c[13], c[14], c[15], c[16], c[17], c[18], c[19], c[20], c[21], c[22], c[23]);
-	for (int i = 0; i < c.size(); i++)
-		EXPECT_EQ(obj.cubie(i), c[i]);
-}
-
-TEST(FacesSide, state)
-{
-	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3 }; // arbitrary
-	FacesSide obj(
-		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
-		c[12], c[13], c[14], c[15], c[16], c[17], c[18], c[19], c[20], c[21], c[22], c[23]);
-	for (int i = 0; i < c.size(); i++)
-		EXPECT_EQ(obj.cubie(i), c[i]);
-}
-
 const uint8_t a0 = 0, a1 = 1, a2 = 2, a3 = 3, a4 = 4, a5 = 5, a6 = 6, a7 = 7;
 const uint8_t b0 = 8, b1 = 9, b2 = 10, b3 = 11, b4 = 12, b5 = 13, b6 = 14, b7 = 15;
 const uint8_t c0 = 16, c1 = 17, c2 = 18, c3 = 19, c4 = 20, c5 = 21, c6 = 22, c7 = 23;
@@ -222,5 +60,332 @@ TEST(FacesSide, f1) { EXPECT_EQ(Y.f1(), FacesSide(a0, b4, a2, b5, b2, a5, b3, a7
 TEST(FacesSide, B1) { EXPECT_EQ(Y.B1(), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c6, c4, c7, c5)); }
 TEST(FacesSide, b1) { EXPECT_EQ(Y.b1(), FacesSide(b1, a1, b0, a3, a4, b7, a6, b6, a5, a7, b2, b3, b4, b5, a0, a2, c0, c1, c2, c3, c4, c5, c6, c7)); }
 
+class NameGenerator {
+public:
+	template <typename T>
+	static std::string GetName(int) {
+		if constexpr (std::is_same_v<T, Corners>)
+			return "Corners";
+		else if constexpr (std::is_same_v<T, EdgesCenter>)
+			return "EdgesCenter";
+		else if constexpr (std::is_same_v<T, EdgesSide>)
+			return "EdgesSide";
+		else if constexpr (std::is_same_v<T, FacesCenter>)
+			return "FacesCenter";
+		else if constexpr (std::is_same_v<T, FacesSide>)
+			return "FacesSide";
+		else if constexpr (std::is_same_v<T, Cube2x2>)
+			return "Cube2x2";
+		else if constexpr (std::is_same_v<T, Cube3x3>)
+			return "Cube3x3";
+		else if constexpr (std::is_same_v<T, Cube4x4>)
+			return "Cube4x4";
+		else if constexpr (std::is_same_v<T, Cube5x5>)
+			return "Cube5x5";
+		else
+			static_assert(false);
+	}
+};
+
 template <typename CubeType>
-void twist_fuzzing()
+class CubeTest : public testing::Test {};
+
+using CubeTypes = ::testing::Types<Corners, EdgesCenter, EdgesSide, FacesCenter, FacesSide, Cube2x2, Cube3x3, Cube4x4, Cube5x5>;
+TYPED_TEST_CASE(CubeTest, CubeTypes, NameGenerator);
+
+TYPED_TEST(CubeTest, is_solved)
+{
+	EXPECT_TRUE(TypeParam::solved().is_solved());
+	EXPECT_FALSE(TypeParam::impossible().is_solved());
+}
+
+TYPED_TEST(CubeTest, twists)
+{
+	EXPECT_GT(TypeParam::twists.size(), 0);
+}
+
+TYPED_TEST(CubeTest, hash)
+{
+	EXPECT_EQ(std::hash<TypeParam>{}(TypeParam::solved()), std::hash<TypeParam>{}(TypeParam::solved()));
+	EXPECT_NE(std::hash<TypeParam>{}(TypeParam::solved()), std::hash<TypeParam>{}(TypeParam::impossible()));
+}
+
+TYPED_TEST(CubeTest, composed_twists)
+{
+	const auto c = TypeParam::solved();
+	EXPECT_EQ(c.L2(), c.L1().L1());
+	EXPECT_EQ(c.L3(), c.L1().L1().L1());
+	EXPECT_EQ(c.R2(), c.R1().R1());
+	EXPECT_EQ(c.R3(), c.R1().R1().R1());
+	EXPECT_EQ(c.U2(), c.U1().U1());
+	EXPECT_EQ(c.U3(), c.U1().U1().U1());
+	EXPECT_EQ(c.D2(), c.D1().D1());
+	EXPECT_EQ(c.D3(), c.D1().D1().D1());
+	EXPECT_EQ(c.F2(), c.F1().F1());
+	EXPECT_EQ(c.F3(), c.F1().F1().F1());
+	EXPECT_EQ(c.B2(), c.B1().B1());
+	EXPECT_EQ(c.B3(), c.B1().B1().B1());
+	EXPECT_EQ(c.l2(), c.l1().l1());
+	EXPECT_EQ(c.l3(), c.l1().l1().l1());
+	EXPECT_EQ(c.r2(), c.r1().r1());
+	EXPECT_EQ(c.r3(), c.r1().r1().r1());
+	EXPECT_EQ(c.u2(), c.u1().u1());
+	EXPECT_EQ(c.u3(), c.u1().u1().u1());
+	EXPECT_EQ(c.d2(), c.d1().d1());
+	EXPECT_EQ(c.d3(), c.d1().d1().d1());
+	EXPECT_EQ(c.f2(), c.f1().f1());
+	EXPECT_EQ(c.f3(), c.f1().f1().f1());
+	EXPECT_EQ(c.b2(), c.b1().b1());
+	EXPECT_EQ(c.b3(), c.b1().b1().b1());
+}
+
+TYPED_TEST(CubeTest, inverse_twists)
+{
+	for (Twist t : all_twists)
+		EXPECT_TRUE(TypeParam::solved().twisted(t, inversed(t)).is_solved());
+}
+
+TYPED_TEST(CubeTest, twists_cycle)
+{
+	for (Twist t : all_twists)
+		EXPECT_TRUE(TypeParam::solved().twisted(t, t, t, t).is_solved());
+}
+
+template <typename Twistable>
+void expect_pairwise_commutation(const Twistable& t, Twist a, Twist b)
+{
+	EXPECT_EQ(t.twisted(a, b), t.twisted(b, a));
+}
+
+template <typename Twistable>
+void expect_pairwise_commutation(const Twistable& t, Twist a, Twist b, Twist c, Twist d)
+{
+	expect_pairwise_commutation(t, a, b);
+	expect_pairwise_commutation(t, a, c);
+	expect_pairwise_commutation(t, a, d);
+	expect_pairwise_commutation(t, b, c);
+	expect_pairwise_commutation(t, b, d);
+	expect_pairwise_commutation(t, c, d);
+}
+
+TYPED_TEST(CubeTest, commutation)
+{
+	const auto t = Cube5x5::solved();
+	expect_pairwise_commutation(t, Twist::L1, Twist::l1, Twist::R1, Twist::r1);
+	expect_pairwise_commutation(t, Twist::U1, Twist::u1, Twist::D1, Twist::d1);
+	expect_pairwise_commutation(t, Twist::F1, Twist::f1, Twist::B1, Twist::b1);
+}
+
+TEST(Corners, state)
+{
+	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 0, 1 }; // arbitrary
+	std::vector<uint8_t> o = { 1, 2, 0, 1, 2, 0, 1, 2 }; // arbitrary
+	Corners obj(
+		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7],
+		o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7]);
+	for (int i = 0; i < c.size(); i++)
+		EXPECT_EQ(obj.cubie(i), c[i]);
+	for (int i = 0; i < o.size(); i++)
+		EXPECT_EQ(obj.orientation(i), o[i]);
+}
+
+TEST(EdgesCenter, state)
+{
+	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3 }; // arbitrary
+	std::vector<uint8_t> o = { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }; // arbitrary
+	EdgesCenter obj(
+		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
+		o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7], o[8], o[9], o[10], o[11]);
+	for (int i = 0; i < c.size(); i++)
+		EXPECT_EQ(obj.cubie(i), c[i]);
+	for (int i = 0; i < o.size(); i++)
+		EXPECT_EQ(obj.orientation(i), o[i]);
+}
+
+TEST(EdgesSide, state)
+{
+	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5 }; // arbitrary
+	EdgesSide obj(
+		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
+		c[12], c[13], c[14], c[15], c[16], c[17], c[18], c[19], c[20], c[21], c[22], c[23]);
+	for (int i = 0; i < c.size(); i++)
+		EXPECT_EQ(obj.cubie(i), c[i]);
+}
+
+TEST(FacesCenter, state)
+{
+	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5 }; // arbitrary
+	FacesCenter obj(
+		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
+		c[12], c[13], c[14], c[15], c[16], c[17], c[18], c[19], c[20], c[21], c[22], c[23]);
+	for (int i = 0; i < c.size(); i++)
+		EXPECT_EQ(obj.cubie(i), c[i]);
+}
+
+TEST(FacesSide, state)
+{
+	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5 }; // arbitrary
+	FacesSide obj(
+		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
+		c[12], c[13], c[14], c[15], c[16], c[17], c[18], c[19], c[20], c[21], c[22], c[23]);
+	for (int i = 0; i < c.size(); i++)
+		EXPECT_EQ(obj.cubie(i), c[i]);
+}
+
+// Tests that all n cubies are in the range [0, max_value).
+template <typename CubeType>
+void cubie_twist_fuzzing(int n, int max_value)
+{
+	ASSERT_EQ(n % max_value, 0);
+	RandomTwistGenerator gen(CubeType::twists, /*seed*/82349);
+	CubeType c = CubeType::solved();
+	for (int i = 0; i < 1'000'000; i++)
+	{
+		std::vector<int> cubie_count(max_value, 0);
+		// Check that the cubies are in the range [0, max_value).
+		for (int j = 0; j < n; j++)
+		{
+			auto cubie = c.cubie(j);
+			EXPECT_GE(cubie, 0);
+			EXPECT_LT(cubie, max_value);
+			cubie_count[cubie]++;
+		}
+
+		// Check that each cubie occurs exactly cubies/max_value times.
+		for (int count : cubie_count)
+			EXPECT_EQ(count, n / max_value);
+
+		c = c.twisted(gen());
+	}
+}
+
+TEST(Corners, cubie_twist_fuzzing) { cubie_twist_fuzzing<Corners>(8, 8); }
+TEST(EdgesCenter, cubie_twist_fuzzing) { cubie_twist_fuzzing<EdgesCenter>(12, 12); }
+TEST(EdgesSide, cubie_twist_fuzzing) { cubie_twist_fuzzing<EdgesSide>(24, 24); }
+TEST(FacesCenter, cubie_twist_fuzzing) { cubie_twist_fuzzing<FacesCenter>(24, 6); }
+TEST(FacesSide, cubie_twist_fuzzing) { cubie_twist_fuzzing<FacesSide>(24, 6); }
+
+// Tests that all n orientation of each cubie is in the range [0, max_value).
+template <typename CubeType>
+void orientation_twist_fuzzing(int n, int max_value)
+{
+	RandomTwistGenerator gen(CubeType::twists, /*seed*/82349);
+	CubeType c = CubeType::solved();
+	for (int i = 0; i < 1'000'000; i++)
+	{
+		// Check that the orientations are in the range [0, max_value).
+		for (int j = 0; j < n; j++)
+		{
+			auto orientation = c.orientation(j);
+			EXPECT_GE(orientation, 0);
+			EXPECT_LT(orientation, max_value);
+		}
+
+		c = c.twisted(gen());
+	}
+}
+
+TEST(Corners, orientation_twist_fuzzing) { orientation_twist_fuzzing<Corners>(8, 3); }
+TEST(EdgesCenter, orientation_twist_fuzzing) { orientation_twist_fuzzing<EdgesCenter>(12, 2); }
+
+
+TEST(Corners, prm_index)
+{
+	std::vector<uint64_t> indices;
+	std::array<int, 8> p = { 0, 1, 2, 3, 4, 5, 6, 7 };
+	do
+	{
+		Corners c(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], 0, 0, 0, 0, 0, 0, 0, 0);
+		indices.push_back(c.prm_index());
+	} while (std::next_permutation(p.begin(), p.end()));
+
+	// Check that the indices cover {0, 1, 2, ..., 40319}.
+	std::sort(indices.begin(), indices.end());
+	EXPECT_EQ(indices.size(), factorial(8));
+	for (int i = 0; i < factorial(8); i++)
+		EXPECT_EQ(indices[i], i);
+}
+
+TEST(EdgesCenter, prm_index)
+{
+	EdgesCenter first(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	EXPECT_EQ(first.prm_index(), 0);
+
+	EdgesCenter last(11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	EXPECT_EQ(last.prm_index(), factorial(12) - 1);
+}
+
+TEST(EdgesSide, prm_index)
+{
+	EXPECT_EQ(EdgesSide::solved().prm_index(), 0);
+}
+
+TEST(FacesCenter, prm_index)
+{
+	EXPECT_EQ(FacesCenter::solved().prm_index(), 0);
+}
+
+TEST(FacesSide, prm_index)
+{
+	EXPECT_EQ(FacesSide::solved().prm_index(), 0);
+}
+
+
+TEST(Corners, ori_index)
+{
+	// This generates all possible orientations of the cubies.
+	// Some are only rechable by disassembling the cube.
+	// Thus each index is generated 3 times.
+	std::vector<uint64_t> indices;
+	for (int i = 0; i < std::pow(3, 8); i++)
+	{
+		std::array<int, 8> o;
+		int n = i;
+		for (int j = 0; j < 8; j++)
+		{
+			o[j] = n % 3;
+			n /= 3;
+		}
+		Corners c(0, 1, 2, 3, 4, 5, 6, 7, o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7]);
+		indices.push_back(c.ori_index());
+	}
+
+	// Check that each index is contained 3 times.
+	EXPECT_EQ(indices.size(), std::pow(3, 8));
+	std::ranges::sort(indices);
+	for (int i = 0; i < std::pow(3, 7); i++)
+	{
+		EXPECT_EQ(indices[i * 3], i);
+		EXPECT_EQ(indices[i * 3 + 1], i);
+		EXPECT_EQ(indices[i * 3 + 2], i);
+	}
+}
+
+TEST(EdgesCenter, ori_index)
+{
+	// This generates all possible orientations of the cubies.
+	// Some are only rechable by disassembling the cube.
+	// Thus each index is generated 2 times.
+	std::vector<uint64_t> indices;
+	for (int i = 0; i < std::pow(2, 12); i++)
+	{
+		std::array<int, 12> o;
+		int n = i;
+		for (int j = 0; j < 12; j++)
+		{
+			o[j] = n % 2;
+			n /= 2;
+		}
+		EdgesCenter c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7], o[8], o[9], o[10], o[11]);
+		indices.push_back(c.ori_index());
+	}
+
+	// Check that each index is contained 2 times.
+	EXPECT_EQ(indices.size(), std::pow(2, 12));
+	std::ranges::sort(indices);
+	for (int i = 0; i < std::pow(2, 11); i++)
+	{
+		EXPECT_EQ(indices[i * 2], i);
+		EXPECT_EQ(indices[i * 2 + 1], i);
+	}
+}

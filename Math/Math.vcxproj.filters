@@ -6,9 +6,10 @@
     <ClInclude Include="permutation.h" />
     <ClInclude Include="binomial.h" />
     <ClInclude Include="graph.h" />
+    <ClInclude Include="numeric.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="binomial.cpp" />
-    <ClCompile Include="permutation.cpp" />
+    <ClCompile Include="hash.h" />
   </ItemGroup>
 </Project>

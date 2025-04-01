@@ -2,6 +2,8 @@
 #include <array>
 #include <bit>
 #include <cstdint>
+#include <ranges>
+#include <stdexcept>
 #include <vector>
 
 constexpr uint64_t factorial(uint64_t n)
@@ -29,40 +31,32 @@ constexpr uint64_t factorial(uint64_t n)
 	case 18: return 6402373705728000;
 	case 19: return 121645100408832000;
 	case 20: return 2432902008176640000;
-	default: return n * factorial(n - 1);
+	default: throw std::invalid_argument("n is too big");
 	}
 }
 
-bool is_even_permutation(const std::vector<int>& permutation);
-bool is_odd_permutation(const std::vector<int>& permutation);
-
-template <typename T>
-uint64_t permutation_index(const std::vector<T>& permutation)
+template <std::ranges::random_access_range R>
+bool is_even_permutation(const R& permutation)
 {
-	std::size_t size = permutation.size();
-	uint64_t index = 0;
-	uint32_t bitboard = 0;
-	for (std::size_t i = 0; i < size; ++i)
-	{
-		uint32_t mask = 1 << permutation[i];
-
-		// Number of remaining elements smaller than the current element
-		// (total number of elements smaller than the current element) - (number of visited elements smaller than the current element)
-		uint64_t smaller = permutation[i] - std::popcount(bitboard & (mask - 1));
-
-		// Total number of elements bigger than the current element
-		std::size_t bigger = size - i - 1;
-
-		index += smaller * factorial(bigger);
-		bitboard |= mask;
-	}
-	return index;
+	std::size_t size = std::ranges::distance(permutation);
+	std::size_t count = 0;
+	for (std::size_t i = 0; i < size; i++)
+		for (std::size_t j = i + 1; j < size; j++)
+			if (permutation[i] > permutation[j])
+				count++;
+	return count % 2 == 0;
 }
 
-template <typename T, std::size_t Size>
-uint64_t permutation_index(const std::array<T, Size>& permutation)
+template <std::ranges::random_access_range R>
+bool is_odd_permutation(const R& permutation)
 {
-	std::size_t size = permutation.size();
+	return not is_even_permutation(permutation);
+}
+
+template <std::ranges::random_access_range R>
+uint64_t permutation_index(const R& permutation)
+{
+	std::size_t size = std::ranges::distance(permutation);
 	uint64_t index = 0;
 	uint32_t bitboard = 0;
 	for (std::size_t i = 0; i < size; ++i)
@@ -88,30 +82,37 @@ uint64_t permutation_index(T... args)
 	return permutation_index(std::array{ args... });
 }
 
-template <typename T>
-void nth_permutation(std::vector<T>& vec, uint64_t index)
+template <typename RandomIt, typename Sentinel>
+void nth_permutation(RandomIt first, Sentinel last, uint64_t index)
 {
-	std::size_t size = vec.size();
-	std::vector<T> permutation;
-	permutation.reserve(size);
-	std::vector<bool> used(size, false);
-	for (std::size_t i = 0; i < size; ++i)
-	{
-		uint64_t f = factorial(size - i - 1);
-		uint64_t j = index / f;
-		index %= f;
-		for (std::size_t k = 0; k < size; ++k)
-		{
-			if (used[k])
-				continue;
-			if (j == 0)
-			{
-				permutation.push_back(vec[k]);
-				used[k] = true;
-				break;
-			}
-			--j;
-		}
-	}
-	vec = permutation;
+    using T = typename std::iterator_traits<RandomIt>::value_type;
+    std::size_t size = std::distance(first, last);
+    std::vector<T> permutation;
+    permutation.reserve(size);
+    std::vector<bool> used(size, false);
+    for (std::size_t i = 0; i < size; ++i)
+    {
+        uint64_t f = factorial(size - i - 1);
+        uint64_t j = index / f;
+        index %= f;
+        for (std::size_t k = 0; k < size; ++k)
+        {
+            if (used[k])
+                continue;
+            if (j == 0)
+            {
+                permutation.push_back(*(first + k));
+                used[k] = true;
+                break;
+            }
+            --j;
+        }
+    }
+	std::ranges::copy(permutation, first);
+}
+
+template <std::ranges::random_access_range R>
+void nth_permutation(R& range, uint64_t index)
+{
+    nth_permutation(range.begin(), range.end(), index);
 }

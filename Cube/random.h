@@ -2,7 +2,6 @@
 #include "Math/math.h"
 #include "twist.h"
 #include <random>
-#include <vector>
 
 class RandomTwistGenerator
 {
@@ -13,7 +12,7 @@ public:
 	RandomTwistGenerator(std::vector<Twist> twists, unsigned int seed = std::random_device{}())
 		: rng(seed)
 		, twists(std::move(twists))
-		, dist(0, this->twists.size() - 1)
+		, dist(0, twists.size() - 1)
 	{}
 
 	Twist operator()()
@@ -41,6 +40,9 @@ public:
 		: rnd_twists(twists, seed)
 		, origin(origin)
 	{}
+	RandomCubeGenerator(unsigned int seed = std::random_device{}())
+		: RandomCubeGenerator(Cube::solved(), Cube::twists, seed)
+	{}
 
 	Cube operator()(int twist_count = 100)
 	{
@@ -52,18 +54,13 @@ public:
 };
 
 template <typename Cube>
-Cube RandomCube(unsigned int seed = std::random_device{}())
+Cube RandomCube(Cube origin, std::vector<Twist> twists, unsigned int seed = std::random_device{}())
 {
-	return RandomCubeGenerator<Cube>{ seed }();
+	return RandomCubeGenerator{ origin, twists, seed }();
 }
 
 template <typename Cube>
-std::vector<Cube> RandomCubes(std::size_t count, unsigned int seed = std::random_device{}())
+Cube RandomCube(unsigned int seed = std::random_device{}())
 {
-	RandomCubeGenerator<Cube> rnd(seed);
-	std::vector<Cube> cubes;
-	cubes.reserve(count);
-	for (std::size_t i = 0; i < count; i++)
-		cubes.push_back(rnd());
-	return cubes;
+	return RandomCubeGenerator<Cube>{ seed }();
 }

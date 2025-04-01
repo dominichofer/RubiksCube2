@@ -149,3 +149,14 @@ uint64_t Corners::hash() const
 {
 	return std::hash<uint64_t>{}(state);
 }
+
+std::string to_string(const Corners& c)  
+{
+   std::string str;
+   for (int i = 0; i < 8; i++)
+       str += std::to_string(c.cubie(i)) + ' ';
+   for (int i = 0; i < 8; i++)
+       str += std::to_string(c.orientation(i)) + ' ';
+   str.pop_back();
+   return str;
+}

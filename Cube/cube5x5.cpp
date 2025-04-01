@@ -1,4 +1,5 @@
 #include "cube5x5.h"
+#include "Math/math.h"
 
 const std::vector<Twist> Cube5x5::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
@@ -49,11 +50,14 @@ Cube5x5 Cube5x5::twisted(Twist t) const
 
 uint64_t Cube5x5::hash() const
 {
-	std::hash<uint64_t> h;
-	uint64_t ret = c.hash() + 0x9E3779B9;
-	ret ^= ec.hash() + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	ret ^= es.hash() + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	ret ^= fc.hash() + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	ret ^= fs.hash() + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	return ret;
+	return ::hash(c, ec, es, fc, fs);
+}
+
+std::string to_string(const Cube5x5& c)
+{
+	return "Corners: " + to_string(c.corners())
+		+ " Edges center: " + to_string(c.edges_center())
+		+ " Edges side: " + to_string(c.edges_side())
+		+ " Faces center: " + to_string(c.faces_center())
+		+ " Faces side: " + to_string(c.faces_side());
 }

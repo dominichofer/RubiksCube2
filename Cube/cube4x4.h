@@ -11,12 +11,11 @@ class Cube4x4 : public Twistable<Cube4x4>
 	Corners c;
 	EdgesSide e;
 	FacesSide f;
-
-	Cube4x4(Corners c, EdgesSide e, FacesSide f) noexcept : c(c), e(e), f(f) {}
 public:
 	static const std::vector<Twist> twists;
 
 	Cube4x4() noexcept = default;
+	Cube4x4(Corners c, EdgesSide e, FacesSide f) noexcept : c(c), e(e), f(f) {}
 	static Cube4x4 solved();
 	static Cube4x4 impossible();
 
@@ -28,7 +27,21 @@ public:
 	const FacesSide& faces() const { return f; }
 
 	using Twistable::twisted;
-	Cube4x4 twisted(Twist) const;
+	Cube4x4 twisted(Twist) const override;
 
 	uint64_t hash() const;
 };
+
+std::string to_string(const Cube4x4&);
+
+namespace std
+{
+	template <>
+	struct hash<Cube4x4>
+	{
+		size_t operator()(const Cube4x4& c) const
+		{
+			return c.hash();
+		}
+	};
+}

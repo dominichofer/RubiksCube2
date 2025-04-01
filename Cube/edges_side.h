@@ -61,9 +61,23 @@ public:
 	int cubie(int) const;
 
 	using Twistable::twisted;
-	EdgesSide twisted(Twist) const;
+	EdgesSide twisted(Twist) const override;
 
 	uint64_t prm_index() const;
 	uint64_t index() const;
-	uint64_t hash() const override;
+	uint64_t hash() const;
 };
+
+std::string to_string(const EdgesSide&);
+
+namespace std
+{
+	template <>
+	struct hash<EdgesSide>
+	{
+		size_t operator()(const EdgesSide& c) const
+		{
+			return c.hash();
+		}
+	};
+}

@@ -88,18 +88,4 @@ public:
 	Derived b1() const { return twisted(Twist::b1); }
 	Derived b2() const { return twisted(Twist::b2); }
 	Derived b3() const { return twisted(Twist::b3); }
-
-	virtual uint64_t hash() const = 0;
 };
-
-namespace std
-{
-	template <typename Derived>
-	struct hash<Twistable<Derived>>
-	{
-		std::size_t operator()(const Twistable<Derived>& t) const
-		{
-			return t.hash();
-		}
-	};
-}

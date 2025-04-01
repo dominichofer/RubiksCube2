@@ -271,9 +271,14 @@ uint64_t FacesCenter::index() const
 
 uint64_t FacesCenter::hash() const
 {
-	std::hash<uint64_t> h;
-	uint64_t ret = h(a) + 0x9E3779B9;
-	ret ^= h(b) + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	ret ^= h(c) + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	return ret;
+	return ::hash(a, b, c);
+}
+
+std::string to_string(const FacesCenter& f)
+{
+	std::string str;
+	for (int i = 0; i < 24; i++)
+		str += std::to_string(f.cubie(i)) + ' ';
+	str.pop_back();
+	return str;
 }

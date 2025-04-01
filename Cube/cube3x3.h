@@ -10,11 +10,11 @@ class Cube3x3 : public Twistable<Cube3x3>
 	Corners c;
 	EdgesCenter e;
 
-	Cube3x3(Corners c, EdgesCenter e) noexcept : c(c), e(e) {}
 public:
 	static const std::vector<Twist> twists;
 
 	Cube3x3() noexcept = default;
+	Cube3x3(Corners c, EdgesCenter e) noexcept : c(c), e(e) {}
 	static Cube3x3 solved();
 	static Cube3x3 impossible();
 	static Cube3x3 superflip();
@@ -26,7 +26,21 @@ public:
 	const EdgesCenter& edges() const { return e; }
 
 	using Twistable::twisted;
-	Cube3x3 twisted(Twist) const;
+	Cube3x3 twisted(Twist) const override;
 
 	uint64_t hash() const;
 };
+
+std::string to_string(const Cube3x3&);
+
+namespace std
+{
+	template <>
+	struct hash<Cube3x3>
+	{
+		size_t operator()(const Cube3x3& c) const
+		{
+			return c.hash();
+		}
+	};
+}

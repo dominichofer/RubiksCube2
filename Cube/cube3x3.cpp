@@ -2,7 +2,7 @@
 #include "twist.h"
 #include "Math/math.h"
 
-const std::vector<Twist> Twists = {
+const std::vector<Twist> Cube3x3::twists = {
 	Twist::L1, Twist::L2, Twist::L3,
 	Twist::R1, Twist::R2, Twist::R3,
 	Twist::U1, Twist::U2, Twist::U3,
@@ -55,7 +55,11 @@ Cube3x3 Cube3x3::twisted(Twist t) const
 
 uint64_t Cube3x3::hash() const
 {
-	uint64_t ret = c.hash() + 0x9E3779B9;
-	ret ^= e.hash() + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	return ret;
+	return ::hash(c, e);
+}
+
+std::string to_string(const Cube3x3& c)
+{
+	return "Corners: " + to_string(c.corners())
+		 + " Edges: " + to_string(c.edges());
 }

@@ -15,12 +15,11 @@ class Cube5x5 : public Twistable<Cube5x5>
 	EdgesSide es;
 	FacesCenter fc;
 	FacesSide fs;
-
-	Cube5x5(Corners c, EdgesCenter ec, EdgesSide es, FacesCenter fc, FacesSide fs) noexcept : c(c), ec(ec), es(es), fc(fc), fs(fs) {}
 public:
 	static const std::vector<Twist> twists;
 
 	Cube5x5() noexcept = default;
+	Cube5x5(Corners c, EdgesCenter ec, EdgesSide es, FacesCenter fc, FacesSide fs) noexcept : c(c), ec(ec), es(es), fc(fc), fs(fs) {}
 	static Cube5x5 solved();
 	static Cube5x5 impossible();
 
@@ -34,7 +33,21 @@ public:
 	const FacesSide& faces_side() const { return fs; }
 
 	using Twistable::twisted;
-	Cube5x5 twisted(Twist) const;
+	Cube5x5 twisted(Twist) const override;
 
 	uint64_t hash() const;
 };
+
+std::string to_string(const Cube5x5&);
+
+namespace std
+{
+	template <>
+	struct hash<Cube5x5>
+	{
+		size_t operator()(const Cube5x5& c) const
+		{
+			return c.hash();
+		}
+	};
+}

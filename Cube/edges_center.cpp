@@ -1,6 +1,7 @@
 #include "edges_center.h"
 #include "bit.h"
 #include "Math/math.h"
+#include <array>
 #include <stdexcept>
 
 const std::vector<Twist> EdgesCenter::twists = {
@@ -175,12 +176,13 @@ uint64_t EdgesCenter::index() const
 	return prm_index() * ori_size + ori_index();
 }
 
-uint64_t EdgesCenter::ud_slice_prm_index() const
+uint64_t EdgesCenter::ud_slice_location_index() const
 {
-    __m128i prm = _mm_and_si128(state, _mm_set1_epi8(0x0F));
-    uint64_t mask = _mm_movemask_epi8(_mm_cmpgt_epi8(prm, _mm_set1_epi8(7)));
-	std::vector<int> combination(4); // TODO: use std::array
-    for (int i = 0; i < 4; i++)
+    __m128i edges = _mm_and_si128(state, _mm_set1_epi8(0x0F));
+    __m128i ud_edges = _mm_cmpgt_epi8(edges, _mm_set1_epi8(7));
+    uint64_t mask = _mm_movemask_epi8(ud_edges);
+    std::array<int, 4> combination;
+    for (int i = 0; i < combination.size(); i++)
     {
         combination[i] = std::countr_zero(mask);
         clear_lsb(mask);
@@ -190,10 +192,18 @@ uint64_t EdgesCenter::ud_slice_prm_index() const
 
 uint64_t EdgesCenter::hash() const
 {
-	std::hash<uint64_t> h;
     uint64_t lo = _mm_extract_epi64(state, 0);
     uint64_t hi = _mm_extract_epi64(state, 1);
-	uint64_t ret = h(lo) + 0x9E3779B9;
-	ret ^= h(hi) + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	return ret;
+	return ::hash(lo, hi);
+}
+
+std::string to_string(const EdgesCenter& e)
+{
+	std::string str;
+	for (int i = 0; i < 12; i++)
+		str += std::to_string(e.cubie(i)) + ' ';
+	for (int i = 0; i < 12; i++)
+		str += std::to_string(e.orientation(i)) + ' ';
+    str.pop_back();
+	return str;
 }

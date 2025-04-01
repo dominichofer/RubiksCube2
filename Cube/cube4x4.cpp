@@ -1,4 +1,5 @@
 #include "cube4x4.h"
+#include "Math/math.h"
 
 const std::vector<Twist> Cube4x4::twists = {
 	Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
@@ -26,9 +27,12 @@ Cube4x4 Cube4x4::twisted(Twist t) const
 
 uint64_t Cube4x4::hash() const
 {
-	std::hash<uint64_t> h;
-	uint64_t ret = c.hash() + 0x9E3779B9;
-	ret ^= e.hash() + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	ret ^= f.hash() + 0x9E3779B9 + (ret << 6) + (ret >> 2);
-	return ret;
+	return ::hash(c, e, f);
+}
+
+std::string to_string(const Cube4x4& c)
+{
+	return "Corners: " + to_string(c.corners())
+		+ " Edges: " + to_string(c.edges())
+		+ " Faces: " + to_string(c.faces());
 }

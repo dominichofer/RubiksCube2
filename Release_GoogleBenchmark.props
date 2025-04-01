@@ -15,6 +15,7 @@
     <ClCompile />
     <ClCompile>
       <AdditionalIncludeDirectories>C:\Users\Dominic\source\repos\benchmark\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BENCHMARK_STATIC_DEFINE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />
