@@ -2,31 +2,38 @@
 #include "intrin.h"
 #include "twist.h"
 #include "Math/math.h"
+#include <array>
 #include <cstdint>
 #include <vector>
 
 class EdgesCenter : public Twistable<EdgesCenter>
 {
-    //     +----2----+
+    //     +----1----+
     //    /|        /|
-    //   3 11      1 10
+    //   4 11      5 10
     //  +----0----+  |
     //  |  |      |  |
-    //  |  +----6-|--+
+    //  |  +----2-|--+
     //  8 /       9 /
-    //  |7        |5
-    //  +----4----+
+    //  |7        |6
+    //  +----3----+
 	__m128i state{ _mm_setzero_si128() };
 
 	EdgesCenter(__m128i state) noexcept : state(state) {}
+
+    int byte(int) const;
 public:
     static const uint64_t prm_size = factorial(12);
     static const uint64_t ori_size = powi(2, 11);
     static const uint64_t index_size = prm_size * ori_size;
-    static const uint64_t ud_slice_location_size = binomial(12, 4);
     static const std::vector<Twist> twists;
 
 	EdgesCenter() noexcept = default;
+    EdgesCenter(
+        uint8_t e0, uint8_t e1, uint8_t e2, uint8_t e3,
+        uint8_t e4, uint8_t e5, uint8_t e6, uint8_t e7,
+        uint8_t e8, uint8_t e9, uint8_t e10, uint8_t e11,
+        uint64_t ori_index);
     EdgesCenter(
         uint8_t e0, uint8_t e1, uint8_t e2, uint8_t e3,
         uint8_t e4, uint8_t e5, uint8_t e6, uint8_t e7,
@@ -48,10 +55,13 @@ public:
     using Twistable::twisted;
     EdgesCenter twisted(Twist) const override;
 
+    std::array<uint8_t, 4> lr_slice_location() const;
+    std::array<uint8_t, 4> ud_slice_location() const;
+    std::array<uint8_t, 4> fb_slice_location() const;
+
     uint64_t prm_index() const;
     uint64_t ori_index() const;
     uint64_t index() const;
-    uint64_t ud_slice_location_index() const;
 	uint64_t hash() const;
 };
 

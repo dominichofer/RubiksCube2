@@ -22,9 +22,7 @@ TEST(H0_subset, from_index)
 	for (int i = 0; i < 1'000'000; i++)
 	{
 		auto cube = rnd();
-		auto index = H0::subset_index(cube);
-		auto cube2 = H0::from_subset_index(index);
-		EXPECT_EQ(cube, cube2);
+		EXPECT_EQ(cube, H0::from_subset(H0::subset_index(cube)));
 	}
 }
 

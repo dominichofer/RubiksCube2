@@ -13,6 +13,31 @@ const std::vector<Twist> EdgesCenter::twists = {
     Twist::B1, Twist::B2, Twist::B3
 };
 
+EdgesCenter::EdgesCenter(uint8_t e0, uint8_t e1, uint8_t e2, uint8_t e3, uint8_t e4, uint8_t e5, uint8_t e6, uint8_t e7, uint8_t e8, uint8_t e9, uint8_t e10, uint8_t e11, uint64_t ori_index)
+{
+	if (ori_index >= ori_size)
+		throw std::invalid_argument("ori_index is too big");
+
+	std::array<uint8_t, 12> o;
+	std::ranges::iota(o, 0);
+	nth_permutation(o, ori_index);
+
+	state = _mm_set_epi8(
+        0, 0, 0, 0,
+		o[11] << 7 | e11,
+		o[10] << 7 | e10,
+		o[9] << 7 | e9,
+        o[8] << 7 | e8,
+        o[7] << 7 | e7,
+        o[6] << 7 | e6,
+        o[5] << 7 | e5,
+        o[4] << 7 | e4,
+        o[3] << 7 | e3,
+        o[2] << 7 | e2,
+        o[1] << 7 | e1,
+        o[0] << 7 | e0);
+}
+
 EdgesCenter::EdgesCenter(
     uint8_t e0, uint8_t e1, uint8_t e2, uint8_t e3,
     uint8_t e4, uint8_t e5, uint8_t e6, uint8_t e7,
@@ -39,12 +64,12 @@ EdgesCenter::EdgesCenter(
 
 EdgesCenter EdgesCenter::solved()
 {
-	return EdgesCenter(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    return EdgesCenter{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 }
 
 EdgesCenter EdgesCenter::impossible()
 {
-    return EdgesCenter(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+    return EdgesCenter{ _mm_setzero_si128() };
 }
 
 bool EdgesCenter::operator==(const EdgesCenter& o) const
@@ -74,89 +99,85 @@ bool EdgesCenter::is_solved() const
 	return *this == EdgesCenter::solved();
 }
 
-int EdgesCenter::cubie(int index) const
+int EdgesCenter::byte(int index) const
 {
     switch (index)
     {
-    case 0: return _mm_extract_epi8(state, 0) & 0x0F;
-    case 1: return _mm_extract_epi8(state, 1) & 0x0F;
-    case 2: return _mm_extract_epi8(state, 2) & 0x0F;
-    case 3: return _mm_extract_epi8(state, 3) & 0x0F;
-    case 4: return _mm_extract_epi8(state, 4) & 0x0F;
-    case 5: return _mm_extract_epi8(state, 5) & 0x0F;
-    case 6: return _mm_extract_epi8(state, 6) & 0x0F;
-    case 7: return _mm_extract_epi8(state, 7) & 0x0F;
-    case 8: return _mm_extract_epi8(state, 8) & 0x0F;
-    case 9: return _mm_extract_epi8(state, 9) & 0x0F;
-    case 10: return _mm_extract_epi8(state, 10) & 0x0F;
-    case 11: return _mm_extract_epi8(state, 11) & 0x0F;
-	default: throw std::out_of_range("index out of range");
+    case 0: return _mm_extract_epi8(state, 0);
+    case 1: return _mm_extract_epi8(state, 1);
+    case 2: return _mm_extract_epi8(state, 2);
+    case 3: return _mm_extract_epi8(state, 3);
+    case 4: return _mm_extract_epi8(state, 4);
+    case 5: return _mm_extract_epi8(state, 5);
+    case 6: return _mm_extract_epi8(state, 6);
+    case 7: return _mm_extract_epi8(state, 7);
+    case 8: return _mm_extract_epi8(state, 8);
+    case 9: return _mm_extract_epi8(state, 9);
+    case 10: return _mm_extract_epi8(state, 10);
+    case 11: return _mm_extract_epi8(state, 11);
+    default:
+        throw std::out_of_range("Index out of range");
     }
+}
+
+int EdgesCenter::cubie(int index) const
+{
+	return byte(index) & 0x0F;
 }
 
 int EdgesCenter::orientation(int index) const
 {
-    switch (index)
-    {
-    case 0: return _mm_extract_epi8(state, 0) >> 7;
-    case 1: return _mm_extract_epi8(state, 1) >> 7;
-    case 2: return _mm_extract_epi8(state, 2) >> 7;
-    case 3: return _mm_extract_epi8(state, 3) >> 7;
-    case 4: return _mm_extract_epi8(state, 4) >> 7;
-    case 5: return _mm_extract_epi8(state, 5) >> 7;
-    case 6: return _mm_extract_epi8(state, 6) >> 7;
-    case 7: return _mm_extract_epi8(state, 7) >> 7;
-    case 8: return _mm_extract_epi8(state, 8) >> 7;
-    case 9: return _mm_extract_epi8(state, 9) >> 7;
-    case 10: return _mm_extract_epi8(state, 10) >> 7;
-    case 11: return _mm_extract_epi8(state, 11) >> 7;
-    default: throw std::out_of_range("index out of range");
-    }
+	return byte(index) >> 7;
 }
 
-static const __m128i B_mask = _mm_set_epi8(0, 0, 0, 0, 0x80u, 0x80u, 0, 0, 0, 0x80u, 0, 0, 0, 0x80u, 0, 0);
-static const __m128i F_mask = _mm_set_epi8(0, 0, 0, 0, 0, 0, 0x80u, 0x80u, 0, 0, 0, 0x80u, 0, 0, 0, 0x80u);
+
+__m128i byte_shuffle(__m128i state, int i0, int i1, int i2, int i3, int i4, int i5, int i6, int i7, int i8, int i9, int i10, int i11)
+{
+	return byte_shuffle(state, i0, i1, i2, i3, i4, i5, i6, i7, i8, i9, i10, i11, 12, 13, 14, 15);
+}
 
 EdgesCenter EdgesCenter::twisted(Twist r) const
 {
+    const __m128i R_mask = _mm_set_epi8(0, 0, 0, 0, 0, 0x80u, 0x80u, 0, 0, 0x80u, 0x80u, 0, 0, 0, 0, 0);
+    const __m128i L_mask = _mm_set_epi8(0, 0, 0, 0, 0x80u, 0, 0, 0x80u, 0x80u, 0, 0, 0x80u, 0, 0, 0, 0);
 	switch (r)
 	{
     case Twist::L1:
-        return byte_shuffle(state, 0, 1, 2, 11, 4, 5, 6, 8, 3, 9, 10, 7, 12, 13, 14, 15);
+		return _mm_xor_si128(byte_shuffle(state, 0, 1, 2, 3, 11, 5, 6, 8, 4, 9, 10, 7), L_mask);
     case Twist::L2:
-        return byte_shuffle(state, 0, 1, 2, 7, 4, 5, 6, 3, 11, 9, 10, 8, 12, 13, 14, 15);
+        return byte_shuffle(state, 0, 1, 2, 3, 7, 5, 6, 4, 11, 9, 10, 8);
     case Twist::L3:
-        return byte_shuffle(state, 0, 1, 2, 8, 4, 5, 6, 11, 7, 9, 10, 3, 12, 13, 14, 15);
+		return _mm_xor_si128(byte_shuffle(state, 0, 1, 2, 3, 8, 5, 6, 11, 7, 9, 10, 4), L_mask);
     case Twist::R1:
-        return byte_shuffle(state, 0, 9, 2, 3, 4, 10, 6, 7, 8, 5, 1, 11, 12, 13, 14, 15);
+        return _mm_xor_si128(byte_shuffle(state, 0, 1, 2, 3, 4, 9, 10, 7, 8, 6, 5, 11), R_mask);
     case Twist::R2:
-        return byte_shuffle(state, 0, 5, 2, 3, 4, 1, 6, 7, 8, 10, 9, 11, 12, 13, 14, 15);
+        return byte_shuffle(state, 0, 1, 2, 3, 4, 6, 5, 7, 8, 10, 9, 11);
     case Twist::R3:
-        return byte_shuffle(state, 0, 10, 2, 3, 4, 9, 6, 7, 8, 1, 5, 11, 12, 13, 14, 15);
+        return _mm_xor_si128(byte_shuffle(state, 0, 1, 2, 3, 4, 10, 9, 7, 8, 5, 6, 11), R_mask);
     case Twist::U1:
-        return byte_shuffle(state, 1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        return byte_shuffle(state, 5, 4, 2, 3, 0, 1, 6, 7, 8, 9, 10, 11);
     case Twist::U2:
-        return byte_shuffle(state, 2, 3, 0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        return byte_shuffle(state, 1, 0, 2, 3, 5, 4, 6, 7, 8, 9, 10, 11);
     case Twist::U3:
-        return byte_shuffle(state, 3, 0, 1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15);
+        return byte_shuffle(state, 4, 5, 2, 3, 1, 0, 6, 7, 8, 9, 10, 11);
     case Twist::D1:
-        return byte_shuffle(state, 0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11, 12, 13, 14, 15);
+        return byte_shuffle(state, 0, 1, 6, 7, 4, 5, 3, 2, 8, 9, 10, 11);
     case Twist::D2:
-        return byte_shuffle(state, 0, 1, 2, 3, 6, 7, 4, 5, 8, 9, 10, 11, 12, 13, 14, 15);
+        return byte_shuffle(state, 0, 1, 3, 2, 4, 5, 7, 6, 8, 9, 10, 11);
     case Twist::D3:
-        return byte_shuffle(state, 0, 1, 2, 3, 5, 6, 7, 4, 8, 9, 10, 11, 12, 13, 14, 15);
+        return byte_shuffle(state, 0, 1, 7, 6, 4, 5, 2, 3, 8, 9, 10, 11);
     case Twist::F1:
-        return _mm_xor_si128(byte_shuffle(state, 8, 1, 2, 3, 9, 5, 6, 7, 4, 0, 10, 11, 12, 13, 14, 15), F_mask);
+        return byte_shuffle(state, 8, 1, 2, 9, 4, 5, 6, 7, 3, 0, 10, 11);
     case Twist::F2:
-        return byte_shuffle(state, 4, 1, 2, 3, 0, 5, 6, 7, 9, 8, 10, 11, 12, 13, 14, 15);
+        return byte_shuffle(state, 3, 1, 2, 0, 4, 5, 6, 7, 9, 8, 10, 11);
     case Twist::F3:
-        return _mm_xor_si128(byte_shuffle(state, 9, 1, 2, 3, 8, 5, 6, 7, 0, 4, 10, 11, 12, 13, 14, 15), F_mask);
+        return byte_shuffle(state, 9, 1, 2, 8, 4, 5, 6, 7, 0, 3, 10, 11);
     case Twist::B1:
-        return _mm_xor_si128(byte_shuffle(state, 0, 1, 10, 3, 4, 5, 11, 7, 8, 9, 6, 2, 12, 13, 14, 15), B_mask);
+        return byte_shuffle(state, 0, 10, 11, 3, 4, 5, 6, 7, 8, 9, 2, 1);
     case Twist::B2:
-        return byte_shuffle(state, 0, 1, 6, 3, 4, 5, 2, 7, 8, 9, 11, 10, 12, 13, 14, 15);
+        return byte_shuffle(state, 0, 2, 1, 3, 4, 5, 6, 7, 8, 9, 11, 10);
     case Twist::B3:
-        return _mm_xor_si128(byte_shuffle(state, 0, 1, 11, 3, 4, 5, 10, 7, 8, 9, 2, 6, 12, 13, 14, 15), B_mask);
+        return byte_shuffle(state, 0, 11, 10, 3, 4, 5, 6, 7, 8, 9, 1, 2);
     default: return *this;
 	}
 }
@@ -176,18 +197,40 @@ uint64_t EdgesCenter::index() const
 	return prm_index() * ori_size + ori_index();
 }
 
-uint64_t EdgesCenter::ud_slice_location_index() const
+std::array<uint8_t, 4> EdgesCenter::lr_slice_location() const
 {
-    __m128i edges = _mm_and_si128(state, _mm_set1_epi8(0x0F));
-    __m128i ud_edges = _mm_cmpgt_epi8(edges, _mm_set1_epi8(7));
-    uint64_t mask = _mm_movemask_epi8(ud_edges);
-    std::array<int, 4> combination;
-    for (int i = 0; i < combination.size(); i++)
+	uint64_t mask = _mm_movemask_epi8(_mm_cmplt_epi8(state, _mm_set1_epi8(4)));
+    std::array<uint8_t, 4> loc;
+    for (int i = 0; i < loc.size(); i++)
     {
-        combination[i] = std::countr_zero(mask);
+        loc[i] = std::countr_zero(mask);
         clear_lsb(mask);
     }
-    return combination_index(12, combination);
+    return loc;
+}
+
+std::array<uint8_t, 4> EdgesCenter::ud_slice_location() const
+{
+    uint64_t mask = _mm_movemask_epi8(_mm_slli_si128(state, 4));
+    std::array<uint8_t, 4> loc;
+    for (int i = 0; i < loc.size(); i++)
+    {
+        loc[i] = std::countr_zero(mask);
+        clear_lsb(mask);
+    }
+	return loc;
+}
+
+std::array<uint8_t, 4> EdgesCenter::fb_slice_location() const
+{
+    uint64_t mask = _mm_movemask_epi8(_mm_slli_si128(state, 5));
+    std::array<uint8_t, 4> loc;
+    for (int i = 0; i < loc.size(); i++)
+    {
+        loc[i] = std::countr_zero(mask);
+        clear_lsb(mask);
+    }
+    return loc;
 }
 
 uint64_t EdgesCenter::hash() const

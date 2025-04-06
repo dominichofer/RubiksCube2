@@ -11,6 +11,19 @@ const std::vector<Twist> Corners::twists = {
 	Twist::B1, Twist::B2, Twist::B3
 };
 
+Corners::Corners(uint64_t prm_index, uint64_t ori_index)
+{
+	if (prm_index >= prm_size)
+		throw std::invalid_argument("prm_index is too big");
+	if (ori_index >= ori_size)
+		throw std::invalid_argument("ori_index is too big");
+    std::array<uint8_t, 8> c;
+    std::ranges::iota(c, 0);
+	nth_permutation(c, prm_index);
+    std::array<uint8_t, 8> o;
+    std::ranges::iota(o, 0);
+}
+
 Corners::Corners(
     uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3,
     uint8_t c4, uint8_t c5, uint8_t c6, uint8_t c7,
@@ -137,7 +150,7 @@ uint64_t Corners::ori_index() const
     uint64_t ori_2 = state & 0x00'00'30'00'30'00'30'00ULL;
     uint64_t index_1 = (ori_1 * 0x02'D9'00'51'00'09'00'01ULL) >> 52;
     uint64_t index_2 = (ori_2 * 0x00'00'F3'00'1B'00'03'00ULL) >> 52;
-    return index_1 + index_2;
+    return index_1 + index_2; // TODO: Move ">> 52" to here!
 }
 
 uint64_t Corners::index() const

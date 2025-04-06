@@ -22,6 +22,7 @@ public:
     static const std::vector<Twist> twists;
 
 	Corners() noexcept = default;
+    Corners(uint64_t prm_index, uint64_t ori_index);
     Corners(
         uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3,
         uint8_t c4, uint8_t c5, uint8_t c6, uint8_t c7,
