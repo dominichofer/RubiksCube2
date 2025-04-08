@@ -2,15 +2,19 @@
 
 TEST(EdgesCenter, ud_slice_location_index)
 {
-	// H0 twists preserve the UD slice location.
-	for (Twist twits : H0::twists)
-		EXPECT_EQ(
-			EdgesCenter::solved().twisted(twits).ud_slice_location(),
-			EdgesCenter::solved().ud_slice_location());
-
-	// non-H0 twists change preserve the UD slice location.
-	for (Twist twits : {Twist::L1, Twist::L3, Twist::R1, Twist::R3, Twist::F1, Twist::F3, Twist::B1, Twist::B3})
-		EXPECT_EQ(
-			EdgesCenter::solved().twisted(twits).ud_slice_location(),
-			EdgesCenter::solved().ud_slice_location());
+	for (Twist twits : EdgesCenter::twists)
+	{
+		auto solved_loc = EdgesCenter::solved().ud_slice_location();
+		auto twisted_loc = EdgesCenter::solved().twisted(twits).ud_slice_location();
+		if (std::ranges::contains(H0::twists, twits))
+		{
+			// H0 twists preserve the UD slice location.
+			EXPECT_EQ(twisted_loc, solved_loc);
+		}
+		else
+		{
+			// non-H0 twists change the UD slice location.
+			EXPECT_NE(twisted_loc, solved_loc);
+		}
+	}
 }

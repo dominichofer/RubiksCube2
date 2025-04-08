@@ -120,14 +120,32 @@ int EdgesCenter::byte(int index) const
     }
 }
 
-int EdgesCenter::cubie(int index) const
+uint8_t EdgesCenter::cubie(int index) const
 {
 	return byte(index) & 0x0F;
 }
 
-int EdgesCenter::orientation(int index) const
+uint8_t EdgesCenter::orientation(int index) const
 {
 	return byte(index) >> 7;
+}
+
+std::array<uint8_t, 12> EdgesCenter::cubies() const
+{
+    return {
+        cubie(0), cubie(1), cubie(2), cubie(3),
+        cubie(4), cubie(5), cubie(6), cubie(7),
+        cubie(8), cubie(9), cubie(10), cubie(11)
+    };
+}
+
+std::array<uint8_t, 12> EdgesCenter::orientations() const
+{
+	return {
+		orientation(0), orientation(1), orientation(2), orientation(3),
+		orientation(4), orientation(5), orientation(6), orientation(7),
+		orientation(8), orientation(9), orientation(10), orientation(11)
+	};
 }
 
 
@@ -184,7 +202,7 @@ EdgesCenter EdgesCenter::twisted(Twist r) const
 
 uint64_t EdgesCenter::prm_index() const
 {
-	return permutation_index(cubie(0), cubie(1), cubie(2), cubie(3), cubie(4), cubie(5), cubie(6), cubie(7), cubie(8), cubie(9), cubie(10), cubie(11));
+    return permutation_index(cubies());
 }
 
 uint64_t EdgesCenter::ori_index() const
@@ -201,21 +219,21 @@ std::array<uint8_t, 4> EdgesCenter::lr_slice_location() const
 {
 	uint64_t mask = _mm_movemask_epi8(_mm_cmplt_epi8(state, _mm_set1_epi8(4)));
     std::array<uint8_t, 4> loc;
-    for (int i = 0; i < loc.size(); i++)
-    {
-        loc[i] = std::countr_zero(mask);
-        clear_lsb(mask);
-    }
+	for (auto& l : loc)
+	{
+		l = std::countr_zero(mask);
+		clear_lsb(mask);
+	}
     return loc;
 }
 
 std::array<uint8_t, 4> EdgesCenter::ud_slice_location() const
 {
-    uint64_t mask = _mm_movemask_epi8(_mm_slli_si128(state, 4));
+    uint64_t mask = _mm_movemask_epi8(_mm_slli_epi64(state, 4));
     std::array<uint8_t, 4> loc;
-    for (int i = 0; i < loc.size(); i++)
+    for (auto& l : loc)
     {
-        loc[i] = std::countr_zero(mask);
+        l = std::countr_zero(mask);
         clear_lsb(mask);
     }
 	return loc;
@@ -223,11 +241,11 @@ std::array<uint8_t, 4> EdgesCenter::ud_slice_location() const
 
 std::array<uint8_t, 4> EdgesCenter::fb_slice_location() const
 {
-    uint64_t mask = _mm_movemask_epi8(_mm_slli_si128(state, 5));
+    uint64_t mask = _mm_movemask_epi8(_mm_slli_epi64(state, 5));
     std::array<uint8_t, 4> loc;
-    for (int i = 0; i < loc.size(); i++)
+	for (auto& l : loc)
     {
-        loc[i] = std::countr_zero(mask);
+        l = std::countr_zero(mask);
         clear_lsb(mask);
     }
     return loc;
@@ -243,10 +261,11 @@ uint64_t EdgesCenter::hash() const
 std::string to_string(const EdgesCenter& e)
 {
 	std::string str;
-	for (int i = 0; i < 12; i++)
-		str += std::to_string(e.cubie(i)) + ' ';
-	for (int i = 0; i < 12; i++)
-		str += std::to_string(e.orientation(i)) + ' ';
+	for (auto c : e.cubies())
+		str += std::to_string(c) + ' ';
+    str += "| ";
+	for (auto o : e.orientations())
+		str += std::to_string(o) + ' ';
     str.pop_back();
 	return str;
 }

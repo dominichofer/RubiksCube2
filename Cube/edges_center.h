@@ -49,8 +49,10 @@ public:
     bool operator<(const EdgesCenter&) const;
 
     bool is_solved() const;
-    int cubie(int) const;
-    int orientation(int) const;
+    uint8_t cubie(int) const;
+    uint8_t orientation(int) const;
+    std::array<uint8_t, 12> cubies() const;
+    std::array<uint8_t, 12> orientations() const;
 
     using Twistable::twisted;
     EdgesCenter twisted(Twist) const override;

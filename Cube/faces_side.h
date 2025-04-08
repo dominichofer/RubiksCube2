@@ -60,7 +60,8 @@ public:
 	auto operator<=>(const FacesSide&) const = default;
 
 	bool is_solved() const;
-	int cubie(int) const;
+	uint8_t cubie(int) const;
+	std::array<uint8_t, 24> cubies() const;
 
 	using Twistable::twisted;
 	FacesSide twisted(Twist) const override;

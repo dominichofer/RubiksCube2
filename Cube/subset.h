@@ -7,7 +7,7 @@
 // H0 = { L2,R2,F2,B2,U,D }
 namespace H0
 {
-    static const uint64_t subset_size = factorial(8) * factorial(8) * factorial(4) / 2;
+    static const uint64_t set_size = factorial(8) * factorial(8) * factorial(4) / 2;
     static const uint64_t cosets = powi(3, 7) * powi(2, 11) * binomial(12, 4);
     static inline std::vector<Twist> twists = {
 		Twist::L2, Twist::R2, Twist::F2, Twist::B2,

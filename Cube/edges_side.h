@@ -58,7 +58,8 @@ public:
 	auto operator<=>(const EdgesSide&) const = default;
 	bool is_solved() const;
 
-	int cubie(int) const;
+	uint8_t cubie(int) const;
+	std::array<uint8_t, 24> cubies() const;
 
 	using Twistable::twisted;
 	EdgesSide twisted(Twist) const override;

@@ -1,5 +1,6 @@
 #include "corners.h"
 #include "bit.h"
+#include "string.h"
 #include "Math/math.h"
 
 const std::vector<Twist> Corners::twists = {
@@ -17,11 +18,24 @@ Corners::Corners(uint64_t prm_index, uint64_t ori_index)
 		throw std::invalid_argument("prm_index is too big");
 	if (ori_index >= ori_size)
 		throw std::invalid_argument("ori_index is too big");
+
     std::array<uint8_t, 8> c;
     std::ranges::iota(c, 0);
 	nth_permutation(c, prm_index);
-    std::array<uint8_t, 8> o;
-    std::ranges::iota(o, 0);
+
+	uint8_t o0 = ori_index % 3; ori_index /= 3;
+	uint8_t o1 = ori_index % 3; ori_index /= 3;
+	uint8_t o2 = ori_index % 3; ori_index /= 3;
+	uint8_t o3 = ori_index % 3; ori_index /= 3;
+	uint8_t o4 = ori_index % 3; ori_index /= 3;
+	uint8_t o5 = ori_index % 3; ori_index /= 3;
+	uint8_t o6 = ori_index % 3; ori_index /= 3;
+	uint8_t o7 = (12 - o0 + o1 + o2 - o3 + o4 - o5 - o6) % 3;
+	*this = Corners(
+		c[0], c[1], c[2], c[3],
+		c[4], c[5], c[6], c[7],
+		o0, o1, o2, o3,
+		o4, o5, o6, o7);
 }
 
 Corners::Corners(
@@ -41,11 +55,22 @@ Corners::Corners(
     state += static_cast<uint64_t>(o7 << 4 | c7) << 56;
 }
 Corners Corners::solved() { return Corners(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0); }
-Corners Corners::impossible() { return Corners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
+Corners Corners::impossible() { return Corners(0); }
 
 bool Corners::is_solved() const { return *this == Corners::solved(); }
-int Corners::cubie(int index) const { return (state >> (index * 8)) & 0x0F; }
-int Corners::orientation(int index) const { return (state >> (index * 8 + 4)) & 0x0F; }
+uint8_t Corners::cubie(int index) const { return (state >> (index * 8)) & 0x0F; }
+uint8_t Corners::orientation(int index) const { return (state >> (index * 8 + 4)) & 0x0F; }
+
+std::array<uint8_t, 8> Corners::cubies() const
+{
+    return { cubie(0), cubie(1), cubie(2), cubie(3), cubie(4), cubie(5), cubie(6), cubie(7) };
+}
+
+std::array<uint8_t, 8> Corners::orientations() const
+{
+	return { orientation(0), orientation(1), orientation(2), orientation(3),
+			 orientation(4), orientation(5), orientation(6), orientation(7) };
+}
 
 static const uint64_t ori_mask = 0x30'30'30'30'30'30'30'30ULL;
 static const uint64_t upper_ori_bit = 0x20'20'20'20'20'20'20'20ULL;
@@ -141,7 +166,7 @@ Corners Corners::twisted(Twist r) const
 
 uint64_t Corners::prm_index() const
 {
-	return permutation_index(cubie(0), cubie(1), cubie(2), cubie(3), cubie(4), cubie(5), cubie(6), cubie(7));
+	return permutation_index(cubies());
 }
 
 uint64_t Corners::ori_index() const
@@ -166,10 +191,11 @@ uint64_t Corners::hash() const
 std::string to_string(const Corners& c)  
 {
    std::string str;
-   for (int i = 0; i < 8; i++)
-       str += std::to_string(c.cubie(i)) + ' ';
-   for (int i = 0; i < 8; i++)
-       str += std::to_string(c.orientation(i)) + ' ';
+   for (auto c : c.cubies())
+       str += std::to_string(c) + ' ';
+   str += "| ";
+   for (auto o : c.orientations())
+       str += std::to_string(o) + ' ';
    str.pop_back();
    return str;
 }

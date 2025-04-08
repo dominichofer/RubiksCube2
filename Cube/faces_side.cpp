@@ -52,13 +52,25 @@ bool FacesSide::is_solved() const
 	return *this == FacesSide::solved();
 }
 
-int FacesSide::cubie(int i) const
+uint8_t FacesSide::cubie(int i) const
 {
 	if (i < 8)
 		return extract_epi8(a, i);
 	if (i < 16)
 		return extract_epi8(b, i - 8);
 	return extract_epi8(c, i - 16);
+}
+
+std::array<uint8_t, 24> FacesSide::cubies() const
+{
+	return {
+		cubie(0), cubie(1), cubie(2), cubie(3),
+		cubie(4), cubie(5), cubie(6), cubie(7),
+		cubie(8), cubie(9), cubie(10), cubie(11),
+		cubie(12), cubie(13), cubie(14), cubie(15),
+		cubie(16), cubie(17), cubie(18), cubie(19),
+		cubie(20), cubie(21), cubie(22), cubie(23)
+	};
 }
 
 FacesSide FacesSide::twisted(Twist t) const

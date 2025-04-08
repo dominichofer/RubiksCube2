@@ -1,6 +1,7 @@
 #pragma once
 #include "twist.h"
 #include "Math/math.h"
+#include <array>
 #include <cstdint>
 #include <vector>
 #include <string>
@@ -34,8 +35,10 @@ public:
     auto operator<=>(const Corners&) const = default;
 
     bool is_solved() const;
-    int cubie(int) const;
-    int orientation(int) const;
+    uint8_t cubie(int) const;
+    uint8_t orientation(int) const;
+    std::array<uint8_t, 8> cubies() const;
+	std::array<uint8_t, 8> orientations() const;
 
     using Twistable::twisted;
     Corners twisted(Twist) const override;

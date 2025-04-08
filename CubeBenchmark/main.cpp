@@ -83,6 +83,14 @@ void H0_subset_index(benchmark::State& state)
 }
 BENCHMARK(H0_subset_index);
 
+void H0_coset_number(benchmark::State& state)
+{
+	auto cube = RandomCube<Cube3x3>();
+	for (auto _ : state)
+		benchmark::DoNotOptimize(H0::coset_number(cube));
+}
+BENCHMARK(H0_coset_number);
+
 void H0_coset_index(benchmark::State& state)
 {
 	auto cube = RandomCube<Cube3x3>();
@@ -91,21 +99,23 @@ void H0_coset_index(benchmark::State& state)
 }
 BENCHMARK(H0_coset_index);
 
-void H0_from_subset_index(benchmark::State& state)
+void H0_from_subset(benchmark::State& state)
 {
 	auto index = H0::subset_index(RandomCube<Cube3x3>());
 	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::from_subset_index(index));
+		benchmark::DoNotOptimize(H0::from_subset(index));
 }
-BENCHMARK(H0_from_subset_index);
+BENCHMARK(H0_from_subset);
 
-void H0_from_coset_index(benchmark::State& state)
+void H0_from_coset(benchmark::State& state)
 {
-	auto index = H0::coset_index(RandomCube<Cube3x3>());
+	auto cube = RandomCube<Cube3x3>();
+	auto number = H0::coset_number(cube);
+	auto index = H0::coset_index(cube);
 	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::from_coset_index(index));
+		benchmark::DoNotOptimize(H0::from_coset(number, index));
 }
-BENCHMARK(H0_from_coset_index);
+BENCHMARK(H0_from_coset);
 
 int main(int argc, char** argv)
 {

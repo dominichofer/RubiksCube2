@@ -41,7 +41,7 @@ Cube3x3 H0::from_subset(uint64_t index)
 	};
 }
 
-uint64_t coset_number(const Cube3x3& cube)
+uint64_t H0::coset_number(const Cube3x3& cube)
 {
 	const auto& c = cube.corners();
 	const auto& e = cube.edges();
@@ -61,9 +61,11 @@ uint64_t H0::coset_index(const Cube3x3& cube)
 	for (uint8_t i = 0; i < 12; i++)
 		if (std::ranges::find(ud, i) == ud.end())
 			rest.push_back(e.cubie(i));
+	for (uint8_t& loc : ud)
+		loc = e.cubie(loc) - 8;
 	uint64_t index = c.prm_index();
-	index = index * factorial(4) * permutation_index(ud | std::views::transform([&](uint8_t i) { return e.cubie(i) - 8; }));
-	index = index * factorial(8) * permutation_index(rest);
+	index = index * factorial(4) + permutation_index(ud);
+	index = index * factorial(8) + permutation_index(rest);
 	return index;
 }
 

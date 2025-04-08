@@ -14,12 +14,12 @@ TEST(Corners, D1) { EXPECT_EQ(Corners::solved().D1(), Corners(0, 1, 2, 3, 6, 4, 
 TEST(Corners, F1) { EXPECT_EQ(Corners::solved().F1(), Corners(4, 0, 2, 3, 5, 1, 6, 7, 1, 1, 0, 0, 1, 1, 0, 0)); }
 TEST(Corners, B1) { EXPECT_EQ(Corners::solved().B1(), Corners(0, 1, 3, 7, 4, 5, 2, 6, 0, 0, 1, 1, 0, 0, 1, 1)); }
 
-TEST(EdgesCenter, L1) { EXPECT_EQ(EdgesCenter::solved().L1(), EdgesCenter(0, 1, 2, 11, 4, 5, 6, 8, 3, 9, 10, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(EdgesCenter, R1) { EXPECT_EQ(EdgesCenter::solved().R1(), EdgesCenter(0, 9, 2, 3, 4, 10, 6, 7, 8, 5, 1, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(EdgesCenter, U1) { EXPECT_EQ(EdgesCenter::solved().U1(), EdgesCenter(1, 2, 3, 0, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(EdgesCenter, D1) { EXPECT_EQ(EdgesCenter::solved().D1(), EdgesCenter(0, 1, 2, 3, 7, 4, 5, 6, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(EdgesCenter, F1) { EXPECT_EQ(EdgesCenter::solved().F1(), EdgesCenter(8, 1, 2, 3, 9, 5, 6, 7, 4, 0, 10, 11, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0)); }
-TEST(EdgesCenter, B1) { EXPECT_EQ(EdgesCenter::solved().B1(), EdgesCenter(0, 1, 10, 3, 4, 5, 11, 7, 8, 9, 6, 2, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1)); }
+TEST(EdgesCenter, L1) { EXPECT_EQ(EdgesCenter::solved().L1(), EdgesCenter(0, 1, 2, 3, 11, 5, 6, 8, 4, 9, 10, 7, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1)); }
+TEST(EdgesCenter, R1) { EXPECT_EQ(EdgesCenter::solved().R1(), EdgesCenter(0, 1, 2, 3, 4, 9, 10, 7, 8, 6, 5, 11, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0)); }
+TEST(EdgesCenter, U1) { EXPECT_EQ(EdgesCenter::solved().U1(), EdgesCenter(5, 4, 2, 3, 0, 1, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
+TEST(EdgesCenter, D1) { EXPECT_EQ(EdgesCenter::solved().D1(), EdgesCenter(0, 1, 6, 7, 4, 5, 3, 2, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
+TEST(EdgesCenter, F1) { EXPECT_EQ(EdgesCenter::solved().F1(), EdgesCenter(8, 1, 2, 9, 4, 5, 6, 7, 3, 0, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
+TEST(EdgesCenter, B1) { EXPECT_EQ(EdgesCenter::solved().B1(), EdgesCenter(0, 10, 11, 3, 4, 5, 6, 7, 8, 9, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
 
 TEST(EdgesSide, L1) { EXPECT_EQ(EdgesSide::solved().L1(), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, c1, c0, b2, b3, b4, b5, c3, c2, b6, b7, b0, b1, c4, c5, c6, c7)); }
 TEST(EdgesSide, l1) { EXPECT_EQ(EdgesSide::solved().l1(), EdgesSide(a2, a1, a4, a3, a6, a5, a0, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
@@ -106,8 +106,9 @@ TYPED_TEST(CubeTest, twists)
 
 TYPED_TEST(CubeTest, hash)
 {
-	EXPECT_EQ(std::hash<TypeParam>{}(TypeParam::solved()), std::hash<TypeParam>{}(TypeParam::solved()));
-	EXPECT_NE(std::hash<TypeParam>{}(TypeParam::solved()), std::hash<TypeParam>{}(TypeParam::impossible()));
+	std::hash<TypeParam> h;
+	EXPECT_EQ(h(TypeParam::solved()), h(TypeParam::solved()));
+	EXPECT_NE(h(TypeParam::solved()), h(TypeParam::impossible()));
 }
 
 TYPED_TEST(CubeTest, composed_twists)

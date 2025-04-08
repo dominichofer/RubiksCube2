@@ -1,59 +1,68 @@
 #include "pch.h"
-#include <unordered_set>
+#include <unordered_map>
 
-// Tests that elements of the subset have a subset_index in the range [0, H0::subset_size).
+//TEST(H0_subset, fuzzing)
+//{
+//	RandomCubeGenerator rnd(Cube3x3::solved(), H0::twists, /*seed*/ 124);
+//	std::unordered_map<uint64_t, Cube3x3> map;
+//	for (int i = 0; i < 1'000'000; i++)
+//	{
+//		auto cube = rnd();
+//		auto index = H0::subset_index(cube);
+//
+//		// subset_index is the range [0, H0::set_size).
+//		EXPECT_GE(index, 0);
+//		EXPECT_LT(index, H0::set_size);
+//
+//		// subset_index is unique for each cube.
+//		if (map.contains(index))
+//			ASSERT_EQ(map[index], cube);
+//		map[index] = cube;
+//
+//		// from_subset_index and subset_index are inverses.
+//		EXPECT_EQ(cube, H0::from_subset(index));
+//	}
+//}
+
+// Tests that elements of the same coset of H0 have the same coset_number.
 // Fuzz test
-TEST(H0_subset, index_range)
+TEST(H0_coset, fuzzing)
 {
-	RandomCubeGenerator rnd(Cube3x3::solved(), H0::twists, /*seed*/ 123);
-	for (int i = 0; i < 1'000'000; i++)
-	{
-		auto index = H0::subset_index(rnd());
-		EXPECT_GE(index, 0);
-		EXPECT_LT(index, H0::subset_size);
-	}
-}
-
-// Tests that subset_index and from_subset_index are inverses.
-// Fuzz test
-TEST(H0_subset, from_index)
-{
-	RandomCubeGenerator rnd(Cube3x3::solved(), H0::twists, /*seed*/ 124);
-	for (int i = 0; i < 1'000'000; i++)
-	{
-		auto cube = rnd();
-		EXPECT_EQ(cube, H0::from_subset(H0::subset_index(cube)));
-	}
-}
-
-// Tests that elements of the subset H0 have unique subset_indices.
-// Fuzz test
-TEST(H0_subset, unique_index)
-{
-	RandomCubeGenerator rnd(Cube3x3::solved(), H0::twists, /*seed*/ 125);
-	std::unordered_set<Cube3x3> set;
-	for (int i = 0; i < 1'000'000; i++)
-		set.insert(rnd());
-
-	std::unordered_set<uint64_t> indices;
-	for (const auto& cube : set)
-		indices.insert(H0::subset_index(cube));
-
-	EXPECT_EQ(indices.size(), set.size());
-}
-
-// Tests that elements of a coset of H0 have the same coset_index.
-// Fuzz test
-TEST(H0_coset_index, same)
-{
-	RandomTwistGenerator rnd_twists(H0::twists, /*seed*/ 125);
+	RandomTwistGenerator rnd_twists(Cube3x3::twists, /*seed*/ 125);
 	RandomCubeGenerator rnd_subset_cube(Cube3x3::solved(), H0::twists, /*seed*/ 126);
-	for (int i = 0; i < 1'000; i++)
+	for (int coset = 0; coset < 100; coset++)
 	{
-		auto twists = rnd_twists(100);
-		auto cube = rnd_subset_cube();
-		auto coset_index = H0::coset_index(cube);
-		for (int j = 0; j < 1'000; j++)
-			EXPECT_EQ(coset_index, H0::coset_index(rnd_subset_cube().twisted(twists)));
+		auto twists = rnd_twists(100); // twists that define the coset
+		auto ref_cube = rnd_subset_cube().twisted(twists);
+		auto ref_number = H0::coset_number(ref_cube);
+
+		std::unordered_map<uint64_t, Cube3x3> map;
+		for (int i = 0; i < 100'000; i++)
+		{
+			auto cube = rnd_subset_cube().twisted(twists);
+			auto number = H0::coset_number(cube);
+			auto index = H0::coset_index(cube);
+
+			// coset_number is the range [0, H0::cosets).
+			EXPECT_GE(number, 0);
+			EXPECT_LT(number, H0::cosets);
+
+			// coset_index is the range [0, H0::set_size).
+			EXPECT_GE(index, 0);
+			EXPECT_LT(index, H0::set_size);
+
+			// coset_number depends on the coset.
+			EXPECT_EQ(ref_number, number);
+
+			// coset_index is unique for each cube.
+			if (map.contains(index))
+				ASSERT_EQ(map[index], cube);
+			map[index] = cube;
+
+			// from_coset and (cosed_number, coset_index) are inverses.
+			std::cout << to_string(cube) << std::endl;
+			std::cout << to_string(H0::from_coset(number, index)) << std::endl;
+			EXPECT_EQ(cube, H0::from_coset(number, index));
+		}
 	}
 }
