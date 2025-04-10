@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bit.cpp" />
+    <ClCompile Include="corners.cpp" />
     <ClCompile Include="edges_center.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

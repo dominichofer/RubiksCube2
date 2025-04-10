@@ -1,8 +1,6 @@
 #include "edges_center.h"
 #include "bit.h"
 #include "Math/math.h"
-#include <array>
-#include <stdexcept>
 
 const std::vector<Twist> EdgesCenter::twists = {
     Twist::L1, Twist::L2, Twist::L3,
@@ -13,58 +11,9 @@ const std::vector<Twist> EdgesCenter::twists = {
     Twist::B1, Twist::B2, Twist::B3
 };
 
-EdgesCenter::EdgesCenter(uint8_t e0, uint8_t e1, uint8_t e2, uint8_t e3, uint8_t e4, uint8_t e5, uint8_t e6, uint8_t e7, uint8_t e8, uint8_t e9, uint8_t e10, uint8_t e11, uint64_t ori_index)
-{
-	if (ori_index >= ori_size)
-		throw std::invalid_argument("ori_index is too big");
-
-	std::array<uint8_t, 12> o;
-	std::ranges::iota(o, 0);
-	nth_permutation(o, ori_index);
-
-	state = _mm_set_epi8(
-        0, 0, 0, 0,
-		o[11] << 7 | e11,
-		o[10] << 7 | e10,
-		o[9] << 7 | e9,
-        o[8] << 7 | e8,
-        o[7] << 7 | e7,
-        o[6] << 7 | e6,
-        o[5] << 7 | e5,
-        o[4] << 7 | e4,
-        o[3] << 7 | e3,
-        o[2] << 7 | e2,
-        o[1] << 7 | e1,
-        o[0] << 7 | e0);
-}
-
-EdgesCenter::EdgesCenter(
-    uint8_t e0, uint8_t e1, uint8_t e2, uint8_t e3,
-    uint8_t e4, uint8_t e5, uint8_t e6, uint8_t e7,
-    uint8_t e8, uint8_t e9, uint8_t e10, uint8_t e11,
-	uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3,
-	uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7,
-	uint8_t o8, uint8_t o9, uint8_t o10, uint8_t o11) noexcept
-{
-    state = _mm_set_epi8(
-        0, 0, 0, 0,
-        o11 << 7 | e11,
-        o10 << 7 | e10,
-        o9 << 7 | e9,
-        o8 << 7 | e8,
-        o7 << 7 | e7,
-        o6 << 7 | e6,
-        o5 << 7 | e5,
-        o4 << 7 | e4,
-        o3 << 7 | e3,
-        o2 << 7 | e2,
-        o1 << 7 | e1,
-        o0 << 7 | e0);
-}
-
 EdgesCenter EdgesCenter::solved()
 {
-    return EdgesCenter{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+    return EdgesCenter{ std::vector{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, std::vector{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
 }
 
 EdgesCenter EdgesCenter::impossible()
@@ -208,6 +157,23 @@ uint64_t EdgesCenter::prm_index() const
 uint64_t EdgesCenter::ori_index() const
 {
 	return _mm_movemask_epi8(state) & 0x7FF;
+}
+
+std::array<uint8_t, 12> EdgesCenter::from_prm_index(uint64_t index)
+{
+    std::array<uint8_t, 12> e;
+	std::ranges::iota(e, 0);
+	nth_permutation(e.begin(), e.end(), index);
+	return e;
+}
+
+std::array<uint8_t, 12> EdgesCenter::from_ori_index(uint64_t index)
+{
+	std::array<uint8_t, 12> o;
+	for (int i = 0; i < 11; i++)
+		o[i] = (index >> i) & 0x01;
+	o[11] = std::popcount(index) % 2; // parity of the number of 1s in the orientation index
+	return o;
 }
 
 uint64_t EdgesCenter::index() const

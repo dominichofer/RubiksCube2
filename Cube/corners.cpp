@@ -12,49 +12,10 @@ const std::vector<Twist> Corners::twists = {
 	Twist::B1, Twist::B2, Twist::B3
 };
 
-Corners::Corners(uint64_t prm_index, uint64_t ori_index)
+Corners Corners::solved()
 {
-	if (prm_index >= prm_size)
-		throw std::invalid_argument("prm_index is too big");
-	if (ori_index >= ori_size)
-		throw std::invalid_argument("ori_index is too big");
-
-    std::array<uint8_t, 8> c;
-    std::ranges::iota(c, 0);
-	nth_permutation(c, prm_index);
-
-	uint8_t o0 = ori_index % 3; ori_index /= 3;
-	uint8_t o1 = ori_index % 3; ori_index /= 3;
-	uint8_t o2 = ori_index % 3; ori_index /= 3;
-	uint8_t o3 = ori_index % 3; ori_index /= 3;
-	uint8_t o4 = ori_index % 3; ori_index /= 3;
-	uint8_t o5 = ori_index % 3; ori_index /= 3;
-	uint8_t o6 = ori_index % 3; ori_index /= 3;
-	uint8_t o7 = (12 - o0 + o1 + o2 - o3 + o4 - o5 - o6) % 3;
-	*this = Corners(
-		c[0], c[1], c[2], c[3],
-		c[4], c[5], c[6], c[7],
-		o0, o1, o2, o3,
-		o4, o5, o6, o7);
+   return Corners(std::vector{ 0, 1, 2, 3, 4, 5, 6, 7 }, std::vector{ 0, 0, 0, 0, 0, 0, 0, 0 });
 }
-
-Corners::Corners(
-    uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3,
-    uint8_t c4, uint8_t c5, uint8_t c6, uint8_t c7,
-    uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3,
-    uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7) noexcept
-{
-    state = 0;
-    state += static_cast<uint64_t>(o0 << 4 | c0);
-    state += static_cast<uint64_t>(o1 << 4 | c1) << 8;
-    state += static_cast<uint64_t>(o2 << 4 | c2) << 16;
-    state += static_cast<uint64_t>(o3 << 4 | c3) << 24;
-    state += static_cast<uint64_t>(o4 << 4 | c4) << 32;
-    state += static_cast<uint64_t>(o5 << 4 | c5) << 40;
-    state += static_cast<uint64_t>(o6 << 4 | c6) << 48;
-    state += static_cast<uint64_t>(o7 << 4 | c7) << 56;
-}
-Corners Corners::solved() { return Corners(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0); }
 Corners Corners::impossible() { return Corners(0); }
 
 bool Corners::is_solved() const { return *this == Corners::solved(); }
@@ -176,6 +137,27 @@ uint64_t Corners::ori_index() const
     uint64_t index_1 = (ori_1 * 0x02'D9'00'51'00'09'00'01ULL) >> 52;
     uint64_t index_2 = (ori_2 * 0x00'00'F3'00'1B'00'03'00ULL) >> 52;
     return index_1 + index_2; // TODO: Move ">> 52" to here!
+}
+
+std::array<uint8_t, 8> Corners::from_prm_index(uint64_t index)
+{
+    std::array<uint8_t, 8> c;
+	std::ranges::iota(c, 0);
+	nth_permutation(c, index);
+	return c;
+}
+
+std::array<uint8_t, 8> Corners::from_ori_index(uint64_t index)
+{
+    uint8_t o6 = index % 3; index /= 3;
+    uint8_t o5 = index % 3; index /= 3;
+    uint8_t o4 = index % 3; index /= 3;
+    uint8_t o3 = index % 3; index /= 3;
+    uint8_t o2 = index % 3; index /= 3;
+    uint8_t o1 = index % 3; index /= 3;
+    uint8_t o0 = index % 3; index /= 3;
+    uint8_t o7 = (12 + o0 - o1 - o2 + o3 - o4 + o5 + o6) % 3;
+	return { o0, o1, o2, o3, o4, o5, o6, o7 };
 }
 
 uint64_t Corners::index() const

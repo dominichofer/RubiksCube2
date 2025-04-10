@@ -7,19 +7,19 @@ const uint8_t c0 = 16, c1 = 17, c2 = 18, c3 = 19, c4 = 20, c5 = 21, c6 = 22, c7 
 const FacesCenter X = FacesCenter(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 const FacesSide Y = FacesSide(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 
-TEST(Corners, L1) { EXPECT_EQ(Corners::solved().L1(), Corners(2, 1, 6, 3, 0, 5, 4, 7, 2, 0, 2, 0, 2, 0, 2, 0)); }
-TEST(Corners, R1) { EXPECT_EQ(Corners::solved().R1(), Corners(0, 5, 2, 1, 4, 7, 6, 3, 0, 2, 0, 2, 0, 2, 0, 2)); }
-TEST(Corners, U1) { EXPECT_EQ(Corners::solved().U1(), Corners(1, 3, 0, 2, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(Corners, D1) { EXPECT_EQ(Corners::solved().D1(), Corners(0, 1, 2, 3, 6, 4, 7, 5, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(Corners, F1) { EXPECT_EQ(Corners::solved().F1(), Corners(4, 0, 2, 3, 5, 1, 6, 7, 1, 1, 0, 0, 1, 1, 0, 0)); }
-TEST(Corners, B1) { EXPECT_EQ(Corners::solved().B1(), Corners(0, 1, 3, 7, 4, 5, 2, 6, 0, 0, 1, 1, 0, 0, 1, 1)); }
+TEST(Corners, L1) { EXPECT_EQ(Corners::solved().L1(), Corners({ 2, 1, 6, 3, 0, 5, 4, 7 }, { 2, 0, 2, 0, 2, 0, 2, 0 })); }
+TEST(Corners, R1) { EXPECT_EQ(Corners::solved().R1(), Corners({ 0, 5, 2, 1, 4, 7, 6, 3 }, { 0, 2, 0, 2, 0, 2, 0, 2 })); }
+TEST(Corners, U1) { EXPECT_EQ(Corners::solved().U1(), Corners({ 1, 3, 0, 2, 4, 5, 6, 7 }, { 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(Corners, D1) { EXPECT_EQ(Corners::solved().D1(), Corners({ 0, 1, 2, 3, 6, 4, 7, 5 }, { 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(Corners, F1) { EXPECT_EQ(Corners::solved().F1(), Corners({ 4, 0, 2, 3, 5, 1, 6, 7 }, { 1, 1, 0, 0, 1, 1, 0, 0 })); }
+TEST(Corners, B1) { EXPECT_EQ(Corners::solved().B1(), Corners({ 0, 1, 3, 7, 4, 5, 2, 6 }, { 0, 0, 1, 1, 0, 0, 1, 1 })); }
 
-TEST(EdgesCenter, L1) { EXPECT_EQ(EdgesCenter::solved().L1(), EdgesCenter(0, 1, 2, 3, 11, 5, 6, 8, 4, 9, 10, 7, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1)); }
-TEST(EdgesCenter, R1) { EXPECT_EQ(EdgesCenter::solved().R1(), EdgesCenter(0, 1, 2, 3, 4, 9, 10, 7, 8, 6, 5, 11, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0)); }
-TEST(EdgesCenter, U1) { EXPECT_EQ(EdgesCenter::solved().U1(), EdgesCenter(5, 4, 2, 3, 0, 1, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(EdgesCenter, D1) { EXPECT_EQ(EdgesCenter::solved().D1(), EdgesCenter(0, 1, 6, 7, 4, 5, 3, 2, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(EdgesCenter, F1) { EXPECT_EQ(EdgesCenter::solved().F1(), EdgesCenter(8, 1, 2, 9, 4, 5, 6, 7, 3, 0, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
-TEST(EdgesCenter, B1) { EXPECT_EQ(EdgesCenter::solved().B1(), EdgesCenter(0, 10, 11, 3, 4, 5, 6, 7, 8, 9, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)); }
+TEST(EdgesCenter, L1) { EXPECT_EQ(EdgesCenter::solved().L1(), EdgesCenter({ 0, 1, 2, 3, 11, 5, 6, 8, 4, 9, 10, 7 }, { 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1 })); }
+TEST(EdgesCenter, R1) { EXPECT_EQ(EdgesCenter::solved().R1(), EdgesCenter({ 0, 1, 2, 3, 4, 9, 10, 7, 8, 6, 5, 11 }, { 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0 })); }
+TEST(EdgesCenter, U1) { EXPECT_EQ(EdgesCenter::solved().U1(), EdgesCenter({ 5, 4, 2, 3, 0, 1, 6, 7, 8, 9, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(EdgesCenter, D1) { EXPECT_EQ(EdgesCenter::solved().D1(), EdgesCenter({ 0, 1, 6, 7, 4, 5, 3, 2, 8, 9, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(EdgesCenter, F1) { EXPECT_EQ(EdgesCenter::solved().F1(), EdgesCenter({ 8, 1, 2, 9, 4, 5, 6, 7, 3, 0, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(EdgesCenter, B1) { EXPECT_EQ(EdgesCenter::solved().B1(), EdgesCenter({ 0, 10, 11, 3, 4, 5, 6, 7, 8, 9, 2, 1 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
 
 TEST(EdgesSide, L1) { EXPECT_EQ(EdgesSide::solved().L1(), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, c1, c0, b2, b3, b4, b5, c3, c2, b6, b7, b0, b1, c4, c5, c6, c7)); }
 TEST(EdgesSide, l1) { EXPECT_EQ(EdgesSide::solved().l1(), EdgesSide(a2, a1, a4, a3, a6, a5, a0, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
@@ -179,11 +179,9 @@ TYPED_TEST(CubeTest, commutation)
 
 TEST(Corners, state)
 {
-	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 0, 1 }; // arbitrary
-	std::vector<uint8_t> o = { 1, 2, 0, 1, 2, 0, 1, 2 }; // arbitrary
-	Corners obj(
-		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7],
-		o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7]);
+	std::array<uint8_t, 8> c = { 2, 3, 4, 5, 6, 7, 0, 1 }; // arbitrary
+	std::array<uint8_t, 8> o = { 1, 2, 0, 1, 2, 0, 1, 2 }; // arbitrary
+	Corners obj(c, o);
 	for (int i = 0; i < c.size(); i++)
 		EXPECT_EQ(obj.cubie(i), c[i]);
 	for (int i = 0; i < o.size(); i++)
@@ -194,9 +192,7 @@ TEST(EdgesCenter, state)
 {
 	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3 }; // arbitrary
 	std::vector<uint8_t> o = { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }; // arbitrary
-	EdgesCenter obj(
-		c[0], c[1], c[2], c[3], c[4], c[5], c[6], c[7], c[8], c[9], c[10], c[11],
-		o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7], o[8], o[9], o[10], o[11]);
+	EdgesCenter obj(c, o);
 	for (int i = 0; i < c.size(); i++)
 		EXPECT_EQ(obj.cubie(i), c[i]);
 	for (int i = 0; i < o.size(); i++)
@@ -296,7 +292,7 @@ TEST(Corners, prm_index)
 	std::array<int, 8> p = { 0, 1, 2, 3, 4, 5, 6, 7 };
 	do
 	{
-		Corners c(p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7], 0, 0, 0, 0, 0, 0, 0, 0);
+		Corners c(p, { 0, 0, 0, 0, 0, 0, 0, 0 });
 		indices.push_back(c.prm_index());
 	} while (std::next_permutation(p.begin(), p.end()));
 
@@ -309,10 +305,10 @@ TEST(Corners, prm_index)
 
 TEST(EdgesCenter, prm_index)
 {
-	EdgesCenter first(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	EdgesCenter first({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 	EXPECT_EQ(first.prm_index(), 0);
 
-	EdgesCenter last(11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+	EdgesCenter last({ 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
 	EXPECT_EQ(last.prm_index(), factorial(12) - 1);
 }
 
@@ -347,7 +343,7 @@ TEST(Corners, ori_index)
 			o[j] = n % 3;
 			n /= 3;
 		}
-		Corners c(0, 1, 2, 3, 4, 5, 6, 7, o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7]);
+		Corners c({ 0, 1, 2, 3, 4, 5, 6, 7 }, o);
 		indices.push_back(c.ori_index());
 	}
 
@@ -377,7 +373,7 @@ TEST(EdgesCenter, ori_index)
 			o[j] = n % 2;
 			n /= 2;
 		}
-		EdgesCenter c(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, o[0], o[1], o[2], o[3], o[4], o[5], o[6], o[7], o[8], o[9], o[10], o[11]);
+		EdgesCenter c({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, o);
 		indices.push_back(c.ori_index());
 	}
 

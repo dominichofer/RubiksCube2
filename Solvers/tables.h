@@ -18,12 +18,12 @@ class DistanceTable
 {
 	std::vector<uint8_t> table;
 	std::function<uint64_t(Cube)> index;
-	std::vector<typename Cube::Twist> twists;
+	std::vector<Twist> twists;
 	int max_distance_;
 public:
 	DistanceTable(
 		const Cube& origin,
-		std::vector<typename Cube::Twist> twists,
+		std::vector<Twist> twists,
 		std::function<uint64_t(Cube)> index_fkt,
 		std::size_t index_size)
 		: table(index_size, 0xFF)
@@ -61,9 +61,9 @@ public:
 	int max_distance() const { return max_distance_; }
 	int operator[](const Cube& cube) const { return table[index(cube)]; }
 
-	std::vector<typename Cube::Twist> solution(Cube cube) const
+	std::vector<Twist> solution(Cube cube) const
 	{
-		std::vector<typename Cube::Twist> path;
+		std::vector<Twist> path;
 		uint8_t distance = table[index(cube)];
 		while (distance > 0)
 			for (auto twist : twists)
@@ -85,12 +85,12 @@ public:
 template <typename Cube>
 class SolutionTable
 {
-	std::unordered_map<Cube, std::vector<typename Cube::Twist>> table;
+	std::unordered_map<Cube, std::vector<Twist>> table;
 	int max_distance_;
 public:
 	SolutionTable(
 		const Cube& origin,
-		std::vector<typename Cube::Twist> twists,
+		std::vector<Twist> twists,
 		int max_distance)
 		: max_distance_(max_distance)
 	{
@@ -100,7 +100,7 @@ public:
 	}
 	SolutionTable(int max_distance) : SolutionTable(Cube{}, Cube::twists, max_distance) {}
 
-	std::optional<std::vector<typename Cube::Twist>> operator[](const Cube& cube) const
+	std::optional<std::vector<Twist>> operator[](const Cube& cube) const
 	{
 		auto it = table.find(cube);
 		if (it == table.end())

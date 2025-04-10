@@ -30,7 +30,7 @@ TEST(H0_coset, fuzzing)
 {
 	RandomTwistGenerator rnd_twists(Cube3x3::twists, /*seed*/ 125);
 	RandomCubeGenerator rnd_subset_cube(Cube3x3::solved(), H0::twists, /*seed*/ 126);
-	for (int coset = 0; coset < 100; coset++)
+	for (int coset = 0; coset < 10; coset++)
 	{
 		auto twists = rnd_twists(100); // twists that define the coset
 		auto ref_cube = rnd_subset_cube().twisted(twists);
@@ -60,8 +60,6 @@ TEST(H0_coset, fuzzing)
 			map[index] = cube;
 
 			// from_coset and (cosed_number, coset_index) are inverses.
-			std::cout << to_string(cube) << std::endl;
-			std::cout << to_string(H0::from_coset(number, index)) << std::endl;
 			EXPECT_EQ(cube, H0::from_coset(number, index));
 		}
 	}

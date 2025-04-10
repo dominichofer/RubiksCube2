@@ -1,5 +1,19 @@
 #include "pch.h"
 
+// Fuzz test
+TEST(EdgesCenter, from_indices)
+{
+	RandomCubeGenerator<EdgesCenter> rnd(/*seed*/ 68453);
+	for (int i = 0; i < 1'000'000; i++)
+	{
+		auto ref = rnd();
+		auto p = ref.prm_index();
+		auto o = ref.ori_index();
+		auto cube = EdgesCenter{ EdgesCenter::from_prm_index(p), EdgesCenter::from_ori_index(o) };
+		EXPECT_EQ(cube, ref);
+	}
+}
+
 TEST(EdgesCenter, ud_slice_location_index)
 {
 	for (Twist twits : EdgesCenter::twists)
