@@ -83,15 +83,17 @@ Cube3x3 H0::from_coset(uint64_t number, uint64_t index)
 	// The parity of the corner permutation is the same as the parity of the edge permutation; thus '*2'.
 	uint64_t corner_prm = index * 2;
 
+	std::array<uint8_t, 4> ud_cubie;
+	std::ranges::iota(ud_cubie, 8);
+	nth_permutation(ud_cubie, ud_prm);
+
 	std::vector<uint8_t> e(8);
 	std::ranges::iota(e, 0);
 	nth_permutation(e, rest_prm);
+
 	auto ud_loc = nth_combination(12, 4, ud_loc_index);
-	std::array<uint8_t, 4> ud_cubie;
-	std::ranges::iota(ud_cubie, 0);
-	nth_permutation(ud_cubie, ud_prm);
 	for (int i = 0; i < 4; i++)
-		e.insert(e.begin() + ud_loc[i], ud_cubie[i] + 8);
+		e.insert(e.begin() + ud_loc[i], ud_cubie[i]);
 
 	auto c = Corners::from_prm_index(corner_prm);
 	if (is_even_permutation(c) != is_even_permutation(e))

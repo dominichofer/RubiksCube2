@@ -65,13 +65,13 @@ TEST(nth_permutation, small_sets)
 	for (int size = 0; size < 9; ++size)
 	{
 		std::vector<int> p(size), q(size);
-		std::iota(p.begin(), p.end(), 0);
-		for (int i = 0; i < factorial(size); ++i)
+		std::ranges::iota(p, 0);
+		for (uint64_t i = 0; i < factorial(size); ++i)
 		{
 			std::ranges::iota(q, 0);
 			nth_permutation(q, i);
 			EXPECT_EQ(q, p);
-			std::next_permutation(p.begin(), p.end());
+			std::ranges::next_permutation(p);
 		}
 	}
 }
@@ -83,7 +83,7 @@ TEST(nth_permutation, is_inverse_of_permutation_index)
 	std::mt19937 rnd{ 1233 }; // Fixed seed for reproducibility.
 	std::array<int, 20> p;
 	std::vector<int> q(20);
-	std::iota(p.begin(), p.end(), 0);
+	std::ranges::iota(p, 0);
 	for (int i = 0; i < 10'000; ++i)
 	{
 		std::ranges::shuffle(p, rnd);
@@ -106,7 +106,7 @@ TEST(permutation_index_half, is_bijection)
 		int odd_permutations = 0;
 		for (int i = 0; i < factorial(size); ++i)
 		{
-			std::iota(p.begin(), p.end(), 0);
+			std::ranges::iota(p, 0);
 			nth_permutation(p, i);
 			if (is_even_permutation(p))
 			{

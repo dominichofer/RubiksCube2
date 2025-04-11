@@ -53,8 +53,7 @@ bool is_odd_permutation(const R& permutation)
 	return not is_even_permutation(permutation);
 }
 
-template <std::ranges::random_access_range R>
-uint64_t permutation_index(const R& permutation)
+uint64_t permutation_index(std::ranges::random_access_range auto& permutation)
 {
 	std::size_t size = std::ranges::distance(permutation);
 	uint64_t index = 0;
@@ -82,37 +81,27 @@ uint64_t permutation_index(T... args)
 	return permutation_index(std::array{ args... });
 }
 
-template <typename RandomIt, typename Sentinel>
-void nth_permutation(RandomIt first, Sentinel last, uint64_t index)
+template <typename OutIterator, std::size_t Size>
+void nth_permutation(uint64_t index, OutIterator out)
 {
-    using T = typename std::iterator_traits<RandomIt>::value_type;
-    std::size_t size = std::distance(first, last);
-    std::vector<T> permutation;
-    permutation.reserve(size);
-    std::vector<bool> used(size, false);
-    for (std::size_t i = 0; i < size; ++i)
-    {
-        uint64_t f = factorial(size - i - 1);
-        uint64_t j = index / f;
-        index %= f;
-        for (std::size_t k = 0; k < size; ++k)
-        {
-            if (used[k])
-                continue;
-            if (j == 0)
-            {
-                permutation.push_back(*(first + k));
-                used[k] = true;
-                break;
-            }
-            --j;
-        }
-    }
-	std::ranges::copy(permutation, first);
-}
-
-template <std::ranges::random_access_range R>
-void nth_permutation(R& range, uint64_t index)
-{
-    nth_permutation(range.begin(), range.end(), index);
+	std::array<bool, Size> used;
+	used.fill(false);
+	for (std::size_t i = 0; i < Size; ++i)
+	{
+		uint64_t f = factorial(Size - i - 1);
+		uint64_t j = index / f;
+		index %= f;
+		for (std::size_t k = 0; k < Size; ++k)
+		{
+			if (used[k])
+				continue;
+			if (j == 0)
+			{
+				*out++ = k;
+				used[k] = true;
+				break;
+			}
+			--j;
+		}
+	}
 }

@@ -39,7 +39,7 @@ public:
     {
         state = 0;
         for (int i = 0; i < 8; i++)
-            state += static_cast<uint64_t>(orientations[i] << 4 | corners[i]) << (i * 8);
+            state |= static_cast<uint64_t>(orientations[i] << 4 | corners[i]) << (i * 8);
     }
 
     static Corners solved();

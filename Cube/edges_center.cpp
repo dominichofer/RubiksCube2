@@ -163,7 +163,7 @@ std::array<uint8_t, 12> EdgesCenter::from_prm_index(uint64_t index)
 {
     std::array<uint8_t, 12> e;
 	std::ranges::iota(e, 0);
-	nth_permutation(e.begin(), e.end(), index);
+	nth_permutation(e, index);
 	return e;
 }
 

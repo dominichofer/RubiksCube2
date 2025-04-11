@@ -31,14 +31,14 @@ void perft()
 	}
 }
 
-void EdgesCenter_lt(benchmark::State& state)
-{
-	auto cube1 = RandomCube<EdgesCenter>();
-	auto cube2 = RandomCube<EdgesCenter>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(cube1 < cube2);
-}
-BENCHMARK(EdgesCenter_lt);
+//void EdgesCenter_lt(benchmark::State& state)
+//{
+//	auto cube1 = RandomCube<EdgesCenter>();
+//	auto cube2 = RandomCube<EdgesCenter>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(cube1 < cube2);
+//}
+//BENCHMARK(EdgesCenter_lt);
 
 #define BENCH(cls, func) \
 void func##_##cls(benchmark::State& state) \
@@ -75,37 +75,37 @@ BENCHMARK(func##_##cls);
 //BENCH(FacesCenter, index)
 //BENCH(FacesSide, index)
 
-void H0_subset_index(benchmark::State& state)
-{
-	auto cube = RandomCube<Cube3x3>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::subset_index(cube));
-}
-BENCHMARK(H0_subset_index);
-
-void H0_coset_number(benchmark::State& state)
-{
-	auto cube = RandomCube<Cube3x3>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::coset_number(cube));
-}
-BENCHMARK(H0_coset_number);
-
-void H0_coset_index(benchmark::State& state)
-{
-	auto cube = RandomCube<Cube3x3>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::coset_index(cube));
-}
-BENCHMARK(H0_coset_index);
-
-void H0_from_subset(benchmark::State& state)
-{
-	auto index = H0::subset_index(RandomCube<Cube3x3>());
-	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::from_subset(index));
-}
-BENCHMARK(H0_from_subset);
+//void H0_subset_index(benchmark::State& state)
+//{
+//	auto cube = RandomCube<Cube3x3>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(H0::subset_index(cube));
+//}
+//BENCHMARK(H0_subset_index);
+//
+//void H0_coset_number(benchmark::State& state)
+//{
+//	auto cube = RandomCube<Cube3x3>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(H0::coset_number(cube));
+//}
+//BENCHMARK(H0_coset_number);
+//
+//void H0_coset_index(benchmark::State& state)
+//{
+//	auto cube = RandomCube<Cube3x3>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(H0::coset_index(cube));
+//}
+//BENCHMARK(H0_coset_index);
+//
+//void H0_from_subset(benchmark::State& state)
+//{
+//	auto index = H0::subset_index(RandomCube<Cube3x3>());
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(H0::from_subset(index));
+//}
+//BENCHMARK(H0_from_subset);
 
 void H0_from_coset(benchmark::State& state)
 {
@@ -119,14 +119,14 @@ BENCHMARK(H0_from_coset);
 
 int main(int argc, char** argv)
 {
-	perft<Corners>();
-	perft<EdgesCenter>();
-	perft<EdgesSide>();
-	perft<FacesCenter>();
-	perft<FacesSide>();
-	perft<Cube3x3>();
-	perft<Cube4x4>();
-	perft<Cube5x5>();
+	//perft<Corners>();
+	//perft<EdgesCenter>();
+	//perft<EdgesSide>();
+	//perft<FacesCenter>();
+	//perft<FacesSide>();
+	//perft<Cube3x3>();
+	//perft<Cube4x4>();
+	//perft<Cube5x5>();
 	std::cout << std::endl;
 
 	::benchmark::Initialize(&argc, argv);
