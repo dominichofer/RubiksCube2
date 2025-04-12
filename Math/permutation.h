@@ -5,6 +5,7 @@
 #include <ranges>
 #include <stdexcept>
 #include <vector>
+#include <intrin.h>
 
 constexpr uint64_t factorial(uint64_t n)
 {
@@ -53,7 +54,7 @@ bool is_odd_permutation(const R& permutation)
 	return not is_even_permutation(permutation);
 }
 
-uint64_t permutation_index(std::ranges::random_access_range auto& permutation)
+uint64_t permutation_index(const std::ranges::random_access_range auto& permutation)
 {
 	std::size_t size = std::ranges::distance(permutation);
 	uint64_t index = 0;
@@ -81,27 +82,15 @@ uint64_t permutation_index(T... args)
 	return permutation_index(std::array{ args... });
 }
 
-template <typename OutIterator, std::size_t Size>
-void nth_permutation(uint64_t index, OutIterator out)
+void nth_permutation(uint64_t index, int64_t size, auto out_it)
 {
-	std::array<bool, Size> used;
-	used.fill(false);
-	for (std::size_t i = 0; i < Size; ++i)
+	uint64_t unused = 0xFFFFFFFFFFFFFFULL;
+	for (int64_t i = size - 1; i >= 0; --i)
 	{
-		uint64_t f = factorial(Size - i - 1);
-		uint64_t j = index / f;
+		int64_t f = factorial(i);
+		uint64_t mask = _pdep_u64(1ULL << (index / f), unused);
 		index %= f;
-		for (std::size_t k = 0; k < Size; ++k)
-		{
-			if (used[k])
-				continue;
-			if (j == 0)
-			{
-				*out++ = k;
-				used[k] = true;
-				break;
-			}
-			--j;
-		}
+		*out_it++ = std::countr_zero(mask);
+		unused ^= mask;
 	}
 }

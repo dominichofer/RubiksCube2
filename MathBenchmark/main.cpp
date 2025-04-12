@@ -39,12 +39,11 @@ BENCHMARK(bm_permutation_index)->DenseRange(0, 10);
 void bm_nth_permutation(benchmark::State& state)
 {
 	int n = state.range(0);
-	int index = rand() % factorial(n);
+	uint64_t index = rand() % factorial(n);
 	std::vector<int> p(n);
-	std::ranges::iota(p, 0);
 	for (auto _ : state)
 	{
-		nth_permutation(p, index);
+		nth_permutation(index, p.size(), p.begin());
 		benchmark::DoNotOptimize(p);
 	}
 }
