@@ -26,16 +26,17 @@ Cube3x3 H0::from_subset(uint64_t index)
 	uint64_t corner_prm = index * 2;
 
 	std::array<uint8_t, 12> e;
-	std::ranges::iota(e, 0);
-	nth_permutation(e.begin(), e.begin() + 8, ud_edges_prm);
-	nth_permutation(e.begin() + 8, e.end(), ud_slice_prm);
+	nth_permutation(ud_edges_prm, e.begin(), 8);
+	nth_permutation(ud_slice_prm, e.begin() + 8, 4);
+	for (int i = 8; i < 12; i++)
+		e[i] += 8;
 	auto c = Corners::from_prm_index(corner_prm);
 	if (is_even_permutation(c) != is_even_permutation(e))
 		std::ranges::next_permutation(c);
 
 	return Cube3x3{
-		Corners{ c, std::vector{ 0, 0, 0, 0, 0, 0, 0, 0 } },
-		EdgesCenter{ e, std::vector{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } }
+		Corners{ c, { 0, 0, 0, 0, 0, 0, 0, 0 } },
+		EdgesCenter{ e, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } }
 	};
 }
 
@@ -68,32 +69,36 @@ uint64_t H0::coset_index(const Cube3x3& cube)
 	return index;
 }
 
-Cube3x3 H0::from_coset(uint64_t number, uint64_t index)
+Cube3x3 H0::from_coset(int64_t number, int64_t index)
 {
-	uint64_t ud_loc_index = number % binomial(12, 4);
-	number /= binomial(12, 4);
-	uint64_t edge_ori = number % EdgesCenter::ori_size;
+	int64_t ud_locs = binomial(12, 4);
+	int64_t ud_loc_index = number % ud_locs;
+	number /= ud_locs;
+	int64_t edge_ori = number % EdgesCenter::ori_size;
 	number /= EdgesCenter::ori_size;
-	uint64_t corner_ori = number;
+	int64_t corner_ori = number;
 
-	uint64_t rest_prm = index % factorial(8);
+	int64_t rest_prm = index % factorial(8);
 	index /= factorial(8);
-	uint64_t ud_prm = index % factorial(4);
+	int64_t ud_prm = index % factorial(4);
 	index /= factorial(4);
 	// The parity of the corner permutation is the same as the parity of the edge permutation; thus '*2'.
-	uint64_t corner_prm = index * 2;
+	int64_t corner_prm = index * 2;
 
 	std::array<uint8_t, 4> ud_cubie;
-	std::ranges::iota(ud_cubie, 8);
-	nth_permutation(ud_cubie, ud_prm);
+	nth_permutation(ud_prm, ud_cubie);
 
-	std::vector<uint8_t> e(8);
-	std::ranges::iota(e, 0);
-	nth_permutation(e, rest_prm);
+	std::array<uint8_t, 12> e;
+	nth_permutation(rest_prm, e.begin(), 8);
 
-	auto ud_loc = nth_combination(12, 4, ud_loc_index);
+	auto ud_loc = nth_combination<4>(12, ud_loc_index);
 	for (int i = 0; i < 4; i++)
-		e.insert(e.begin() + ud_loc[i], ud_cubie[i]);
+	{
+		e[i + 8] = ud_cubie[i] + 8;
+		auto begin = e.rbegin() + 3 - i;
+		auto end = e.rbegin() + 12 - ud_loc[i];
+		std::rotate(begin, begin + 1, end);
+	}
 
 	auto c = Corners::from_prm_index(corner_prm);
 	if (is_even_permutation(c) != is_even_permutation(e))

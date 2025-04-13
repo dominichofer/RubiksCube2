@@ -7,7 +7,7 @@
 #include <vector>
 #include <intrin.h>
 
-constexpr uint64_t factorial(uint64_t n)
+constexpr int64_t factorial(int64_t n)
 {
 	switch (n)
 	{
@@ -54,10 +54,10 @@ bool is_odd_permutation(const R& permutation)
 	return not is_even_permutation(permutation);
 }
 
-uint64_t permutation_index(const std::ranges::random_access_range auto& permutation)
+int64_t permutation_index(const std::ranges::random_access_range auto& permutation)
 {
 	std::size_t size = std::ranges::distance(permutation);
-	uint64_t index = 0;
+	int64_t index = 0;
 	uint32_t bitboard = 0;
 	for (std::size_t i = 0; i < size; ++i)
 	{
@@ -65,7 +65,7 @@ uint64_t permutation_index(const std::ranges::random_access_range auto& permutat
 
 		// Number of remaining elements smaller than the current element
 		// (total number of elements smaller than the current element) - (number of visited elements smaller than the current element)
-		uint64_t smaller = permutation[i] - std::popcount(bitboard & (mask - 1));
+		int64_t smaller = permutation[i] - std::popcount(bitboard & (mask - 1));
 
 		// Total number of elements bigger than the current element
 		std::size_t bigger = size - i - 1;
@@ -77,12 +77,12 @@ uint64_t permutation_index(const std::ranges::random_access_range auto& permutat
 }
 
 template <typename... T>
-uint64_t permutation_index(T... args)
+int64_t permutation_index(T... args)
 {
 	return permutation_index(std::array{ args... });
 }
 
-void nth_permutation(uint64_t index, int64_t size, auto out_it)
+void nth_permutation(int64_t index, auto out_it, int64_t size)
 {
 	uint64_t unused = 0xFFFFFFFFFFFFFFULL;
 	for (int64_t i = size - 1; i >= 0; --i)
@@ -93,4 +93,9 @@ void nth_permutation(uint64_t index, int64_t size, auto out_it)
 		*out_it++ = std::countr_zero(mask);
 		unused ^= mask;
 	}
+}
+
+void nth_permutation(int64_t index, std::ranges::range auto& out)
+{
+	nth_permutation(index, std::ranges::begin(out), std::ranges::size(out));
 }

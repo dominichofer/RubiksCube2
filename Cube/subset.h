@@ -25,5 +25,5 @@ namespace H0
     uint64_t coset_index(const Cube3x3&);
 
 	Cube3x3 from_subset(uint64_t index);
-	Cube3x3 from_coset(uint64_t number, uint64_t index);
+	Cube3x3 from_coset(int64_t number, int64_t index);
 }

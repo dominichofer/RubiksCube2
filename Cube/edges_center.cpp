@@ -162,8 +162,7 @@ uint64_t EdgesCenter::ori_index() const
 std::array<uint8_t, 12> EdgesCenter::from_prm_index(uint64_t index)
 {
     std::array<uint8_t, 12> e;
-	std::ranges::iota(e, 0);
-	nth_permutation(e, index);
+	nth_permutation(index, e);
 	return e;
 }
 

@@ -142,8 +142,7 @@ uint64_t Corners::ori_index() const
 std::array<uint8_t, 8> Corners::from_prm_index(uint64_t index)
 {
     std::array<uint8_t, 8> c;
-	std::ranges::iota(c, 0);
-	nth_permutation(c, index);
+	nth_permutation(index, c);
 	return c;
 }
 

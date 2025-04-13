@@ -43,7 +43,7 @@ void bm_nth_permutation(benchmark::State& state)
 	std::vector<int> p(n);
 	for (auto _ : state)
 	{
-		nth_permutation(index, p.size(), p.begin());
+		nth_permutation(index, p);
 		benchmark::DoNotOptimize(p);
 	}
 }

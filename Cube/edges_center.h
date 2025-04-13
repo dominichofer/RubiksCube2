@@ -36,7 +36,7 @@ public:
 		: EdgesCenter(std::vector(edges), std::vector(orientations))
 	{}
 	EdgesCenter(auto edges, std::initializer_list<int> orientations)
-		: EdgesCenter(std::vector(edges), orientations)
+		: EdgesCenter(edges, std::vector(orientations))
 	{}
     EdgesCenter(std::initializer_list<int> edges, auto orientations)
         : EdgesCenter(std::vector(edges), orientations)
