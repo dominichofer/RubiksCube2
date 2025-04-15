@@ -169,8 +169,8 @@ std::unordered_set<Node> neighbours(
 //		std::vector<Edge> edges,
 //		std::function<Node(Node, Edge)> traverse,
 //		std::function<uint64_t(Node)> index_fkt,
-//		std::size_t index_size)
-//		: table(index_size, 0xFF)
+//		std::size_t index_space)
+//		: table(index_space, 0xFF)
 //		, index(std::move(index_fkt))
 //		, edges(std::move(edges))
 //		, traverse(std::move(traverse))
@@ -261,8 +261,8 @@ public:
 		std::vector<Edge> edges,
 		std::function<Node(Node, Edge)> traverse,
 		std::function<uint64_t(Node)> index_fkt,
-		std::size_t index_size)
-		: table(index_size, 0xFF)
+		std::size_t index_space)
+		: table(index_space, 0xFF)
 		, index(std::move(index_fkt))
 		, edges(std::move(edges))
 		, traverse(std::move(traverse))

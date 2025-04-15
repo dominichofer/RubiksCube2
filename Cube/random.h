@@ -64,3 +64,14 @@ Cube RandomCube(unsigned int seed = std::random_device{}())
 {
 	return RandomCubeGenerator<Cube>{ seed }();
 }
+
+template <typename Cube>
+std::vector<Cube> RandomCubes(int count, unsigned int seed = std::random_device{}())
+{
+	std::vector<Cube> cubes;
+	cubes.reserve(count);
+	RandomCubeGenerator<Cube> rnd{ seed };
+	for (int i = 0; i < count; i++)
+		cubes.push_back(rnd());
+	return cubes;
+}

@@ -3,78 +3,90 @@
 #include "Cube/cube.h"
 #include "neighbours.h"
 #include <iostream>
-#include <execution>
+#include <fstream>
 
-template <typename Cube>
-std::vector<Cube> operator+(std::vector<Cube> a, const std::vector<Cube>& b)
-{
-	a.insert(a.end(), b.begin(), b.end());
-	return a;
-}
-
-#include <chrono>
 template <typename Cube>
 class DistanceTable
 {
 	std::vector<uint8_t> table;
-	std::function<uint64_t(Cube)> index;
 	std::vector<Twist> twists;
-	int max_distance_;
+	std::function<int64_t(Cube)> index;
+	std::function<Cube(int64_t)> from_index;
+	uint8_t max_distance_;
 public:
+	DistanceTable() = default;
 	DistanceTable(
-		const Cube& origin,
 		std::vector<Twist> twists,
-		std::function<uint64_t(Cube)> index_fkt,
-		std::size_t index_size)
-		: table(index_size, 0xFF)
-		, index(std::move(index_fkt))
+		std::function<int64_t(Cube)> index_fkt,
+		std::function<Cube(int64_t)> from_index_fkt,
+		std::size_t index_space)
+		: table(index_space)
 		, twists(std::move(twists))
+		, index(std::move(index_fkt))
+		, from_index(std::move(from_index_fkt))
+		, max_distance_(0xFF)
+	{}
+
+	void fill(const Cube& origin)
 	{
+		int64_t size = static_cast<int64_t>(table.size());
+		std::ranges::fill(table, 0xFF);
 		table[index(origin)] = 0;
-		bool changed = true;
-		while (changed)
+		for (uint8_t d = 0; d < 0xFE; d++)
 		{
-			for (int64_t i = 0; i < static_cast<int64_t>(table.size()); ++i)
-			{
-				if (table[i] == 0xFF)
-					continue;
-				Cube cube = Cube::from_index(i);
-				for (auto twist : twists)
+			bool changed = false;
+			#pragma omp parallel for
+			for (int64_t i = 0; i < size; i++)
+				if (table[i] == d)
 				{
-					Cube n = cube.twisted(twist);
-					uint8_t d = table[index(n)];
-					if (d == 0xFF)
+					Cube cube = from_index(i);
+					for (Twist t : twists)
 					{
-						table[index(n)] = table[i] + 1;
-						changed = true;
+						Cube n = cube.twisted(t);
+						uint8_t& n_d = table[index(n)];
+						if (n_d == 0xFF)
+						{
+							n_d = d + 1;
+							changed = true;
+						}
 					}
 				}
+			if (not changed)
+			{
+				max_distance_ = d;
+				break;
 			}
 		}
-		auto start = std::chrono::high_resolution_clock::now();
-		max_distance_ = *std::max_element(table.begin(), table.end());
 	}
-	DistanceTable() : DistanceTable(Cube{}, Cube::twists, &Cube::index, Cube::index_size) {}
+
+	void read(std::ifstream& file)
+	{
+		file.read(reinterpret_cast<char*>(table.data()), table.size());
+		file.read(reinterpret_cast<char*>(&max_distance_), sizeof(max_distance_));
+	}
+
+	void write(std::ofstream& file) const
+	{
+		file.write(reinterpret_cast<const char*>(table.data()), table.size());
+		file.write(reinterpret_cast<const char*>(&max_distance_), sizeof(max_distance_));
+	}
 
 	auto begin() const { return table.begin(); }
 	auto end() const { return table.end(); }
-	int max_distance() const { return max_distance_; }
-	int operator[](const Cube& cube) const { return table[index(cube)]; }
+	uint8_t max_distance() const { return max_distance_; }
+	uint8_t operator[](const Cube& cube) const { return table[index(cube)]; }
 
 	std::vector<Twist> solution(Cube cube) const
 	{
 		std::vector<Twist> path;
-		uint8_t distance = table[index(cube)];
-		while (distance > 0)
-			for (auto twist : twists)
+		for (uint8_t d = table[index(cube)]; d > 0; d--)
+			for (Twist t : twists)
 			{
-				Cube n = cube.twisted(twist);
-				uint8_t d = table[index(n)];
-				if (d == distance - 1)
+				Cube n = cube.twisted(t);
+				if (table[index(n)] == d - 1)
 				{
-					path.push_back(twist);
+					path.push_back(t);
 					cube = n;
-					--distance;
 					break;
 				}
 			}
@@ -83,22 +95,76 @@ public:
 };
 
 template <typename Cube>
+class PartialDistanceTable
+{
+	std::unordered_map<Cube, uint8_t> table;
+	std::vector<Twist> twists;
+	int max_distance_;
+public:
+	PartialDistanceTable(std::vector<Twist> twists) : twists(std::move(twists)), max_distance_(-1) {}
+
+	void fill(const Cube& origin, int max_distance)
+	{
+		auto paths = path_to_neighbours(0, max_distance, origin, twists);
+		max_distance_ = -1;
+		for (auto& [cube, path] : paths)
+		{
+			table[cube] = path.size();
+			max_distance_ = std::max(max_distance_, static_cast<int>(path.size()));
+		}
+	}
+
+	std::optional<uint8_t> operator[](const Cube& cube) const
+	{
+		auto it = table.find(cube);
+		if (it == table.end())
+			return std::nullopt;
+		return it->second;
+	}
+	std::vector<Twist> solution(Cube cube) const
+	{
+		auto it = table.find(cube);
+		if (it == table.end())
+			return {};
+		std::vector<Twist> path;
+		for (int d = it->second; d > 0; d--)
+			for (Twist t : twists)
+			{
+				Cube n = cube.twisted(t);
+				auto it_n = table.find(n);
+				if (it_n != table.end() && it_n->second == d - 1)
+				{
+					path.push_back(t);
+					cube = n;
+					break;
+				}
+			}
+		return path;
+	}
+
+	int max_distance() const { return max_distance_; }
+	auto begin() const { return table.begin(); }
+	auto end() const { return table.end(); }
+};
+
+template <typename Cube>
 class SolutionTable
 {
 	std::unordered_map<Cube, std::vector<Twist>> table;
 	int max_distance_;
 public:
-	SolutionTable(
-		const Cube& origin,
-		std::vector<Twist> twists,
-		int max_distance)
-		: max_distance_(max_distance)
+	SolutionTable() = default;
+
+	void fill(const Cube& origin, const std::vector<Twist>& twists, int max_distance)
 	{
 		table = path_to_neighbours(0, max_distance, origin, twists);
-		for (auto& [node, path] : table)
+		max_distance_ = -1;
+		for (auto& [cube, path] : table)
+		{
 			path = inversed(path);
+			max_distance_ = std::max(max_distance_, static_cast<int>(path.size()));
+		}
 	}
-	SolutionTable(int max_distance) : SolutionTable(Cube{}, Cube::twists, max_distance) {}
 
 	std::optional<std::vector<Twist>> operator[](const Cube& cube) const
 	{

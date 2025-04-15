@@ -74,7 +74,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="brute_force.cpp" />
     <ClCompile Include="one_phase.cpp" />
     <ClCompile Include="two_phase.cpp" />
   </ItemGroup>

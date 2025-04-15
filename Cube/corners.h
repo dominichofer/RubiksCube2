@@ -19,7 +19,7 @@ class Corners : public Twistable<Corners>
 public:
 	static const uint64_t prm_size = factorial(8);
 	static const uint64_t ori_size = powi(3, 7);
-    static const uint64_t index_size = prm_size * ori_size;
+    static const uint64_t index_space = prm_size * ori_size;
     static const std::vector<Twist> twists;
 
     static std::array<uint8_t, 8> from_prm_index(uint64_t);
@@ -44,6 +44,7 @@ public:
 
     static Corners solved();
 	static Corners impossible();
+    static Corners from_index(uint64_t);
 
     auto operator<=>(const Corners&) const = default;
 

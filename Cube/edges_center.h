@@ -25,7 +25,7 @@ class EdgesCenter : public Twistable<EdgesCenter>
 public:
     static const uint64_t prm_size = factorial(12);
     static const uint64_t ori_size = powi(2, 11);
-    static const uint64_t index_size = prm_size * ori_size;
+    static const uint64_t index_space = prm_size * ori_size;
     static const std::vector<Twist> twists;
 
     static std::array<uint8_t, 12> from_prm_index(uint64_t);

@@ -18,6 +18,11 @@ Corners Corners::solved()
 }
 Corners Corners::impossible() { return Corners(0); }
 
+Corners Corners::from_index(uint64_t index)
+{
+    return Corners{ from_prm_index(index / ori_size), from_ori_index(index % ori_size) };
+}
+
 bool Corners::is_solved() const { return *this == Corners::solved(); }
 uint8_t Corners::cubie(int index) const { return (state >> (index * 8)) & 0x0F; }
 uint8_t Corners::orientation(int index) const { return (state >> (index * 8 + 4)) & 0x0F; }

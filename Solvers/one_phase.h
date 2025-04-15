@@ -34,8 +34,8 @@ public:
 //		const Cube& origin,
 //		std::vector<Twist> twists,
 //		std::function<uint64_t(Cube)> index_fkt,
-//		std::size_t index_size)
-//		: table(index_size, 0xFF)
+//		std::size_t index_space)
+//		: table(index_space, 0xFF)
 //		, index(std::move(index_fkt))
 //		, twists(std::move(twists))
 //	{
@@ -72,7 +72,7 @@ public:
 //		}
 //		max_distance_ = distance - 2;
 //	}
-//	DistanceTable() : DistanceTable(Cube{}, Cube::twists, &Cube::index, Cube::index_size) {}
+//	DistanceTable() : DistanceTable(Cube{}, Cube::twists, &Cube::index, Cube::index_space) {}
 //
 //	auto begin() const { return table.begin(); }
 //	auto end() const { return table.end(); }
