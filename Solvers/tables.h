@@ -4,6 +4,7 @@
 #include "neighbours.h"
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 template <typename Cube>
 class DistanceTable
@@ -32,10 +33,11 @@ public:
 		int64_t size = static_cast<int64_t>(table.size());
 		std::ranges::fill(table, 0xFF);
 		table[index(origin)] = 0;
+		auto start = std::chrono::high_resolution_clock::now();
 		for (uint8_t d = 0; d < 0xFE; d++)
 		{
 			bool changed = false;
-			#pragma omp parallel for
+			#pragma omp parallel for reduction(||: changed)
 			for (int64_t i = 0; i < size; i++)
 				if (table[i] == d)
 				{
@@ -51,6 +53,9 @@ public:
 						}
 					}
 				}
+			auto stop = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
+			std::cout << "Distance " << static_cast<int>(d) << ": " << std::ranges::count(table, d) << " (" << duration.count() << "s)" << std::endl;
 			if (not changed)
 			{
 				max_distance_ = d;

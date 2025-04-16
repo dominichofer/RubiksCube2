@@ -30,13 +30,16 @@ int main()
 		[](uint64_t i) { return H0::from_subset(i); },
 		H0::set_size
 	};
-	cosets.fill(Cube3x3::solved());
-	std::ofstream cosets_file("coset.dst", std::ios::out | std::ios::binary);
-	cosets.write(cosets_file);
+	std::ifstream cosets_file("D:\\coset.dst", std::ios::in | std::ios::binary);
+	cosets.read(cosets_file);
 
 	subset.fill(Cube3x3::solved());
-	std::ofstream subset_file("subset.dst", std::ios::out | std::ios::binary);
+	std::ofstream subset_file("D:\\subset.dst", std::ios::out | std::ios::binary);
 	subset.write(subset_file);
+
+	for (int i = 0; i <= 19; i++)
+		std::cout << "Subset " << i << ": " << std::ranges::count(subset, i) << std::endl;
+
 	//const SolutionTable<Cube3x3> solution_table{ 5 };
 	//TranspositionTable<Cube3x3, int> tt(10'000'000, Cube3x3::impossible(), 0);
 	//OnePhaseOptimalSolver solver(corners_dst, solution_table, tt);

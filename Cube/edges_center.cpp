@@ -50,23 +50,9 @@ bool EdgesCenter::is_solved() const
 
 int EdgesCenter::byte(int index) const
 {
-    switch (index)
-    {
-    case 0: return _mm_extract_epi8(state, 0);
-    case 1: return _mm_extract_epi8(state, 1);
-    case 2: return _mm_extract_epi8(state, 2);
-    case 3: return _mm_extract_epi8(state, 3);
-    case 4: return _mm_extract_epi8(state, 4);
-    case 5: return _mm_extract_epi8(state, 5);
-    case 6: return _mm_extract_epi8(state, 6);
-    case 7: return _mm_extract_epi8(state, 7);
-    case 8: return _mm_extract_epi8(state, 8);
-    case 9: return _mm_extract_epi8(state, 9);
-    case 10: return _mm_extract_epi8(state, 10);
-    case 11: return _mm_extract_epi8(state, 11);
-    default:
-        throw std::out_of_range("Index out of range");
-    }
+	alignas(16) uint8_t bytes[16];
+	_mm_store_si128(reinterpret_cast<__m128i*>(bytes), state);
+	return bytes[index];
 }
 
 uint8_t EdgesCenter::cubie(int index) const
