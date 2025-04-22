@@ -11,9 +11,9 @@ class SolutionFoundException : public std::exception
 template <typename Cube>
 class BruteForceSolver
 {
-	std::vector<Twist> twists;
+	std::vector<Twist> twists, stack;
 
-	void solve_(const Cube& cube, int depth) const
+	void solve_(const Cube& cube, int depth)
 	{
 		if (depth == 0)
 		{
@@ -31,7 +31,7 @@ class BruteForceSolver
 public:
 	BruteForceSolver(std::vector<Twist> twists) noexcept : twists(std::move(twists)) {}
 
-	std::vector<Twist> solve(const Cube& cube, int max_depth) const
+	std::vector<Twist> solve(const Cube& cube, int max_depth)
 	{
 		stack.clear();
 		try

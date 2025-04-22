@@ -32,32 +32,14 @@ public:
     static std::array<uint8_t, 12> from_ori_index(uint64_t);
 
 	EdgesCenter() noexcept = default;
-	EdgesCenter(std::initializer_list<int> edges, std::initializer_list<int> orientations)
-		: EdgesCenter(std::vector(edges), std::vector(orientations))
-	{}
-	EdgesCenter(auto edges, std::initializer_list<int> orientations)
-		: EdgesCenter(edges, std::vector(orientations))
-	{}
-    EdgesCenter(std::initializer_list<int> edges, auto orientations)
-        : EdgesCenter(std::vector(edges), orientations)
-    {}
-    EdgesCenter(auto edges, auto orientations) noexcept
-    {
-        state = _mm_set_epi8(
-            0, 0, 0, 0,
-            orientations[11] << 7 | edges[11],
-            orientations[10] << 7 | edges[10],
-            orientations[9] << 7 | edges[9],
-            orientations[8] << 7 | edges[8],
-            orientations[7] << 7 | edges[7],
-            orientations[6] << 7 | edges[6],
-            orientations[5] << 7 | edges[5],
-            orientations[4] << 7 | edges[4],
-            orientations[3] << 7 | edges[3],
-            orientations[2] << 7 | edges[2],
-            orientations[1] << 7 | edges[1],
-            orientations[0] << 7 | edges[0]);
-    }
+    EdgesCenter(
+        uint8_t e0, uint8_t e1, uint8_t e2, uint8_t e3,
+        uint8_t e4, uint8_t e5, uint8_t e6, uint8_t e7,
+        uint8_t e8, uint8_t e9, uint8_t e10, uint8_t e11,
+        uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3,
+        uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7,
+        uint8_t o8, uint8_t o9, uint8_t o10, uint8_t o11) noexcept;
+	EdgesCenter(std::array<uint8_t, 12> edges, std::array<uint8_t, 12> orientations) noexcept;
 
     static EdgesCenter solved();
     static EdgesCenter impossible();

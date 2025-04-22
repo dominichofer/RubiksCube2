@@ -11,9 +11,36 @@ const std::vector<Twist> EdgesCenter::twists = {
     Twist::B1, Twist::B2, Twist::B3
 };
 
+EdgesCenter::EdgesCenter(
+    uint8_t e0, uint8_t e1, uint8_t e2, uint8_t e3, uint8_t e4, uint8_t e5, uint8_t e6, uint8_t e7, uint8_t e8, uint8_t e9, uint8_t e10, uint8_t e11,
+    uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3, uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7, uint8_t o8, uint8_t o9, uint8_t o10, uint8_t o11) noexcept
+    : EdgesCenter(
+        { e0, e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11 },
+        { o0, o1, o2, o3, o4, o5, o6, o7, o8, o9, o10, o11 })
+{
+}
+
+EdgesCenter::EdgesCenter(std::array<uint8_t, 12> edges, std::array<uint8_t, 12> orientations) noexcept
+{
+    state = _mm_set_epi8(
+        0, 0, 0, 0,
+        orientations[11] << 7 | edges[11],
+        orientations[10] << 7 | edges[10],
+        orientations[9] << 7 | edges[9],
+        orientations[8] << 7 | edges[8],
+        orientations[7] << 7 | edges[7],
+        orientations[6] << 7 | edges[6],
+        orientations[5] << 7 | edges[5],
+        orientations[4] << 7 | edges[4],
+        orientations[3] << 7 | edges[3],
+        orientations[2] << 7 | edges[2],
+        orientations[1] << 7 | edges[1],
+        orientations[0] << 7 | edges[0]);
+}
+
 EdgesCenter EdgesCenter::solved()
 {
-    return EdgesCenter{ std::vector{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, std::vector{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
+    return EdgesCenter{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 }
 
 EdgesCenter EdgesCenter::impossible()

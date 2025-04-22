@@ -26,21 +26,12 @@ public:
     static std::array<uint8_t, 8> from_ori_index(uint64_t);
 
 	Corners() noexcept = default;
-	Corners(std::initializer_list<int> corners, std::initializer_list<int> orientations)
-        : Corners(std::vector(corners), std::vector(orientations))
-    {}
-	Corners(auto corners, std::initializer_list<int> orientations)
-		: Corners(corners, std::vector(orientations))
-	{}
-	Corners(std::initializer_list<int> corners, auto orientations)
-		: Corners(std::vector(corners), orientations)
-	{}
-    Corners(auto corners, auto orientations)
-    {
-        state = 0;
-        for (int i = 0; i < 8; i++)
-            state |= static_cast<uint64_t>(orientations[i] << 4 | corners[i]) << (i * 8);
-    }
+    Corners(
+        uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3,
+        uint8_t c4, uint8_t c5, uint8_t c6, uint8_t c7,
+        uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3,
+        uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7) noexcept;
+    Corners(std::array<uint8_t, 8> cubies, std::array<uint8_t, 8> orientations) noexcept;
 
     static Corners solved();
 	static Corners impossible();

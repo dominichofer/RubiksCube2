@@ -12,15 +12,32 @@ const std::vector<Twist> Corners::twists = {
 	Twist::B1, Twist::B2, Twist::B3
 };
 
-Corners Corners::solved()
+Corners::Corners(
+    uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3,
+    uint8_t c4, uint8_t c5, uint8_t c6, uint8_t c7,
+    uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3,
+    uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7) noexcept
+    : Corners(
+        { c0, c1, c2, c3, c4, c5, c6, c7 },
+        { o0, o1, o2, o3, o4, o5, o6, o7 })
+{}
+Corners::Corners(std::array<uint8_t, 8> corners, std::array<uint8_t, 8> orientations) noexcept
 {
-   return Corners(std::vector{ 0, 1, 2, 3, 4, 5, 6, 7 }, std::vector{ 0, 0, 0, 0, 0, 0, 0, 0 });
+    state = 0;
+    for (int i = 0; i < 8; i++)
+        state |= static_cast<uint64_t>(orientations[i] << 4 | corners[i]) << (i * 8);
 }
-Corners Corners::impossible() { return Corners(0); }
+Corners Corners::solved() { return Corners(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0); }
+Corners Corners::impossible() { return Corners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
 
 Corners Corners::from_index(uint64_t index)
 {
-    return Corners{ from_prm_index(index / ori_size), from_ori_index(index % ori_size) };
+	auto p = from_prm_index(index / ori_size);
+	auto o = from_ori_index(index % ori_size);
+	return Corners{ p[0], p[1], p[2], p[3],
+					p[4], p[5], p[6], p[7],
+					o[0], o[1], o[2], o[3],
+					o[4], o[5], o[6], o[7] };
 }
 
 bool Corners::is_solved() const { return *this == Corners::solved(); }
