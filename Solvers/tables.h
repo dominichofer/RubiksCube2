@@ -2,9 +2,7 @@
 #include "Math/math.h"
 #include "Cube/cube.h"
 #include "neighbours.h"
-#include <iostream>
 #include <fstream>
-#include <chrono>
 
 template <typename Cube>
 class DistanceTable
@@ -33,7 +31,6 @@ public:
 		int64_t size = static_cast<int64_t>(table.size());
 		std::ranges::fill(table, 0xFF);
 		table[index(origin)] = 0;
-		auto start = std::chrono::high_resolution_clock::now();
 		for (uint8_t d = 0; d < 0xFE; d++)
 		{
 			bool changed = false;
@@ -53,9 +50,6 @@ public:
 						}
 					}
 				}
-			auto stop = std::chrono::high_resolution_clock::now();
-			auto duration = std::chrono::duration_cast<std::chrono::seconds>(stop - start);
-			std::cout << "Distance " << static_cast<int>(d) << ": " << std::ranges::count(table, d) << " (" << duration.count() << "s)" << std::endl;
 			if (not changed)
 			{
 				max_distance_ = d;
@@ -64,13 +58,13 @@ public:
 		}
 	}
 
-	void read(std::ifstream& file)
+	void read(std::fstream& file)
 	{
 		file.read(reinterpret_cast<char*>(table.data()), table.size());
 		file.read(reinterpret_cast<char*>(&max_distance_), sizeof(max_distance_));
 	}
 
-	void write(std::ofstream& file) const
+	void write(std::fstream& file) const
 	{
 		file.write(reinterpret_cast<const char*>(table.data()), table.size());
 		file.write(reinterpret_cast<const char*>(&max_distance_), sizeof(max_distance_));
@@ -156,9 +150,15 @@ template <typename Cube>
 class SolutionTable
 {
 	std::unordered_map<Cube, std::vector<Twist>> table;
-	int max_distance_;
+	int max_distance_ = -1;
 public:
 	SolutionTable() = default;
+
+	void clear()
+	{
+		table.clear();
+		max_distance_ = -1;
+	}
 
 	void fill(const Cube& origin, const std::vector<Twist>& twists, int max_distance)
 	{

@@ -6,110 +6,126 @@
 #include <numeric>
 #include <vector>
 #include <fstream>
+#include <functional>
 
 using namespace std::chrono_literals;
 
+std::string to_string(std::chrono::nanoseconds duration)
+{
+	double value;
+	std::string unit;
+
+	auto d = duration.count();
+
+	if (d < 1'000) {
+		value = static_cast<double>(d);
+		unit = "ns";
+	}
+	else if (d < 1'000'000) {
+		value = d / 1'000.0;
+		unit = "us";
+	}
+	else if (d < 1'000'000'000) {
+		value = d / 1'000'000.0;
+		unit = "ms";
+	}
+	else {
+		value = d / 1'000'000'000.0;
+		unit = "s";
+	}
+
+	// Determine number of digits before the decimal
+	int int_digits = (value < 1) ? 0 : static_cast<int>(std::log10(value)) + 1;
+	int precision = std::max(0, 3 - int_digits);
+
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(precision) << value << ' ' << unit;
+	return oss.str();
+}
+
+template <typename F>
+void time(std::string name, F function)
+{
+	auto start = std::chrono::high_resolution_clock::now();
+	if constexpr (std::is_same_v<decltype(function()), void>)
+		function();
+	else
+		benchmark::DoNotOptimize(function());
+	benchmark::ClobberMemory();
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::cout << name << ": " << to_string(stop - start) << std::endl;
+}
+
+template <typename F>
+void time(std::string name, F function, std::ranges::range auto&& range)
+{
+	auto start = std::chrono::high_resolution_clock::now();
+	for (const auto& item : range)
+	{
+		if constexpr (std::is_same_v<decltype(function(item)), void>)
+			function(item);
+		else
+			benchmark::DoNotOptimize(function(item));
+		benchmark::ClobberMemory();
+	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::cout << name << ": " << to_string((stop - start) / range.size()) << std::endl;
+}
+
 int main()
 {
-	//const DistanceTable<Corners> corners_dst{
-	//	Corners::solved(),
+	//// neighbours
+	//for (int d = 0; d < 6; d++)
+	//	time(
+	//		std::format("neighbours({}, Cube3x3)", d),
+	//		[&]() { return neighbours(d, Cube3x3::solved()); });
+
+	//// DistanceTable
+	//DistanceTable<Corners> corners_dst{
 	//	Corners::twists,
 	//	[](const Corners& c) { return c.index(); },
-	//	[](uint64_t i) { return Corners::from_index(i); },
+	//	&Corners::from_index,
 	//	Corners::index_space
 	//};
-	DistanceTable<Cube3x3> cosets{
-		Cube3x3::twists,
-		[](const Cube3x3& c) { return H0::coset_number(c); },
-		[](uint64_t i) { return H0::from_coset(i, 0); },
-		H0::cosets
-	};
-	DistanceTable<Cube3x3> subset{
-		H0::twists,
-		[](const Cube3x3& c) { return H0::subset_index(c); },
-		[](uint64_t i) { return H0::from_subset(i); },
-		H0::set_size
-	};
-	std::ifstream cosets_file("D:\\coset.dst", std::ios::in | std::ios::binary);
-	cosets.read(cosets_file);
+	//auto rnd_corners = RandomCubes<Corners>(1'000'000, /*seed*/ 565248);
+	//time(
+	//	"DistanceTable<Corners>::fill()",
+	//	[&]() { corners_dst.fill(Corners::solved()); });
+	//time(
+	//	"DistanceTable<Corners>::operator[]",
+	//	[&](const auto& x) { return corners_dst[x]; },
+	//	rnd_corners);
+	//time(
+	//	"DistanceTable<Corners>::solution()",
+	//	[&](const auto& x) { return corners_dst.solution(x); },
+	//	rnd_corners);
 
-	subset.fill(Cube3x3::solved());
-	std::ofstream subset_file("D:\\subset.dst", std::ios::out | std::ios::binary);
-	subset.write(subset_file);
-
-	for (int i = 0; i <= 19; i++)
-		std::cout << "Subset " << i << ": " << std::ranges::count(subset, i) << std::endl;
-
-	//const SolutionTable<Cube3x3> solution_table{ 5 };
-	//TranspositionTable<Cube3x3, int> tt(10'000'000, Cube3x3::impossible(), 0);
-	//OnePhaseOptimalSolver solver(corners_dst, solution_table, tt);
-
-	//std::vector<Corners> rnd_corners = RandomCubes<Corners>(1'000'000, /*seed*/565248);
-	//std::vector<Cube3x3> rnd_cubes = RandomCubes<Cube3x3>(1'000, /*seed*/3812301);
-
-	//// neighbours
+	//// SolutionTable
+	//SolutionTable<Cube3x3> solution_table;
+	//for (int d = 0; d < 6; d++)
 	//{
-	//	auto start = std::chrono::high_resolution_clock::now();
-	//	benchmark::DoNotOptimize(neighbours(5, Cube3x3{}));
-	//	auto stop = std::chrono::high_resolution_clock::now();
-	//	auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-	//	std::cout << "neighbours: " << duration << std::endl;
+	//	solution_table.clear();
+	//	time(
+	//		std::format("SolutionTable<Cube3x3>::fill(d={})", d),
+	//		[&]() { solution_table.fill(Cube3x3::solved(), Cube3x3::twists, d); });
 	//}
+	//std::vector<Cube3x3> hits;
+	//hits.append_range(neighbours(0, solution_table.max_distance(), Cube3x3::solved()));
+	//auto misses = RandomCubes<Cube3x3>(hits.size(), /*seed*/ 3812301);
+	//time(
+	//	"SolutionTable<Cube3x3>::operator[hit]",
+	//	[&](const auto& x) { return solution_table[x]; },
+	//	hits);
+	//time(
+	//	"SolutionTable<Cube3x3>::operator[miss]",
+	//	[&](const auto& x) { return solution_table[x]; },
+	//	misses);
 
-	//// DistanceTable::operator[]
-	//{
-	//	auto start = std::chrono::high_resolution_clock::now();
-	//	for (const Corners& c : rnd_corners)
-	//		benchmark::DoNotOptimize(corners_dst[c]);
-	//	auto stop = std::chrono::high_resolution_clock::now();
-	//	std::cout << "DistanceTable::operator[]: " << (stop - start) / rnd_corners.size() << std::endl;
-	//}
-
-	//// DistanceTable::solution
-	//{
-	//	auto start = std::chrono::high_resolution_clock::now();
-	//	for (const Corners& c : rnd_corners)
-	//		benchmark::DoNotOptimize(corners_dst.solution(c));
-	//	auto stop = std::chrono::high_resolution_clock::now();
-	//	std::cout << "DistanceTable::solve: " << (stop - start) / rnd_corners.size() << std::endl;
-	//}
-
-	//// SolutionTable::operator[] hit
-	//{
-	//	std::vector<Cube3x3> hit_cubes;
-	//	for (int dst = 0; dst <= solution_table.max_distance(); dst++)
-	//		for (const Cube3x3& cube : cube3x3_of_distance[dst])
-	//			hit_cubes.push_back(cube);
-	//	auto start = std::chrono::high_resolution_clock::now();
-	//	for (const Cube3x3& cube : hit_cubes)
-	//		benchmark::DoNotOptimize(solution_table[cube]);
-	//	auto stop = std::chrono::high_resolution_clock::now();
-	//	std::cout << "SolutionTable::operator[] hit: " << (stop - start) / hit_cubes.size() << std::endl;
-	//}
-
-	//// SolutionTable::operator[] miss
-	//{
-	//	std::vector<Cube3x3> miss_cubes;
-	//	for (int dst = solution_table.max_distance() + 1; dst < cube3x3_of_distance.size(); dst++)
-	//		for (const Cube3x3& cube : cube3x3_of_distance[dst])
-	//			miss_cubes.push_back(cube);
-	//	auto start = std::chrono::high_resolution_clock::now();
-	//	for (const Cube3x3& cube : miss_cubes)
-	//		benchmark::DoNotOptimize(solution_table[cube]);
-	//	auto stop = std::chrono::high_resolution_clock::now();
-	//	std::cout << "SolutionTable::operator[] miss: " << (stop - start) / miss_cubes.size() << std::endl;
-	//}
-
-	//// OnePhaseOptimalSolver::solve
-	//{
-	//	for (int dst = 0; dst < cube3x3_of_distance.size(); dst++)
-	//	{
-	//		auto start = std::chrono::high_resolution_clock::now();
-	//		for (const Cube3x3& cube : cube3x3_of_distance[dst])
-	//			benchmark::DoNotOptimize(solver.solve(cube, dst));
-	//		auto stop = std::chrono::high_resolution_clock::now();
-	//		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
-	//		std::cout << "OnePhaseOptimalSolver::solve(dst=" << dst << "): " << duration / cube3x3_of_distance[dst].size() << std::endl;
-	//	}
-	//}
+	// BruteForceSolver
+	BruteForceSolver<Cube3x3> brute_force_solver{ Cube3x3::twists };
+	for (int d = 0; d < cube3x3_of_distance.size(); d++)
+		time(
+			std::format("BruteForceSolver<Cube3x3>::solve(dst={})", d),
+			[&](const auto& x) { return brute_force_solver.solve(x, 20); },
+			cube3x3_of_distance[d]);
 }
