@@ -99,3 +99,8 @@ std::vector<Twist> inversed(const std::vector<Twist>& twists)
 		r.push_back(inversed(*it));
 	return r;
 }
+
+bool same_plane(Twist a, Twist b)
+{
+	return std::to_underlying(a) / 3 == std::to_underlying(b) / 3;
+}

@@ -29,6 +29,8 @@ std::string to_string(Twist);
 Twist inversed(Twist);
 std::vector<Twist> inversed(const std::vector<Twist>&);
 
+bool same_plane(Twist, Twist);
+
 
 template <typename Derived>
 class Twistable

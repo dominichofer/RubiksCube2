@@ -1,5 +1,6 @@
 #include "benchmark/benchmark.h"
 #include "Solvers/solvers.h"
+#include <cassert>
 #include <algorithm>
 #include <chrono>
 #include <iostream>
@@ -107,11 +108,11 @@ int main()
 	//	solution_table.clear();
 	//	time(
 	//		std::format("SolutionTable<Cube3x3>::fill(d={})", d),
-	//		[&]() { solution_table.fill(Cube3x3::solved(), Cube3x3::twists, d); });
+	//		[&]() { solution_table.fill(Cube3x3::solved"), Cube3x3::twists, d); });
 	//}
 	//std::vector<Cube3x3> hits;
-	//hits.append_range(neighbours(0, solution_table.max_distance(), Cube3x3::solved()));
-	//auto misses = RandomCubes<Cube3x3>(hits.size(), /*seed*/ 3812301);
+	//hits.append_range(neighbours(0, solution_table.max_distance"), Cube3x3::solved()));
+	//auto misses = RandomCubes<Cube3x3>(hits.size"), /*seed*/ 3812301);
 	//time(
 	//	"SolutionTable<Cube3x3>::operator[hit]",
 	//	[&](const auto& x) { return solution_table[x]; },
@@ -122,10 +123,55 @@ int main()
 	//	misses);
 
 	// BruteForceSolver
-	BruteForceSolver<Cube3x3> brute_force_solver{ Cube3x3::twists };
+	//BruteForceSolver<Cube3x3> brute_force_solver{ Cube3x3::twists };
+	//for (int d = 0; d < 7; d++)
+	//	time(
+	//		std::format("BruteForceSolver<Cube3x3>::solve(dst={})", d),
+	//		[&](const Cube3x3& cube) {
+	//			auto sol = brute_force_solver.solve(cube, 20);
+	//			assert(cube.twisted(sol).is_solved());
+	//		},
+	//		cube3x3_of_distance[d]);
+
+	//// One Phase Optimal Solver
+	//DistanceTable<Corners> corners_dst{
+	//	Corners::twists,
+	//	[](const Corners& c) { return c.index(); },
+	//	&Corners::from_index,
+	//	Corners::index_space
+	//};
+	//corners_dst.fill(Corners::solved());
+
+	//PartialDistanceTable<Cube3x3> near{ Cube3x3::twists };
+	//near.fill(Cube3x3::solved"), 6);
+
+	//HashTable<Cube3x3, int> tt{ 1'000'000, Cube3x3::impossible() };
+
+	//OnePhaseOptimalSolver opos{ Cube3x3::twists, corners_dst, near, tt };
+	//for (int d = 0; d < cube3x3_of_distance.size(); d++)
+	//	time(
+	//		std::format("OnePhaseOptimalSolver::solve(dst={})", d),
+	//		[&](const Cube3x3& cube) {
+	//			auto sol = opos.solve(cube, d);
+	//			if (not cube.twisted(sol).is_solved())
+	//				std::cerr << "Solution not found" << std::endl;
+	//		},
+	//		cube3x3_of_distance[d]);
+
+	// Two Phase Solver
+	TwoPhaseSolver two_phase_solver{ Cube3x3::twists };
+	//auto start = std::chrono::high_resolution_clock::now();
+	//two_phase_solver.solve(Cube3x3::superflip());
+	//auto stop = std::chrono::high_resolution_clock::now();
+	//std::cout << "TwoPhaseSolver::solve(superflip): " << to_string(stop - start) << std::endl;
+
 	for (int d = 0; d < cube3x3_of_distance.size(); d++)
 		time(
-			std::format("BruteForceSolver<Cube3x3>::solve(dst={})", d),
-			[&](const auto& x) { return brute_force_solver.solve(x, 20); },
+			std::format("TwoPhaseSolver::solve(dst={})", d),
+			[&](const Cube3x3& cube) {
+				auto sol = two_phase_solver.solve(cube);
+				if (not cube.twisted(sol).is_solved())
+					std::cerr << "Solution not found" << std::endl;
+			},
 			cube3x3_of_distance[d]);
 }

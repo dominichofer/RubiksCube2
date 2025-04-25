@@ -8,7 +8,7 @@
     <ClInclude Include="solvers.h" />
     <ClInclude Include="neighbours.h" />
     <ClInclude Include="two_phase.h" />
-    <ClInclude Include="transposition_table.h" />
+    <ClInclude Include="hash_table.h" />
     <ClInclude Include="brute_force.h" />
     <ClInclude Include="one_phase.h" />
     <ClInclude Include="tables.h" />

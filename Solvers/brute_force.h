@@ -3,11 +3,6 @@
 #include <vector>
 #include <stdexcept>
 
-class SolutionFoundException : public std::exception
-{
-	std::vector<Twist> solution;
-};
-
 template <typename Cube>
 class BruteForceSolver
 {
