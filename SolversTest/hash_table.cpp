@@ -20,7 +20,7 @@ TEST(HashTable, states)
 	ht.insert(key, value2);
 
 	// value2 is contained
-	EXPECT_EQ(ht.lookup(key), value1);
+	EXPECT_EQ(ht.lookup(key), value2);
 
 	// clearing removes key
 	ht.clear();

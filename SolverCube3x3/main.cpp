@@ -16,7 +16,7 @@ int main()
 		auto solution = solver.solve(cube);
 		auto stop = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
-		std::cout << "Solution: " << solution.size() << " Time: " << duration.count() << " ms   (";
+		std::cout << "Solution: " << solution.size() << " Time: " << duration.count() << " ms (";
 		for (auto r : solution)
 			std::cout << " " << to_string(r);
 		std::cout << " )\n";

@@ -1,25 +1,12 @@
 #pragma once
 #include "cube3x3.h"
+#include "twist.h"
 #include <string_view>
 #include <vector>
 
-Twist twist_from_string(std::string_view s)
-{
-	for (Twist t : all_twists)
-		if (to_string(t) == s)
-			return t;
-	throw std::invalid_argument("Invalid twist string");
-}
-
 Cube3x3 from_string(std::string_view s)
 {
-	auto cube = Cube3x3::solved();
-	for (size_t i = 0; i < s.size(); i += 3)
-	{
-		auto twist = twist_from_string(s.substr(i, 2));
-		cube = cube.twisted(twist);
-	}
-	return cube;
+	return Cube3x3::solved().twisted(s);
 }
 
 const std::vector<std::vector<Cube3x3>> cube3x3_of_distance

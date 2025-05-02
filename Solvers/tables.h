@@ -2,6 +2,7 @@
 #include "Math/math.h"
 #include "Cube/cube.h"
 #include "neighbours.h"
+#include <array>
 #include <fstream>
 #include <string>
 
@@ -108,49 +109,63 @@ public:
 	}
 };
 
-template <typename Cube>
+template <std::size_t N>
+class nTwists
+{
+	int8_t size_;
+	std::array<Twist, N> twists;
+public:
+	nTwists() noexcept : size_(0) { twists.fill(Twist::None); }
+	nTwists(int8_t size) noexcept : size_(size) { twists.fill(Twist::None); }
+	void append(Twist t) { twists[size_++] = t; }
+	int8_t size() const { return size_; }
+	const std::array<Twist, N>& data() const { return twists; }
+	auto begin() const { return twists.begin(); }
+	auto end() const { return twists.begin() + size_; }
+	auto rbegin() const { return twists.rbegin() + N - size_; }
+	auto rend() const { return twists.rend(); }
+};
+
+template <typename Cube, std::size_t TWISTS>
 class DirectionTable
 {
-	std::vector<uint8_t> table;
-	std::vector<Twist> twists;
+	std::vector<nTwists<TWISTS>> table;
 	std::function<int64_t(Cube)> index;
 	std::function<Cube(int64_t)> from_index;
 	uint8_t max_distance_;
 public:
 	DirectionTable() = default;
 	DirectionTable(
-		std::vector<Twist> twists,
 		std::function<int64_t(Cube)> index_fkt,
 		std::function<Cube(int64_t)> from_index_fkt,
 		std::size_t index_space)
 		: table(index_space)
-		, twists(std::move(twists))
 		, index(std::move(index_fkt))
 		, from_index(std::move(from_index_fkt))
 		, max_distance_(0xFF)
 	{}
 
-	void fill(const Cube& origin)
+	void fill(const Cube& origin, const std::vector<Twist>& twists)
 	{
 		int64_t size = static_cast<int64_t>(table.size());
-		std::ranges::fill(table, 0xFF);
-		table[index(origin)] = 0;
+		std::ranges::fill(table, nTwists<TWISTS>{ -1 });
+		table[index(origin)] = nTwists<TWISTS>{};
 		for (uint8_t d = 0; d < 0xFE; d++)
 		{
 			bool changed = false;
 			#pragma omp parallel for reduction(||: changed)
 			for (int64_t i = 0; i < size; i++)
-				if (table[i] / twists.size() == d)
+				if (table[i].size() == d)
 				{
 					Cube cube = from_index(i);
-					for (int j = 0; j < twists.size(); j++)
+					for (Twist t : twists)
 					{
-						Twist t = twists[j];
 						Cube n = cube.twisted(t);
-						uint8_t& n_d = table[index(n)];
-						if (n_d == 0xFF)
+						auto& n_twists = table[index(n)];
+						if (n_twists.size() == -1)
 						{
-							n_d = (d + 1) * twists.size() + j;
+							n_twists = table[i];
+							n_twists.append(t);
 							changed = true;
 						}
 					}
@@ -163,52 +178,50 @@ public:
 		}
 	}
 
-	void read(std::fstream& file)
-	{
-		file.read(reinterpret_cast<char*>(table.data()), table.size());
-		file.read(reinterpret_cast<char*>(&max_distance_), sizeof(max_distance_));
-	}
-	void read(const std::string& file)
-	{
-		std::fstream f(file, std::ios::binary | std::ios::in);
-		if (!f.is_open())
-			throw std::runtime_error("Failed to open file: " + file);
-		read(f);
-	}
+	//void read(std::fstream& file)
+	//{
+	//	for (auto& t : table)
+	//	{
+	//		uint8_t size;
+	//		file.read(reinterpret_cast<char*>(&size), sizeof(size));
+	//		t.resize(size);
+	//		file.read(reinterpret_cast<char*>(t.data()), size);
+	//	}
+	//	file.read(reinterpret_cast<char*>(&max_distance_), sizeof(max_distance_));
+	//}
+	//void read(const std::string& file)
+	//{
+	//	std::fstream f(file, std::ios::binary | std::ios::in);
+	//	if (!f.is_open())
+	//		throw std::runtime_error("Failed to open file: " + file);
+	//	read(f);
+	//}
 
-	void write(std::fstream& file) const
-	{
-		file.write(reinterpret_cast<const char*>(table.data()), table.size());
-		file.write(reinterpret_cast<const char*>(&max_distance_), sizeof(max_distance_));
-	}
-	void write(const std::string& file) const
-	{
-		std::fstream f(file, std::ios::binary | std::ios::out);
-		if (!f.is_open())
-			throw std::runtime_error("Failed to open file: " + file);
-		write(f);
-	}
+	//void write(std::fstream& file) const
+	//{
+	//	for (const auto& t : table)
+	//	{
+	//		uint8_t size = static_cast<uint8_t>(t.size());
+	//		file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+	//		file.write(reinterpret_cast<const char*>(t.data()), size);
+	//	}
+	//	file.write(reinterpret_cast<const char*>(&max_distance_), sizeof(max_distance_));
+	//}
+	//void write(const std::string& file) const
+	//{
+	//	std::fstream f(file, std::ios::binary | std::ios::out);
+	//	if (!f.is_open())
+	//		throw std::runtime_error("Failed to open file: " + file);
+	//	write(f);
+	//}
 
 	auto begin() const { return table.begin(); }
 	auto end() const { return table.end(); }
 	uint8_t max_distance() const { return max_distance_; }
-	uint8_t operator[](const Cube& cube) const { return table[index(cube)]; }
-
-	std::vector<Twist> solution(Cube cube) const
-	{
-		std::vector<Twist> path;
-		for (uint8_t d = table[index(cube)]; d > 0; d--)
-			for (Twist t : twists)
-			{
-				Cube n = cube.twisted(t);
-				if (table[index(n)] == d - 1)
-				{
-					path.push_back(t);
-					cube = n;
-					break;
-				}
-			}
-		return path;
+	std::vector<Twist> operator[](const Cube& cube) const {
+		std::vector<Twist> ret;
+		ret.append_range(table[index(cube)].data());
+		return ret;
 	}
 };
 

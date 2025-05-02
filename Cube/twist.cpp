@@ -46,6 +46,22 @@ std::string to_string(Twist twist)
 	}
 }
 
+Twist twist_from_string(std::string_view s)
+{
+	static const std::vector<Twist> all_twists = {
+		Twist::L1, Twist::L2, Twist::L3, Twist::l1, Twist::l2, Twist::l3,
+		Twist::R1, Twist::R2, Twist::R3, Twist::r1, Twist::r2, Twist::r3,
+		Twist::U1, Twist::U2, Twist::U3, Twist::u1, Twist::u2, Twist::u3,
+		Twist::D1, Twist::D2, Twist::D3, Twist::d1, Twist::d2, Twist::d3,
+		Twist::F1, Twist::F2, Twist::F3, Twist::f1, Twist::f2, Twist::f3,
+		Twist::B1, Twist::B2, Twist::B3, Twist::b1, Twist::b2, Twist::b3,
+	};
+	for (Twist t : all_twists)
+		if (to_string(t) == s)
+			return t;
+	throw std::invalid_argument("Invalid twist string");
+}
+
 Twist inversed(Twist twist)
 {
 	switch (twist)

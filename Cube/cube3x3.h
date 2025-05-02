@@ -29,7 +29,11 @@ public:
 	Cube3x3 twisted(Twist) const override;
 
 	uint64_t hash() const;
+
 };
+
+bool same_permutation(const Cube3x3&, const Cube3x3&);
+bool same_orientation(const Cube3x3&, const Cube3x3&);
 
 std::string to_string(const Cube3x3&);
 

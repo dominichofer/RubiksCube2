@@ -50,21 +50,21 @@ TEST(path_to_neighbours, twists_match_cube_of_max_distance_5)
 {
 	auto map = path_to_neighbours(5, Cube3x3::solved());
 	for (const auto& [cube, twists] : map)
-		EXPECT_EQ(from_string("twisted(twists), cube);
+		EXPECT_EQ(Cube3x3::solved().twisted(twists), cube);
 }
 
 TEST(path_to_neighbours, twists_match_cube_of_distance_2_to_5)
 {
 	auto map = path_to_neighbours(2, 5, Cube3x3::solved());
 	for (const auto& [cube, twists] : map)
-		EXPECT_EQ(from_string("twisted(twists), cube);
+		EXPECT_EQ(Cube3x3::solved().twisted(twists), cube);
 }
 
 TEST(path_to_neighbours, twists_match_cube_max_of_distance_3_to_4)
 {
 	auto map = path_to_neighbours(3, 4, Cube3x3::solved());
 	for (const auto& [cube, twists] : map)
-		EXPECT_EQ(from_string("twisted(twists), cube);
+		EXPECT_EQ(Cube3x3::solved().twisted(twists), cube);
 }
 
 // Number of positions of the Rubik's cube at a distance of n moves from the solved state, in the half-turn metric.
