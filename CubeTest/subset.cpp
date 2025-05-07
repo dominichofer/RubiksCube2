@@ -31,13 +31,13 @@ TEST(H0_coset, fuzzing)
 	for (int coset = 0; coset < 10; coset++)
 	{
 		auto twists = rnd_twists(100); // twists that define the coset
-		auto ref_cube = rnd_subset_cube().twisted(twists);
+		auto ref_cube = twisted(rnd_subset_cube(), twists);
 		auto ref_number = H0::coset_number(ref_cube);
 
 		std::unordered_map<uint64_t, Cube3x3> map;
 		for (int i = 0; i < 100'000; i++)
 		{
-			auto cube = rnd_subset_cube().twisted(twists);
+			auto cube = twisted(rnd_subset_cube(), twists);
 			auto number = H0::coset_number(cube);
 			auto index = H0::coset_index(cube);
 

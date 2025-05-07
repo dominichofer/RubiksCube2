@@ -7,58 +7,58 @@ const uint8_t c0 = 16, c1 = 17, c2 = 18, c3 = 19, c4 = 20, c5 = 21, c6 = 22, c7 
 const FacesCenter X = FacesCenter(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 const FacesSide Y = FacesSide(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23);
 
-TEST(Corners, L1) { EXPECT_EQ(Corners::solved().L1(), Corners({ 2, 1, 6, 3, 0, 5, 4, 7 }, { 2, 0, 2, 0, 2, 0, 2, 0 })); }
-TEST(Corners, R1) { EXPECT_EQ(Corners::solved().R1(), Corners({ 0, 5, 2, 1, 4, 7, 6, 3 }, { 0, 2, 0, 2, 0, 2, 0, 2 })); }
-TEST(Corners, U1) { EXPECT_EQ(Corners::solved().U1(), Corners({ 1, 3, 0, 2, 4, 5, 6, 7 }, { 0, 0, 0, 0, 0, 0, 0, 0 })); }
-TEST(Corners, D1) { EXPECT_EQ(Corners::solved().D1(), Corners({ 0, 1, 2, 3, 6, 4, 7, 5 }, { 0, 0, 0, 0, 0, 0, 0, 0 })); }
-TEST(Corners, F1) { EXPECT_EQ(Corners::solved().F1(), Corners({ 4, 0, 2, 3, 5, 1, 6, 7 }, { 1, 1, 0, 0, 1, 1, 0, 0 })); }
-TEST(Corners, B1) { EXPECT_EQ(Corners::solved().B1(), Corners({ 0, 1, 3, 7, 4, 5, 2, 6 }, { 0, 0, 1, 1, 0, 0, 1, 1 })); }
+TEST(Corners, L1) { EXPECT_EQ(Corners::solved().twisted(Twist::L1), Corners({ 2, 1, 6, 3, 0, 5, 4, 7 }, { 2, 0, 2, 0, 2, 0, 2, 0 })); }
+TEST(Corners, R1) { EXPECT_EQ(Corners::solved().twisted(Twist::R1), Corners({ 0, 5, 2, 1, 4, 7, 6, 3 }, { 0, 2, 0, 2, 0, 2, 0, 2 })); }
+TEST(Corners, U1) { EXPECT_EQ(Corners::solved().twisted(Twist::U1), Corners({ 1, 3, 0, 2, 4, 5, 6, 7 }, { 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(Corners, D1) { EXPECT_EQ(Corners::solved().twisted(Twist::D1), Corners({ 0, 1, 2, 3, 6, 4, 7, 5 }, { 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(Corners, F1) { EXPECT_EQ(Corners::solved().twisted(Twist::F1), Corners({ 4, 0, 2, 3, 5, 1, 6, 7 }, { 1, 1, 0, 0, 1, 1, 0, 0 })); }
+TEST(Corners, B1) { EXPECT_EQ(Corners::solved().twisted(Twist::B1), Corners({ 0, 1, 3, 7, 4, 5, 2, 6 }, { 0, 0, 1, 1, 0, 0, 1, 1 })); }
 
-TEST(EdgesCenter, L1) { EXPECT_EQ(EdgesCenter::solved().L1(), EdgesCenter({ 0, 1, 2, 3, 11, 5, 6, 8, 4, 9, 10, 7 }, { 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1 })); }
-TEST(EdgesCenter, R1) { EXPECT_EQ(EdgesCenter::solved().R1(), EdgesCenter({ 0, 1, 2, 3, 4, 9, 10, 7, 8, 6, 5, 11 }, { 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0 })); }
-TEST(EdgesCenter, U1) { EXPECT_EQ(EdgesCenter::solved().U1(), EdgesCenter({ 5, 4, 2, 3, 0, 1, 6, 7, 8, 9, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
-TEST(EdgesCenter, D1) { EXPECT_EQ(EdgesCenter::solved().D1(), EdgesCenter({ 0, 1, 6, 7, 4, 5, 3, 2, 8, 9, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
-TEST(EdgesCenter, F1) { EXPECT_EQ(EdgesCenter::solved().F1(), EdgesCenter({ 8, 1, 2, 9, 4, 5, 6, 7, 3, 0, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
-TEST(EdgesCenter, B1) { EXPECT_EQ(EdgesCenter::solved().B1(), EdgesCenter({ 0, 10, 11, 3, 4, 5, 6, 7, 8, 9, 2, 1 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(EdgesCenter, L1) { EXPECT_EQ(EdgesCenter::solved().twisted(Twist::L1), EdgesCenter({ 0, 1, 2, 3, 11, 5, 6, 8, 4, 9, 10, 7 }, { 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1 })); }
+TEST(EdgesCenter, R1) { EXPECT_EQ(EdgesCenter::solved().twisted(Twist::R1), EdgesCenter({ 0, 1, 2, 3, 4, 9, 10, 7, 8, 6, 5, 11 }, { 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0 })); }
+TEST(EdgesCenter, U1) { EXPECT_EQ(EdgesCenter::solved().twisted(Twist::U1), EdgesCenter({ 5, 4, 2, 3, 0, 1, 6, 7, 8, 9, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(EdgesCenter, D1) { EXPECT_EQ(EdgesCenter::solved().twisted(Twist::D1), EdgesCenter({ 0, 1, 6, 7, 4, 5, 3, 2, 8, 9, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(EdgesCenter, F1) { EXPECT_EQ(EdgesCenter::solved().twisted(Twist::F1), EdgesCenter({ 8, 1, 2, 9, 4, 5, 6, 7, 3, 0, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
+TEST(EdgesCenter, B1) { EXPECT_EQ(EdgesCenter::solved().twisted(Twist::B1), EdgesCenter({ 0, 10, 11, 3, 4, 5, 6, 7, 8, 9, 2, 1 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })); }
 
-TEST(EdgesSide, L1) { EXPECT_EQ(EdgesSide::solved().L1(), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, c1, c0, b2, b3, b4, b5, c3, c2, b6, b7, b0, b1, c4, c5, c6, c7)); }
-TEST(EdgesSide, l1) { EXPECT_EQ(EdgesSide::solved().l1(), EdgesSide(a2, a1, a4, a3, a6, a5, a0, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(EdgesSide, R1) { EXPECT_EQ(EdgesSide::solved().R1(), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, c4, c5, c6, c7, b6, b7, c0, c1, c2, c3, b5, b4, b3, b2)); }
-TEST(EdgesSide, r1) { EXPECT_EQ(EdgesSide::solved().r1(), EdgesSide(a0, a7, a2, a1, a4, a3, a6, a5, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(EdgesSide, U1) { EXPECT_EQ(EdgesSide::solved().U1(), EdgesSide(c6, c7, c0, c1, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, a1, a0, c2, c3, c4, c5, a3, a2)); }
-TEST(EdgesSide, u1) { EXPECT_EQ(EdgesSide::solved().u1(), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b2, b1, b4, b3, b6, b5, b0, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(EdgesSide, D1) { EXPECT_EQ(EdgesSide::solved().D1(), EdgesSide(a0, a1, a2, a3, c5, c4, c3, c2, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, a4, a5, a6, a7, c6, c7)); }
-TEST(EdgesSide, d1) { EXPECT_EQ(EdgesSide::solved().d1(), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b7, b2, b1, b4, b3, b6, b5, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(EdgesSide, F1) { EXPECT_EQ(EdgesSide::solved().F1(), EdgesSide(b1, b0, a2, a3, a4, a5, b3, b2, a6, a7, a0, a1, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(EdgesSide, f1) { EXPECT_EQ(EdgesSide::solved().f1(), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c2, c1, c4, c3, c6, c5, c0, c7)); }
-TEST(EdgesSide, B1) { EXPECT_EQ(EdgesSide::solved().B1(), EdgesSide(a0, a1, b4, b5, b6, b7, a6, a7, b0, b1, b2, b3, a5, a4, a3, a2, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(EdgesSide, b1) { EXPECT_EQ(EdgesSide::solved().b1(), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c7, c2, c1, c4, c3, c6, c5)); }
+TEST(EdgesSide, L1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::L1), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, c1, c0, b2, b3, b4, b5, c3, c2, b6, b7, b0, b1, c4, c5, c6, c7)); }
+TEST(EdgesSide, l1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::l1), EdgesSide(a2, a1, a4, a3, a6, a5, a0, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(EdgesSide, R1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::R1), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, c4, c5, c6, c7, b6, b7, c0, c1, c2, c3, b5, b4, b3, b2)); }
+TEST(EdgesSide, r1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::r1), EdgesSide(a0, a7, a2, a1, a4, a3, a6, a5, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(EdgesSide, U1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::U1), EdgesSide(c6, c7, c0, c1, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, a1, a0, c2, c3, c4, c5, a3, a2)); }
+TEST(EdgesSide, u1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::u1), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b2, b1, b4, b3, b6, b5, b0, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(EdgesSide, D1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::D1), EdgesSide(a0, a1, a2, a3, c5, c4, c3, c2, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, a4, a5, a6, a7, c6, c7)); }
+TEST(EdgesSide, d1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::d1), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b7, b2, b1, b4, b3, b6, b5, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(EdgesSide, F1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::F1), EdgesSide(b1, b0, a2, a3, a4, a5, b3, b2, a6, a7, a0, a1, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(EdgesSide, f1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::f1), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c2, c1, c4, c3, c6, c5, c0, c7)); }
+TEST(EdgesSide, B1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::B1), EdgesSide(a0, a1, b4, b5, b6, b7, a6, a7, b0, b1, b2, b3, a5, a4, a3, a2, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(EdgesSide, b1) { EXPECT_EQ(EdgesSide::solved().twisted(Twist::b1), EdgesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c7, c2, c1, c4, c3, c6, c5)); }
 
-TEST(FacesCenter, L1) { EXPECT_EQ(X.L1(), FacesCenter(a1, a2, a3, a0, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesCenter, l1) { EXPECT_EQ(X.l1(), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, c4, b3, b4, b5, c2, b7, c0, c1, b2, c3, b6, c5, c6, c7)); }
-TEST(FacesCenter, R1) { EXPECT_EQ(X.R1(), FacesCenter(a0, a1, a2, a3, a5, a6, a7, a4, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesCenter, r1) { EXPECT_EQ(X.r1(), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, c0, b1, b2, b3, c6, b5, b6, b7, b4, c1, c2, c3, c4, c5, b0, c7)); }
-TEST(FacesCenter, U1) { EXPECT_EQ(X.U1(), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b1, b2, b3, b0, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesCenter, u1) { EXPECT_EQ(X.u1(), FacesCenter(a0, c1, a2, a3, a4, c5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, a5, c2, c3, c4, a1, c6, c7)); }
-TEST(FacesCenter, D1) { EXPECT_EQ(X.D1(), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b5, b6, b7, b4, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesCenter, d1) { EXPECT_EQ(X.d1(), FacesCenter(a0, a1, a2, c7, a4, a5, a6, c3, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, a3, c4, c5, c6, a7)); }
-TEST(FacesCenter, F1) { EXPECT_EQ(X.F1(), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c1, c2, c3, c0, c4, c5, c6, c7)); }
-TEST(FacesCenter, f1) { EXPECT_EQ(X.f1(), FacesCenter(b5, a1, a2, a3, a4, a5, b3, a7, b0, b1, b2, a0, b4, a6, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesCenter, B1) { EXPECT_EQ(X.B1(), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c5, c6, c7, c4)); }
-TEST(FacesCenter, b1) { EXPECT_EQ(X.b1(), FacesCenter(a0, a1, b1, a3, b7, a5, a6, a7, b0, a4, b2, b3, b4, b5, b6, a2, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesCenter, L1) { EXPECT_EQ(X.twisted(Twist::L1), FacesCenter(a1, a2, a3, a0, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesCenter, l1) { EXPECT_EQ(X.twisted(Twist::l1), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, c4, b3, b4, b5, c2, b7, c0, c1, b2, c3, b6, c5, c6, c7)); }
+TEST(FacesCenter, R1) { EXPECT_EQ(X.twisted(Twist::R1), FacesCenter(a0, a1, a2, a3, a5, a6, a7, a4, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesCenter, r1) { EXPECT_EQ(X.twisted(Twist::r1), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, c0, b1, b2, b3, c6, b5, b6, b7, b4, c1, c2, c3, c4, c5, b0, c7)); }
+TEST(FacesCenter, U1) { EXPECT_EQ(X.twisted(Twist::U1), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b1, b2, b3, b0, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesCenter, u1) { EXPECT_EQ(X.twisted(Twist::u1), FacesCenter(a0, c1, a2, a3, a4, c5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, a5, c2, c3, c4, a1, c6, c7)); }
+TEST(FacesCenter, D1) { EXPECT_EQ(X.twisted(Twist::D1), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b5, b6, b7, b4, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesCenter, d1) { EXPECT_EQ(X.twisted(Twist::d1), FacesCenter(a0, a1, a2, c7, a4, a5, a6, c3, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, a3, c4, c5, c6, a7)); }
+TEST(FacesCenter, F1) { EXPECT_EQ(X.twisted(Twist::F1), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c1, c2, c3, c0, c4, c5, c6, c7)); }
+TEST(FacesCenter, f1) { EXPECT_EQ(X.twisted(Twist::f1), FacesCenter(b5, a1, a2, a3, a4, a5, b3, a7, b0, b1, b2, a0, b4, a6, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesCenter, B1) { EXPECT_EQ(X.twisted(Twist::B1), FacesCenter(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c5, c6, c7, c4)); }
+TEST(FacesCenter, b1) { EXPECT_EQ(X.twisted(Twist::b1), FacesCenter(a0, a1, b1, a3, b7, a5, a6, a7, b0, a4, b2, b3, b4, b5, b6, a2, c0, c1, c2, c3, c4, c5, c6, c7)); }
 
-TEST(FacesSide, L1) { EXPECT_EQ(Y.L1(), FacesSide(a2, a0, a3, a1, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesSide, l1) { EXPECT_EQ(Y.l1(), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, c7, b1, c5, b3, c0, b5, c2, b7, b0, c1, b2, c3, c4, b6, c6, b4)); }
-TEST(FacesSide, R1) { EXPECT_EQ(Y.R1(), FacesSide(a0, a1, a2, a3, a6, a4, a7, a5, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesSide, r1) { EXPECT_EQ(Y.r1(), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, c1, b2, c3, b4, c6, b6, c4, c0, b5, c2, b7, b3, c5, b1, c7)); }
-TEST(FacesSide, U1) { EXPECT_EQ(Y.U1(), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b2, b0, b3, b1, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesSide, u1) { EXPECT_EQ(Y.u1(), FacesSide(c0, c1, a2, a3, c4, c5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, a4, a5, c2, c3, a0, a1, c6, c7)); }
-TEST(FacesSide, D1) { EXPECT_EQ(Y.D1(), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b6, b4, b7, b5, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesSide, d1) { EXPECT_EQ(Y.d1(), FacesSide(a0, a1, c6, c7, a4, a5, c2, c3, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, a2, a3, c4, c5, a6, a7)); }
-TEST(FacesSide, F1) { EXPECT_EQ(Y.F1(), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c2, c0, c3, c1, c4, c5, c6, c7)); }
-TEST(FacesSide, f1) { EXPECT_EQ(Y.f1(), FacesSide(a0, b4, a2, b5, b2, a5, b3, a7, b0, b1, a3, a1, a6, a4, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
-TEST(FacesSide, B1) { EXPECT_EQ(Y.B1(), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c6, c4, c7, c5)); }
-TEST(FacesSide, b1) { EXPECT_EQ(Y.b1(), FacesSide(b1, a1, b0, a3, a4, b7, a6, b6, a5, a7, b2, b3, b4, b5, a0, a2, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesSide, L1) { EXPECT_EQ(Y.twisted(Twist::L1), FacesSide(a2, a0, a3, a1, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesSide, l1) { EXPECT_EQ(Y.twisted(Twist::l1), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, c7, b1, c5, b3, c0, b5, c2, b7, b0, c1, b2, c3, c4, b6, c6, b4)); }
+TEST(FacesSide, R1) { EXPECT_EQ(Y.twisted(Twist::R1), FacesSide(a0, a1, a2, a3, a6, a4, a7, a5, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesSide, r1) { EXPECT_EQ(Y.twisted(Twist::r1), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, c1, b2, c3, b4, c6, b6, c4, c0, b5, c2, b7, b3, c5, b1, c7)); }
+TEST(FacesSide, U1) { EXPECT_EQ(Y.twisted(Twist::U1), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b2, b0, b3, b1, b4, b5, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesSide, u1) { EXPECT_EQ(Y.twisted(Twist::u1), FacesSide(c0, c1, a2, a3, c4, c5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, a4, a5, c2, c3, a0, a1, c6, c7)); }
+TEST(FacesSide, D1) { EXPECT_EQ(Y.twisted(Twist::D1), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b6, b4, b7, b5, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesSide, d1) { EXPECT_EQ(Y.twisted(Twist::d1), FacesSide(a0, a1, c6, c7, a4, a5, c2, c3, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, a2, a3, c4, c5, a6, a7)); }
+TEST(FacesSide, F1) { EXPECT_EQ(Y.twisted(Twist::F1), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c2, c0, c3, c1, c4, c5, c6, c7)); }
+TEST(FacesSide, f1) { EXPECT_EQ(Y.twisted(Twist::f1), FacesSide(a0, b4, a2, b5, b2, a5, b3, a7, b0, b1, a3, a1, a6, a4, b6, b7, c0, c1, c2, c3, c4, c5, c6, c7)); }
+TEST(FacesSide, B1) { EXPECT_EQ(Y.twisted(Twist::B1), FacesSide(a0, a1, a2, a3, a4, a5, a6, a7, b0, b1, b2, b3, b4, b5, b6, b7, c0, c1, c2, c3, c6, c4, c7, c5)); }
+TEST(FacesSide, b1) { EXPECT_EQ(Y.twisted(Twist::b1), FacesSide(b1, a1, b0, a3, a4, b7, a6, b6, a5, a7, b2, b3, b4, b5, a0, a2, c0, c1, c2, c3, c4, c5, c6, c7)); }
 
 class NameGenerator {
 public:
@@ -149,13 +149,13 @@ TYPED_TEST(CubeTest, inverse_twists)
 TYPED_TEST(CubeTest, twists_cycle)
 {
 	for (Twist t : all_twists)
-		EXPECT_TRUE(TypeParam::solved().twisted(t, t, t, t).is_solved());
+		EXPECT_TRUE(twisted(TypeParam::solved(), { t, t, t, t }).is_solved());
 }
 
 template <typename Twistable>
 void expect_pairwise_commutation(const Twistable& t, Twist a, Twist b)
 {
-	EXPECT_EQ(t.twisted(a, b), t.twisted(b, a));
+	EXPECT_EQ(twisted(t, { a, b }), twisted(t, { b, a }));
 }
 
 template <typename Twistable>
@@ -190,8 +190,8 @@ TEST(Corners, state)
 
 TEST(EdgesCenter, state)
 {
-	std::vector<uint8_t> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3 }; // arbitrary
-	std::vector<uint8_t> o = { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }; // arbitrary
+	std::array<uint8_t, 12> c = { 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3 }; // arbitrary
+	std::array<uint8_t, 12> o = { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0 }; // arbitrary
 	EdgesCenter obj(c, o);
 	for (int i = 0; i < c.size(); i++)
 		EXPECT_EQ(obj.cubie(i), c[i]);
@@ -289,7 +289,7 @@ TEST(EdgesCenter, orientation_twist_fuzzing) { orientation_twist_fuzzing<EdgesCe
 TEST(Corners, prm_index)
 {
 	std::vector<uint64_t> indices;
-	std::array<int, 8> p = { 0, 1, 2, 3, 4, 5, 6, 7 };
+	std::array<uint8_t, 8> p = { 0, 1, 2, 3, 4, 5, 6, 7 };
 	do
 	{
 		Corners c(p, { 0, 0, 0, 0, 0, 0, 0, 0 });
@@ -336,7 +336,7 @@ TEST(Corners, ori_index)
 	std::vector<uint64_t> indices;
 	for (int i = 0; i < std::pow(3, 8); i++)
 	{
-		std::array<int, 8> o;
+		std::array<uint8_t, 8> o;
 		int n = i;
 		for (int j = 0; j < 8; j++)
 		{
@@ -366,7 +366,7 @@ TEST(EdgesCenter, ori_index)
 	std::vector<uint64_t> indices;
 	for (int i = 0; i < std::pow(2, 12); i++)
 	{
-		std::array<int, 12> o;
+		std::array<uint8_t, 12> o;
 		int n = i;
 		for (int j = 0; j < 12; j++)
 		{

@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 
-class EdgesSide : public Twistable<EdgesSide>
+class EdgesSide
 {
 	// +--2----3-+
 	///|/|
@@ -61,8 +61,7 @@ public:
 	uint8_t cubie(int) const;
 	std::array<uint8_t, 24> cubies() const;
 
-	using Twistable::twisted;
-	EdgesSide twisted(Twist) const override;
+	EdgesSide twisted(Twist) const;
 
 	uint64_t prm_index() const;
 	uint64_t index() const;

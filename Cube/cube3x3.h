@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-class Cube3x3 : public Twistable<Cube3x3>
+class Cube3x3
 {
 	Corners c;
 	EdgesCenter e;
@@ -25,8 +25,7 @@ public:
 	const Corners& corners() const { return c; }
 	const EdgesCenter& edges() const { return e; }
 
-	using Twistable::twisted;
-	Cube3x3 twisted(Twist) const override;
+	Cube3x3 twisted(Twist) const;
 
 	uint64_t hash() const;
 

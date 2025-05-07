@@ -5,6 +5,4 @@ TEST(Twist, inversed_is_involution)
 {
 	for (Twist t : all_twists)
 		EXPECT_EQ(t, inversed(inversed(t)));
-
-	EXPECT_EQ(all_twists, inversed(inversed(all_twists)));
 }

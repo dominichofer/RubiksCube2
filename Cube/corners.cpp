@@ -13,19 +13,20 @@ const std::vector<Twist> Corners::twists = {
 };
 
 Corners::Corners(
-uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3,
-uint8_t c4, uint8_t c5, uint8_t c6, uint8_t c7,
-uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3,
-uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7) noexcept
-: Corners(
-{ c0, c1, c2, c3, c4, c5, c6, c7 },
-{ o0, o1, o2, o3, o4, o5, o6, o7 })
-{}
+	uint8_t c0, uint8_t c1, uint8_t c2, uint8_t c3,
+	uint8_t c4, uint8_t c5, uint8_t c6, uint8_t c7,
+	uint8_t o0, uint8_t o1, uint8_t o2, uint8_t o3,
+	uint8_t o4, uint8_t o5, uint8_t o6, uint8_t o7) noexcept
+	: Corners(
+		{ c0, c1, c2, c3, c4, c5, c6, c7 },
+		{ o0, o1, o2, o3, o4, o5, o6, o7 })
+{
+}
 Corners::Corners(std::array<uint8_t, 8> corners, std::array<uint8_t, 8> orientations) noexcept
 {
-state = 0;
-for (int i = 0; i < 8; i++)
-state |= static_cast<uint64_t>(orientations[i] << 4 | corners[i]) << (i * 8);
+	state = 0;
+	for (int i = 0; i < 8; i++)
+		state |= static_cast<uint64_t>(orientations[i] << 4 | corners[i]) << (i * 8);
 }
 Corners Corners::solved() { return Corners(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0); }
 Corners Corners::impossible() { return Corners(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); }
@@ -46,7 +47,7 @@ uint8_t Corners::orientation(int index) const { return (state >> (index * 8 + 4)
 
 std::array<uint8_t, 8> Corners::cubies() const
 {
-return { cubie(0), cubie(1), cubie(2), cubie(3), cubie(4), cubie(5), cubie(6), cubie(7) };
+	return { cubie(0), cubie(1), cubie(2), cubie(3), cubie(4), cubie(5), cubie(6), cubie(7) };
 }
 
 std::array<uint8_t, 8> Corners::orientations() const
@@ -67,84 +68,84 @@ static const uint64_t B_mask = 0xFF'FF'00'00'FF'FF'00'00ULL;
 
 uint64_t ori_swap_0_1(uint64_t state, uint64_t mask)
 {
-// Maps
-// b0000'XXXX -> b0001'XXXX
-// b0001'XXXX -> b0000'XXXX
-// b0010'XXXX -> b0010'XXXX
+	// Maps
+	// b0000'XXXX -> b0001'XXXX
+	// b0001'XXXX -> b0000'XXXX
+	// b0010'XXXX -> b0010'XXXX
 
-// 1 NOT, 1 AND, 1 XOR, 1 SHIFT
-mask &= upper_ori_bit;
-return ((~state & mask) >> 1) ^ state;
+	// 1 NOT, 1 AND, 1 XOR, 1 SHIFT
+	mask &= upper_ori_bit;
+	return ((~state & mask) >> 1) ^ state;
 }
 
 uint64_t ori_swap_0_2(uint64_t state, uint64_t mask)
 {
-// Maps
-// b0000'XXXX -> b0010'XXXX
-// b0001'XXXX -> b0001'XXXX
-// b0010'XXXX -> b0000'XXXX
+	// Maps
+	// b0000'XXXX -> b0010'XXXX
+	// b0001'XXXX -> b0001'XXXX
+	// b0010'XXXX -> b0000'XXXX
 
-// 1 NOT, 1 AND, 1 OR, 1 SUB
-mask &= ori_mask;
-uint64_t x = (upper_ori_bit & mask) - (state & mask);
-return (state & ~mask) | x;
+	// 1 NOT, 1 AND, 1 OR, 1 SUB
+	mask &= ori_mask;
+	uint64_t x = (upper_ori_bit & mask) - (state & mask);
+	return (state & ~mask) | x;
 }
 
 uint64_t ori_swap_1_2(uint64_t state, uint64_t mask)
 {
-// Maps
-// b0000'XXXX -> b0000'XXXX
-// b0001'XXXX -> b0010'XXXX
-// b0010'XXXX -> b0001'XXXX
+	// Maps
+	// b0000'XXXX -> b0000'XXXX
+	// b0001'XXXX -> b0010'XXXX
+	// b0010'XXXX -> b0001'XXXX
 
-// 3 AND, 2 SHIFT, 2 OR
-uint64_t l = (upper_ori_bit & mask & state) >> 1;
-uint64_t r = (lower_ori_bit & mask & state) << 1;
-return (state & ~(mask & ori_mask)) | l | r;
+	// 3 AND, 2 SHIFT, 2 OR
+	uint64_t l = (upper_ori_bit & mask & state) >> 1;
+	uint64_t r = (lower_ori_bit & mask & state) << 1;
+	return (state & ~(mask & ori_mask)) | l | r;
 }
 
 Corners Corners::twisted(Twist r) const
 {
-switch (r)
-{
-case Twist::L1:
-return ori_swap_0_2(byte_shuffle(state, 2, 1, 6, 3, 0, 5, 4, 7), L_mask);
-case Twist::L2:
-return byte_shuffle(state, 6, 1, 4, 3, 2, 5, 0, 7);
-case Twist::L3:
-return ori_swap_0_2(byte_shuffle(state, 4, 1, 0, 3, 6, 5, 2, 7), L_mask);
-case Twist::R1:
-return ori_swap_0_2(byte_shuffle(state, 0, 5, 2, 1, 4, 7, 6, 3), R_mask);
-case Twist::R2:
-return byte_shuffle(state, 0, 7, 2, 5, 4, 3, 6, 1);
-case Twist::R3:
-return ori_swap_0_2(byte_shuffle(state, 0, 3, 2, 7, 4, 1, 6, 5), R_mask);
-case Twist::U1:
-return ori_swap_1_2(byte_shuffle(state, 1, 3, 0, 2, 4, 5, 6, 7), U_mask);
-case Twist::U2:
-return byte_shuffle(state, 3, 2, 1, 0, 4, 5, 6, 7);
-case Twist::U3:
-return ori_swap_1_2(byte_shuffle(state, 2, 0, 3, 1, 4, 5, 6, 7), U_mask);
-case Twist::D1:
-return ori_swap_1_2(byte_shuffle(state, 0, 1, 2, 3, 6, 4, 7, 5), D_mask);
-case Twist::D2:
-return byte_shuffle(state, 0, 1, 2, 3, 7, 6, 5, 4);
-case Twist::D3:
-return ori_swap_1_2(byte_shuffle(state, 0, 1, 2, 3, 5, 7, 4, 6), D_mask);
-case Twist::F1:
-return ori_swap_0_1(byte_shuffle(state, 4, 0, 2, 3, 5, 1, 6, 7), F_mask);
-case Twist::F2:
-return byte_shuffle(state, 5, 4, 2, 3, 1, 0, 6, 7);
-case Twist::F3:
-return ori_swap_0_1(byte_shuffle(state, 1, 5, 2, 3, 0, 4, 6, 7), F_mask);
-case Twist::B1:
-return ori_swap_0_1(byte_shuffle(state, 0, 1, 3, 7, 4, 5, 2, 6), B_mask);
-case Twist::B2:
-return byte_shuffle(state, 0, 1, 7, 6, 4, 5, 3, 2);
-case Twist::B3:
-return ori_swap_0_1(byte_shuffle(state, 0, 1, 6, 2, 4, 5, 7, 3), B_mask);
-default: return *this;
-}
+	switch (r)
+	{
+	case Twist::L1:
+		return ori_swap_0_2(byte_shuffle(state, 2, 1, 6, 3, 0, 5, 4, 7), L_mask);
+	case Twist::L2:
+		return byte_shuffle(state, 6, 1, 4, 3, 2, 5, 0, 7);
+	case Twist::L3:
+		return ori_swap_0_2(byte_shuffle(state, 4, 1, 0, 3, 6, 5, 2, 7), L_mask);
+	case Twist::R1:
+		return ori_swap_0_2(byte_shuffle(state, 0, 5, 2, 1, 4, 7, 6, 3), R_mask);
+	case Twist::R2:
+		return byte_shuffle(state, 0, 7, 2, 5, 4, 3, 6, 1);
+	case Twist::R3:
+		return ori_swap_0_2(byte_shuffle(state, 0, 3, 2, 7, 4, 1, 6, 5), R_mask);
+	case Twist::U1:
+		return ori_swap_1_2(byte_shuffle(state, 1, 3, 0, 2, 4, 5, 6, 7), U_mask);
+	case Twist::U2:
+		return byte_shuffle(state, 3, 2, 1, 0, 4, 5, 6, 7);
+	case Twist::U3:
+		return ori_swap_1_2(byte_shuffle(state, 2, 0, 3, 1, 4, 5, 6, 7), U_mask);
+	case Twist::D1:
+		return ori_swap_1_2(byte_shuffle(state, 0, 1, 2, 3, 6, 4, 7, 5), D_mask);
+	case Twist::D2:
+		return byte_shuffle(state, 0, 1, 2, 3, 7, 6, 5, 4);
+	case Twist::D3:
+		return ori_swap_1_2(byte_shuffle(state, 0, 1, 2, 3, 5, 7, 4, 6), D_mask);
+	case Twist::F1:
+		return ori_swap_0_1(byte_shuffle(state, 4, 0, 2, 3, 5, 1, 6, 7), F_mask);
+	case Twist::F2:
+		return byte_shuffle(state, 5, 4, 2, 3, 1, 0, 6, 7);
+	case Twist::F3:
+		return ori_swap_0_1(byte_shuffle(state, 1, 5, 2, 3, 0, 4, 6, 7), F_mask);
+	case Twist::B1:
+		return ori_swap_0_1(byte_shuffle(state, 0, 1, 3, 7, 4, 5, 2, 6), B_mask);
+	case Twist::B2:
+		return byte_shuffle(state, 0, 1, 7, 6, 4, 5, 3, 2);
+	case Twist::B3:
+		return ori_swap_0_1(byte_shuffle(state, 0, 1, 6, 2, 4, 5, 7, 3), B_mask);
+	default: return *this;
+	}
 }
 
 uint64_t Corners::prm_index() const
@@ -154,36 +155,36 @@ uint64_t Corners::prm_index() const
 
 uint64_t Corners::ori_index() const
 {
-uint64_t ori_1 = state & 0x00'30'00'30'00'30'00'30ULL;
-uint64_t ori_2 = state & 0x00'00'30'00'30'00'30'00ULL;
-uint64_t index_1 = (ori_1 * 0x02'D9'00'51'00'09'00'01ULL) >> 52;
-uint64_t index_2 = (ori_2 * 0x00'00'F3'00'1B'00'03'00ULL) >> 52;
-return index_1 + index_2; // TODO: Move ">> 52" to here!
+	uint64_t ori_1 = state & 0x00'30'00'30'00'30'00'30ULL;
+	uint64_t ori_2 = state & 0x00'00'30'00'30'00'30'00ULL;
+	uint64_t index_1 = (ori_1 * 0x02'D9'00'51'00'09'00'01ULL) >> 52;
+	uint64_t index_2 = (ori_2 * 0x00'00'F3'00'1B'00'03'00ULL) >> 52;
+	return index_1 + index_2; // TODO: Move ">> 52" to here!
 }
 
 std::array<uint8_t, 8> Corners::from_prm_index(uint64_t index)
 {
-std::array<uint8_t, 8> c;
+	std::array<uint8_t, 8> c;
 	nth_permutation(index, c);
 	return c;
 }
 
 std::array<uint8_t, 8> Corners::from_ori_index(uint64_t index)
 {
-uint8_t o6 = index % 3; index /= 3;
-uint8_t o5 = index % 3; index /= 3;
-uint8_t o4 = index % 3; index /= 3;
-uint8_t o3 = index % 3; index /= 3;
-uint8_t o2 = index % 3; index /= 3;
-uint8_t o1 = index % 3; index /= 3;
-uint8_t o0 = index % 3; index /= 3;
-uint8_t o7 = (12 + o0 - o1 - o2 + o3 - o4 + o5 + o6) % 3;
+	uint8_t o6 = index % 3; index /= 3;
+	uint8_t o5 = index % 3; index /= 3;
+	uint8_t o4 = index % 3; index /= 3;
+	uint8_t o3 = index % 3; index /= 3;
+	uint8_t o2 = index % 3; index /= 3;
+	uint8_t o1 = index % 3; index /= 3;
+	uint8_t o0 = index % 3; index /= 3;
+	uint8_t o7 = (12 + o0 - o1 - o2 + o3 - o4 + o5 + o6) % 3;
 	return { o0, o1, o2, o3, o4, o5, o6, o7 };
 }
 
 uint64_t Corners::index() const
 {
-return prm_index() * ori_size + ori_index();
+	return prm_index() * ori_size + ori_index();
 }
 
 uint64_t Corners::hash() const
@@ -203,12 +204,12 @@ bool same_orientation(const Corners& a, const Corners& b)
 
 std::string to_string(const Corners& c)
 {
- std::string str;
- for (auto c : c.cubies())
- str += std::to_string(c) + ' ';
- str += "| ";
- for (auto o : c.orientations())
- str += std::to_string(o) + ' ';
- str.pop_back();
- return str;
+	std::string str;
+	for (auto c : c.cubies())
+		str += std::to_string(c) + ' ';
+	str += "| ";
+	for (auto o : c.orientations())
+		str += std::to_string(o) + ' ';
+	str.pop_back();
+	return str;
 }

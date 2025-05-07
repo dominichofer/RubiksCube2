@@ -29,7 +29,7 @@ class TwoPhaseSolver
 		}
 		if (depth == 0)
 		{
-			auto subset_cube = cube.twisted_inversed(phase_1);
+			auto subset_cube = twisted(cube, phase_1);
 			int phase2_lenght = subset[subset_cube];
 			//std::cout << "Phase1: " << phase_1_lenght << ", Phase2: " << phase2_lenght << ", Total: " << phase_1_lenght + phase2_lenght << ", Max: " << max_solution_length << std::endl;
 			if (phase_1.size() + phase2_lenght > max_solution_length)

@@ -109,30 +109,13 @@ public:
 	}
 };
 
-template <std::size_t N>
-class nTwists
-{
-	int8_t size_;
-	std::array<Twist, N> twists;
-public:
-	nTwists() noexcept : size_(0) { twists.fill(Twist::None); }
-	nTwists(int8_t size) noexcept : size_(size) { twists.fill(Twist::None); }
-	void append(Twist t) { twists[size_++] = t; }
-	int8_t size() const { return size_; }
-	const std::array<Twist, N>& data() const { return twists; }
-	auto begin() const { return twists.begin(); }
-	auto end() const { return twists.begin() + size_; }
-	auto rbegin() const { return twists.rbegin() + N - size_; }
-	auto rend() const { return twists.rend(); }
-};
-
 template <typename Cube, std::size_t TWISTS>
 class DirectionTable
 {
 	std::vector<nTwists<TWISTS>> table;
 	std::function<int64_t(Cube)> index;
 	std::function<Cube(int64_t)> from_index;
-	uint8_t max_distance_;
+	int8_t max_distance_;
 public:
 	DirectionTable() = default;
 	DirectionTable(
@@ -142,7 +125,7 @@ public:
 		: table(index_space)
 		, index(std::move(index_fkt))
 		, from_index(std::move(from_index_fkt))
-		, max_distance_(0xFF)
+		, max_distance_(0xEF)
 	{}
 
 	void fill(const Cube& origin, const std::vector<Twist>& twists)
@@ -150,7 +133,7 @@ public:
 		int64_t size = static_cast<int64_t>(table.size());
 		std::ranges::fill(table, nTwists<TWISTS>{ -1 });
 		table[index(origin)] = nTwists<TWISTS>{};
-		for (uint8_t d = 0; d < 0xFE; d++)
+		for (int8_t d = 0; d < TWISTS; d++)
 		{
 			bool changed = false;
 			#pragma omp parallel for reduction(||: changed)
@@ -173,6 +156,8 @@ public:
 			if (not changed)
 			{
 				max_distance_ = d;
+				for (auto& t : table)
+					t.inverse();
 				break;
 			}
 		}
@@ -218,11 +203,7 @@ public:
 	auto begin() const { return table.begin(); }
 	auto end() const { return table.end(); }
 	uint8_t max_distance() const { return max_distance_; }
-	std::vector<Twist> operator[](const Cube& cube) const {
-		std::vector<Twist> ret;
-		ret.append_range(table[index(cube)].data());
-		return ret;
-	}
+	const nTwists<TWISTS>& operator[](const Cube& cube) const { return table[index(cube)]; }
 };
 
 template <typename Cube>

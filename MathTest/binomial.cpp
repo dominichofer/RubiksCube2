@@ -113,9 +113,9 @@ TEST(nth_combination, is_inverse_of_combination_index)
 	std::mt19937 rnd{ 1233 }; // Fixed seed for reproducibility.
 	for (int i = 0; i < 100'000; ++i)
 	{
-		uint64_t n = std::uniform_int_distribution<uint64_t>{ 0, 50 }(rnd);
-		uint64_t k = std::uniform_int_distribution<uint64_t>{ 0, n }(rnd);
-		uint64_t index = std::uniform_int_distribution<uint64_t>{ 0, binomial(n, k) - 1 }(rnd);
+		int64_t n = std::uniform_int_distribution<int64_t>{ 0, 50 }(rnd);
+		int64_t k = std::uniform_int_distribution<int64_t>{ 0, n }(rnd);
+		int64_t index = std::uniform_int_distribution<int64_t>{ 0, binomial(n, k) - 1 }(rnd);
 		auto combination = nth_combination(n, k, index);
 		EXPECT_EQ(combination_index(n, combination), index);
 	}

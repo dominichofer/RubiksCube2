@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <vector>
 
-class Cube4x4 : public Twistable<Cube4x4>
+class Cube4x4
 {
 	Corners c;
 	EdgesSide e;
@@ -26,8 +26,7 @@ public:
 	const EdgesSide& edges() const { return e; }
 	const FacesSide& faces() const { return f; }
 
-	using Twistable::twisted;
-	Cube4x4 twisted(Twist) const override;
+	Cube4x4 twisted(Twist) const;
 
 	uint64_t hash() const;
 };
