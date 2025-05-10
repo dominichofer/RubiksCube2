@@ -11,5 +11,6 @@
 #include "faces_center.h"
 #include "faces_side.h"
 #include "random.h"
+#include "join.h"
 #include "subset.h"
 #include "twist.h"

@@ -99,6 +99,7 @@
     <ClInclude Include="faces_center.h" />
     <ClInclude Include="faces_side.h" />
     <ClInclude Include="random.h" />
+    <ClInclude Include="join.h" />
     <ClInclude Include="subset.h" />
     <ClInclude Include="twist.h" />
   </ItemGroup>

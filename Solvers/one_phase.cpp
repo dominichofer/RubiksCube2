@@ -1,6 +1,6 @@
 #include "one_phase.h"
 
-void OnePhaseOptimalSolver::solve_(const Cube3x3& cube, int depth, Twist last)
+void OnePhaseOptimalSolver::solve_(const Cube3x3& cube, int depth)
 {
 	if (corners_dst[cube.corners()] > depth)
 		return;
@@ -20,10 +20,11 @@ void OnePhaseOptimalSolver::solve_(const Cube3x3& cube, int depth, Twist last)
 
 	for (Twist t : twists)
 	{
+		Twist last = stack.back();
 		if (same_plane(t, last))
 			continue;
 		stack.push_back(t);
-		solve_(cube.twisted(t), depth - 1, t);
+		solve_(cube.twisted(t), depth - 1);
 		stack.pop_back();
 	}
 

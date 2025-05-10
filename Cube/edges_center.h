@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <vector>
 
-class EdgesCenter
+class EdgesCenter : public Twistable<EdgesCenter>
 {
 	//     +----1----+
 	//    /|        /|
@@ -54,6 +54,7 @@ public:
 	std::array<uint8_t, 12> cubies() const;
 	std::array<uint8_t, 12> orientations() const;
 
+	using Twistable::twisted;
 	EdgesCenter twisted(Twist) const;
 
 	std::array<uint8_t, 4> lr_slice_location() const;

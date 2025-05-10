@@ -28,5 +28,6 @@
     <ClInclude Include="twist.h" />
     <ClInclude Include="subset.h" />
     <ClInclude Include="bit.h" />
+    <ClInclude Include="join.h" />
   </ItemGroup>
 </Project>

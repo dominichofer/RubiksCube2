@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-class Corners
+class Corners : public Twistable<Corners>
 {
 	//   2 - 3
 	//  /   /|
@@ -45,6 +45,7 @@ public:
 	std::array<uint8_t, 8> cubies() const;
 	std::array<uint8_t, 8> orientations() const;
 
+	using Twistable::twisted;
 	Corners twisted(Twist) const;
 
 	uint64_t prm_index() const;

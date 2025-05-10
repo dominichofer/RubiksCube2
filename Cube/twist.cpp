@@ -115,3 +115,8 @@ bool same_plane(Twist a, Twist b)
 {
 	return std::to_underlying(a) / 3 == std::to_underlying(b) / 3;
 }
+
+bool commutative(Twist a, Twist b)
+{
+	return std::to_underlying(a) / 12 == std::to_underlying(b) / 12;
+}

@@ -60,6 +60,8 @@ void time(std::string name, F function)
 template <typename F>
 void time(std::string name, F function, std::ranges::range auto&& range)
 {
+	if (range.size() == 0)
+		return;
 	auto start = std::chrono::high_resolution_clock::now();
 	for (const auto& item : range)
 	{
@@ -147,31 +149,63 @@ int main()
 
 	//HashTable<Cube3x3, int> tt{ 1'000'000, Cube3x3::impossible() };
 
-	//OnePhaseOptimalSolver opos{ Cube3x3::twists, corners_dst, near, tt };
-	//for (int d = 0; d < cube3x3_of_distance.size(); d++)
+	auto file = std::ifstream("irreducible.3x3");
+	std::vector<Twists> irreducible;
+	std::string line;
+	while (std::getline(file, line))
+		irreducible.push_back(twists_from_string(line));
+	file.close();
+
+	//// One Phase Optimal Solver
+	//DistanceTable<Corners> corners_dst{
+	//	Corners::twists,
+	//	[](const Corners& c) { return c.index(); },
+	//	&Corners::from_index,
+	//	Corners::index_space
+	//};
+	//PartialDistanceTable<Cube3x3> near{ Cube3x3::twists };
+	//near.fill(Cube3x3::solved(), 6);
+	//HashTable<Cube3x3, int> tt{ 10'000'000, Cube3x3::impossible() };
+
+	//OnePhaseOptimalSolver one_phase{ Cube3x3::twists, corners_dst, near, tt };
+	//for (int d = 0; d <= 11; d++)
+	//{
+	//	std::vector<Cube3x3> cubes;
+	//	for (const Twists& t : irreducible)
+	//		if (t.size() == d)
+	//			cubes.push_back(Cube3x3::solved().twisted(t));
+	//	tt.clear();
 	//	time(
 	//		std::format("OnePhaseOptimalSolver::solve(dst={})", d),
 	//		[&](const Cube3x3& cube) {
-	//			auto sol = opos.solve(cube, d);
+	//			auto sol = one_phase.solve(cube, d);
 	//			if (not cube.twisted(sol).is_solved())
 	//				std::cerr << "Solution not found" << std::endl;
 	//		},
-	//		cube3x3_of_distance[d]);
+	//		cubes);
+	//}
 
 	// Two Phase Solver
-	TwoPhaseSolver two_phase_solver{ Cube3x3::twists };
+	TwoPhaseSolver two_phase{ Cube3x3::twists };
 	//auto start = std::chrono::high_resolution_clock::now();
-	//two_phase_solver.solve(Cube3x3::superflip());
+	//two_phase.solve(Cube3x3::superflip());
 	//auto stop = std::chrono::high_resolution_clock::now();
 	//std::cout << "TwoPhaseSolver::solve(superflip): " << to_string(stop - start) << std::endl;
 
-	for (int d = 0; d < cube3x3_of_distance.size(); d++)
+
+	for (int d = 0; d <= 11; d++)
+	{
+		std::vector<Cube3x3> cubes;
+		for (const Twists& t : irreducible)
+			if (t.size() == d)
+				cubes.push_back(Cube3x3::solved().twisted(t));
 		time(
 			std::format("TwoPhaseSolver::solve(dst={})", d),
 			[&](const Cube3x3& cube) {
-				auto sol = two_phase_solver.solve(cube);
+				auto sol = two_phase.solve(cube);
 				if (not cube.twisted(sol).is_solved())
 					std::cerr << "Solution not found" << std::endl;
 			},
-			cube3x3_of_distance[d]);
+			cubes);
+	}
 }

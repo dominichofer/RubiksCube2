@@ -125,13 +125,14 @@ public:
 		: table(index_space)
 		, index(std::move(index_fkt))
 		, from_index(std::move(from_index_fkt))
-		, max_distance_(0xEF)
+		, max_distance_(INT8_MAX)
 	{}
 
 	void fill(const Cube& origin, const std::vector<Twist>& twists)
 	{
-		int64_t size = static_cast<int64_t>(table.size());
-		std::ranges::fill(table, nTwists<TWISTS>{ -1 });
+		const int64_t size = static_cast<int64_t>(table.size());
+		const auto sentinel = nTwists<TWISTS>{ -1 };
+		std::ranges::fill(table, sentinel);
 		table[index(origin)] = nTwists<TWISTS>{};
 		for (int8_t d = 0; d < TWISTS; d++)
 		{
@@ -145,7 +146,7 @@ public:
 					{
 						Cube n = cube.twisted(t);
 						auto& n_twists = table[index(n)];
-						if (n_twists.size() == -1)
+						if (n_twists == sentinel)
 						{
 							n_twists = table[i];
 							n_twists.append(t);

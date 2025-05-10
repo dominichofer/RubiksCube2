@@ -8,7 +8,7 @@
 #include <cstdint>
 #include <vector>
 
-class Cube5x5
+class Cube5x5 : public Twistable<Cube5x5>
 {
 	Corners c;
 	EdgesCenter ec;
@@ -32,6 +32,7 @@ public:
 	const FacesCenter& faces_center() const { return fc; }
 	const FacesSide& faces_side() const { return fs; }
 
+	using Twistable::twisted;
 	Cube5x5 twisted(Twist) const;
 
 	uint64_t hash() const;

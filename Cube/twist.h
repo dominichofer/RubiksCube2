@@ -1,5 +1,7 @@
 #pragma once
+#include "join.h"
 #include <cstdint>
+#include <ranges>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -25,6 +27,16 @@ class nTwists
 public:
 	nTwists() noexcept : size_(0) { twists.fill(Twist::None); }
 	nTwists(int8_t size) noexcept : size_(size) { twists.fill(Twist::None); }
+
+	bool operator==(const nTwists& o) const
+	{
+		if (size_ != o.size_)
+			return false;
+		for (int8_t i = 0; i < size_; ++i)
+			if (twists[i] != o.twists[i])
+				return false;
+		return true;
+	}
 
 	const Twist& operator[](int i) const { return twists[i]; }
 	      Twist& operator[](int i)       { return twists[i]; }
@@ -61,42 +73,30 @@ template <std::ranges::range R>
 	requires std::same_as<std::ranges::range_value_t<R>, Twist>
 std::string to_string(const R& twists)
 {
-	std::string result;
-	for (Twist t : twists)
-		result += to_string(t) + " ";
-	result.pop_back();
-	return result;
+	return join(" ", twists);
 }
 
 auto twist_from_string(std::string_view) -> Twist;
 auto twists_from_string(std::string_view) -> std::vector<Twist>;
 
-
 Twist inversed(Twist);
 
 bool same_plane(Twist, Twist);
+bool commutative(Twist, Twist);
 
-template <typename Cube, typename Iterator, typename Sentinel>
-Cube twisted(const Cube& cube, Iterator begin, Sentinel end)
-{
-	Cube result = cube;
-	for (auto it = begin; it != end; ++it)
-		result = result.twisted(*it);
-	return result;
-}
-
-template <typename Cube>
-Cube twisted(const Cube& cube, const std::ranges::range auto& twists)
-{
-	return twisted(cube, std::ranges::begin(twists), std::ranges::end(twists));
-}
 
 template <typename Derived>
 class Twistable
 {
 public:
-	template <typename Iterator, typename Sentinel>
-	Derived twisted(Iterator begin, Sentinel end) const
+	auto operator<=>(const Twistable&) const = default;
+
+	virtual Derived twisted(Twist) const = 0;
+
+	template <std::input_iterator I, std::sentinel_for<I> S>
+		requires std::same_as<std::iter_value_t<I>, Twist>
+			  && std::same_as<std::iter_value_t<S>, Twist>
+	Derived twisted(I begin, S end) const
 	{
 		auto cube = static_cast<const Derived&>(*this);
 		for (auto it = begin; it != end; ++it)
@@ -114,4 +114,4 @@ public:
 	{
 		return twisted(t).twisted(ts...);
 	}
-}
+};

@@ -114,30 +114,31 @@ TYPED_TEST(CubeTest, hash)
 TYPED_TEST(CubeTest, composed_twists)
 {
 	const auto c = TypeParam::solved();
-	EXPECT_EQ(c.L2(), c.L1().L1());
-	EXPECT_EQ(c.L3(), c.L1().L1().L1());
-	EXPECT_EQ(c.R2(), c.R1().R1());
-	EXPECT_EQ(c.R3(), c.R1().R1().R1());
-	EXPECT_EQ(c.U2(), c.U1().U1());
-	EXPECT_EQ(c.U3(), c.U1().U1().U1());
-	EXPECT_EQ(c.D2(), c.D1().D1());
-	EXPECT_EQ(c.D3(), c.D1().D1().D1());
-	EXPECT_EQ(c.F2(), c.F1().F1());
-	EXPECT_EQ(c.F3(), c.F1().F1().F1());
-	EXPECT_EQ(c.B2(), c.B1().B1());
-	EXPECT_EQ(c.B3(), c.B1().B1().B1());
-	EXPECT_EQ(c.l2(), c.l1().l1());
-	EXPECT_EQ(c.l3(), c.l1().l1().l1());
-	EXPECT_EQ(c.r2(), c.r1().r1());
-	EXPECT_EQ(c.r3(), c.r1().r1().r1());
-	EXPECT_EQ(c.u2(), c.u1().u1());
-	EXPECT_EQ(c.u3(), c.u1().u1().u1());
-	EXPECT_EQ(c.d2(), c.d1().d1());
-	EXPECT_EQ(c.d3(), c.d1().d1().d1());
-	EXPECT_EQ(c.f2(), c.f1().f1());
-	EXPECT_EQ(c.f3(), c.f1().f1().f1());
-	EXPECT_EQ(c.b2(), c.b1().b1());
-	EXPECT_EQ(c.b3(), c.b1().b1().b1());
+	EXPECT_EQ(c.twisted(Twist::L2), c.twisted(Twist::L1, Twist::L1));
+	EXPECT_EQ(c.twisted(Twist::L3), c.twisted(Twist::L1, Twist::L1, Twist::L1));
+	EXPECT_EQ(c.twisted(Twist::R2), c.twisted(Twist::R1, Twist::R1));
+	EXPECT_EQ(c.twisted(Twist::R3), c.twisted(Twist::R1, Twist::R1, Twist::R1));
+	EXPECT_EQ(c.twisted(Twist::U2), c.twisted(Twist::U1, Twist::U1));
+	EXPECT_EQ(c.twisted(Twist::U3), c.twisted(Twist::U1, Twist::U1, Twist::U1));
+	EXPECT_EQ(c.twisted(Twist::D2), c.twisted(Twist::D1, Twist::D1));
+	EXPECT_EQ(c.twisted(Twist::D3), c.twisted(Twist::D1, Twist::D1, Twist::D1));
+	EXPECT_EQ(c.twisted(Twist::F2), c.twisted(Twist::F1, Twist::F1));
+	EXPECT_EQ(c.twisted(Twist::F3), c.twisted(Twist::F1, Twist::F1, Twist::F1));
+	EXPECT_EQ(c.twisted(Twist::B2), c.twisted(Twist::B1, Twist::B1));
+	EXPECT_EQ(c.twisted(Twist::B3), c.twisted(Twist::B1, Twist::B1, Twist::B1));
+	EXPECT_EQ(c.twisted(Twist::l2), c.twisted(Twist::l1, Twist::l1));
+	EXPECT_EQ(c.twisted(Twist::l3), c.twisted(Twist::l1, Twist::l1, Twist::l1));
+	EXPECT_EQ(c.twisted(Twist::r2), c.twisted(Twist::r1, Twist::r1));
+	EXPECT_EQ(c.twisted(Twist::r3), c.twisted(Twist::r1, Twist::r1, Twist::r1));
+	EXPECT_EQ(c.twisted(Twist::u2), c.twisted(Twist::u1, Twist::u1));
+	EXPECT_EQ(c.twisted(Twist::u3), c.twisted(Twist::u1, Twist::u1, Twist::u1));
+	EXPECT_EQ(c.twisted(Twist::d2), c.twisted(Twist::d1, Twist::d1));
+	EXPECT_EQ(c.twisted(Twist::d3), c.twisted(Twist::d1, Twist::d1, Twist::d1));
+	EXPECT_EQ(c.twisted(Twist::f2), c.twisted(Twist::f1, Twist::f1));
+	EXPECT_EQ(c.twisted(Twist::f3), c.twisted(Twist::f1, Twist::f1, Twist::f1));
+	EXPECT_EQ(c.twisted(Twist::b2), c.twisted(Twist::b1, Twist::b1));
+	EXPECT_EQ(c.twisted(Twist::b3), c.twisted(Twist::b1, Twist::b1, Twist::b1));
+
 }
 
 TYPED_TEST(CubeTest, inverse_twists)
@@ -149,13 +150,13 @@ TYPED_TEST(CubeTest, inverse_twists)
 TYPED_TEST(CubeTest, twists_cycle)
 {
 	for (Twist t : all_twists)
-		EXPECT_TRUE(twisted(TypeParam::solved(), { t, t, t, t }).is_solved());
+		EXPECT_TRUE(TypeParam::solved().twisted(t, t, t, t).is_solved());
 }
 
 template <typename Twistable>
 void expect_pairwise_commutation(const Twistable& t, Twist a, Twist b)
 {
-	EXPECT_EQ(twisted(t, { a, b }), twisted(t, { b, a }));
+	EXPECT_EQ(t.twisted(a, b), t.twisted(b, a));
 }
 
 template <typename Twistable>
