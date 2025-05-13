@@ -111,6 +111,15 @@ Twist inversed(Twist twist)
 	}
 }
 
+Twists inversed(Twists t)
+{
+	for (int8_t i = 0; i < t.size() / 2; ++i)
+		std::swap(t[i], t[t.size() - i - 1]);
+	for (int8_t i = 0; i < t.size(); ++i)
+		t[i] = inversed(t[i]);
+	return t;
+}
+
 bool same_plane(Twist a, Twist b)
 {
 	return std::to_underlying(a) / 3 == std::to_underlying(b) / 3;

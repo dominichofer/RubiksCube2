@@ -55,8 +55,9 @@ public:
 		: twists(std::move(twists))
 	{
 		cosets.fill(Cube3x3::solved(), Cube3x3::twists);
+		std::cout << "Cosets filled" << std::endl;
 		//cosets.read("D:\\coset.dst");
-		subset.read("C:\\Users\\dohofer\\Documents\\RubiksCube2\\subset.dst");
+		subset.read("D:\\subset.dst");
 	}
 
 	std::vector<Twist> solve(const Cube3x3& cube, int max_solution_length = 20)

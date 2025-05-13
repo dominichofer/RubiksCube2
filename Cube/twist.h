@@ -80,6 +80,13 @@ auto twist_from_string(std::string_view) -> Twist;
 auto twists_from_string(std::string_view) -> std::vector<Twist>;
 
 Twist inversed(Twist);
+Twists inversed(Twists);
+template <std::size_t N>
+nTwists<N> inversed(nTwists<N> t)
+{
+	t.inverse();
+	return t;
+}
 
 bool same_plane(Twist, Twist);
 bool commutative(Twist, Twist);

@@ -149,7 +149,7 @@ int main()
 
 	//HashTable<Cube3x3, int> tt{ 1'000'000, Cube3x3::impossible() };
 
-	auto file = std::ifstream("irreducible.3x3");
+	auto file = std::ifstream("..\\irreducible.3x3");
 	std::vector<Twists> irreducible;
 	std::string line;
 	while (std::getline(file, line))

@@ -108,6 +108,7 @@ public:
 		return path;
 	}
 };
+#include <iostream>
 
 template <typename Cube, std::size_t TWISTS>
 class DirectionTable
@@ -131,13 +132,13 @@ public:
 	void fill(const Cube& origin, const std::vector<Twist>& twists)
 	{
 		const int64_t size = static_cast<int64_t>(table.size());
-		const auto sentinel = nTwists<TWISTS>{ -1 };
+		const nTwists<TWISTS> sentinel{ -1 };
 		std::ranges::fill(table, sentinel);
 		table[index(origin)] = nTwists<TWISTS>{};
 		for (int8_t d = 0; d < TWISTS; d++)
 		{
 			bool changed = false;
-			#pragma omp parallel for reduction(||: changed)
+			//#pragma omp parallel for reduction(||: changed)
 			for (int64_t i = 0; i < size; i++)
 				if (table[i].size() == d)
 				{
@@ -151,6 +152,11 @@ public:
 							n_twists = table[i];
 							n_twists.append(t);
 							changed = true;
+							if (!H0::in_subset(n.twisted(inversed(n_twists))))
+							{
+								std::cerr << "Error!" << std::endl;
+								break;
+							}
 						}
 					}
 				}
