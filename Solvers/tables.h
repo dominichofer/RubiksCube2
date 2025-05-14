@@ -152,11 +152,6 @@ public:
 							n_twists = table[i];
 							n_twists.append(t);
 							changed = true;
-							if (!H0::in_subset(n.twisted(inversed(n_twists))))
-							{
-								std::cerr << "Error!" << std::endl;
-								break;
-							}
 						}
 					}
 				}

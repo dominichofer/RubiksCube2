@@ -4,21 +4,26 @@
 
 int main()
 {
-	Corners c;
-	std::mt19937_64 rng(std::random_device{}());
-	std::uniform_int_distribution<std::size_t> dist(0, Corners::twists.size() - 1);
-	for (int i = 0; i < 100; i++)
-	{
-		auto o0 = c.orientation(0);
-		auto o1 = c.orientation(1);
-		auto o2 = c.orientation(2);
-		auto o3 = c.orientation(3);
-		auto o4 = c.orientation(4);
-		auto o5 = c.orientation(5);
-		auto o6 = c.orientation(6);
-		auto o7 = c.orientation(7);
-		auto sum = o0 + o1 + o2 + o3 + o4 + o5 + o6 + o7;
-		std::cout << o0 << " " << o1 << " " << o2 << " " << o3 << " " << o4 << " " << o5 << " " << o6 << " " << o7 << " " << sum << std::endl;
-		c = c.twisted(Corners::twists[dist(rng)]);
-	}
+	auto cube1 = Cube3x3::solved();
+	auto cube2 = cube1.twisted(Twist::B1);
+	auto number = H0::coset_number(cube2);
+	auto cube3 = H0::from_coset(number, 0);
+	bool same_o = same_orientation(cube2, cube3);
+	bool same_ud = same_ud_slice_location(cube2.edges(), cube3.edges());
+	bool same = H0::same_coset(cube2, cube3);
+	auto cube4 = cube3.twisted(Twist::L1);
+	auto cube5 = cube4.twisted(inversed({ Twist::B1, Twist::L1 }));
+	auto cube6 = cube2.twisted(Twist::L1).twisted(inversed({ Twist::B1, Twist::L1 }));
+	bool in_subset = H0::in_subset(cube5);
+	std::cout << "Cube1: " << to_string(cube1) << std::endl;
+	std::cout << "Cube2: " << to_string(cube2) << std::endl;
+	std::cout << "Cube3: " << to_string(cube3) << std::endl;
+	std::cout << "Same orientation: " << (same_o ? "true" : "false") << std::endl;
+	std::cout << "Same UD slice location: " << (same_ud ? "true" : "false") << std::endl;
+	std::cout << "Same: " << (same ? "true" : "false") << std::endl;
+	std::cout << "Cube4: " << to_string(cube4) << std::endl;
+	std::cout << "Cube5: " << to_string(cube5) << std::endl;
+	std::cout << "Cube6: " << to_string(cube6) << std::endl;
+	std::cout << "Coset number: " << number << std::endl;
+	std::cout << "In subset: " << (in_subset ? "true" : "false") << std::endl;
 }

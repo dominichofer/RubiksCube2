@@ -29,7 +29,6 @@ public:
 	Cube3x3 twisted(Twist) const;
 
 	uint64_t hash() const;
-
 };
 
 bool same_permutation(const Cube3x3&, const Cube3x3&);
