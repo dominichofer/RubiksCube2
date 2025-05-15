@@ -12,7 +12,6 @@
     <ClCompile Include="faces_side.cpp" />
     <ClCompile Include="subset.cpp" />
     <ClCompile Include="twist.cpp" />
-    <ClCompile Include="bit.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cube.h" />
@@ -27,7 +26,5 @@
     <ClInclude Include="random.h" />
     <ClInclude Include="twist.h" />
     <ClInclude Include="subset.h" />
-    <ClInclude Include="bit.h" />
-    <ClInclude Include="join.h" />
   </ItemGroup>
 </Project>

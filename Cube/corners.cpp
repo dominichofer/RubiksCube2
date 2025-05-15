@@ -1,6 +1,5 @@
 #include "corners.h"
-#include "bit.h"
-#include "string.h"
+#include "Std/std.h"
 #include "Math/math.h"
 
 const std::vector<Twist> Corners::twists = {
@@ -204,12 +203,5 @@ bool same_orientation(const Corners& a, const Corners& b)
 
 std::string to_string(const Corners& c)
 {
-	std::string str;
-	for (auto c : c.cubies())
-		str += std::to_string(c) + ' ';
-	str += "| ";
-	for (auto o : c.orientations())
-		str += std::to_string(o) + ' ';
-	str.pop_back();
-	return str;
+	return join(' ', c.cubies()) + " | " + join(' ', c.orientations());
 }

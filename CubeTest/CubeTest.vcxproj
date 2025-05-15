@@ -65,7 +65,6 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="bit.cpp" />
     <ClCompile Include="corners.cpp" />
     <ClCompile Include="edges_center.cpp" />
     <ClCompile Include="pch.cpp">

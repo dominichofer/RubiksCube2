@@ -3,8 +3,9 @@
 #include <string_view>
 #include <ranges>
 
-template <class Proj = std::identity>
-std::string join(std::string_view separator, const std::ranges::range auto& range, Proj proj = {})
+template <class Sep, class Proj = std::identity>
+	requires std::convertible_to<Sep, std::string_view> || std::same_as<Sep, char>
+std::string join(Sep separator, const std::ranges::range auto& range, Proj proj = {})
 {
 	using std::to_string;
 	std::string result;

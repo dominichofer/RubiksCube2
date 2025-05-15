@@ -74,7 +74,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="bit.cpp" />
     <ClCompile Include="corners.cpp" />
     <ClCompile Include="cube2x2.h" />
     <ClCompile Include="cube3x3.cpp" />
@@ -88,7 +87,6 @@
     <ClCompile Include="twist.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="bit.h" />
     <ClInclude Include="corners.h" />
     <ClInclude Include="cube.h" />
     <ClInclude Include="cube3x3.h" />
@@ -99,13 +97,15 @@
     <ClInclude Include="faces_center.h" />
     <ClInclude Include="faces_side.h" />
     <ClInclude Include="random.h" />
-    <ClInclude Include="join.h" />
     <ClInclude Include="subset.h" />
     <ClInclude Include="twist.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Math\Math.vcxproj">
       <Project>{20990321-45a3-4a54-8362-f3f973e10425}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Std\Std.vcxproj">
+      <Project>{6714d37e-d748-45e2-9d10-190135ef75c5}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

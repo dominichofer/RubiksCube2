@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{20990321-45a3-4a54-8362-f3f973e10425}</ProjectGuid>
-    <RootNamespace>Math</RootNamespace>
+    <ProjectGuid>{6714d37e-d748-45e2-9d10-190135ef75c5}</ProjectGuid>
+    <RootNamespace>Std</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -74,19 +74,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="binomial.h" />
-    <ClInclude Include="graph.h" />
-    <ClInclude Include="permutation.h" />
-    <ClInclude Include="math.h" />
-    <ClInclude Include="statistic.h" />
+    <ClInclude Include="bit.h" />
+    <ClInclude Include="hash.h" />
+    <ClInclude Include="hash_table.h" />
+    <ClInclude Include="intrin.h" />
+    <ClInclude Include="join.h" />
+    <ClInclude Include="mutexed_access.h" />
+    <ClInclude Include="numeric.h" />
+    <ClInclude Include="std.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="binomial.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Std\Std.vcxproj">
-      <Project>{6714d37e-d748-45e2-9d10-190135ef75c5}</Project>
-    </ProjectReference>
+    <ClCompile Include="bit.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

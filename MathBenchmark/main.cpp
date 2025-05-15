@@ -1,5 +1,6 @@
 #include "benchmark/benchmark.h"
 #include "Math/math.h"
+#include <numeric>
 #include <ranges>
 #include <random>
 

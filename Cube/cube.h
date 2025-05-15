@@ -1,6 +1,5 @@
 #pragma once
 #include "Math/math.h"
-#include "bit.h"
 #include "cube2x2.h"
 #include "cube3x3.h"
 #include "cube4x4.h"
@@ -11,6 +10,5 @@
 #include "faces_center.h"
 #include "faces_side.h"
 #include "random.h"
-#include "join.h"
 #include "subset.h"
 #include "twist.h"
