@@ -5,6 +5,8 @@
 #include <array>
 #include <fstream>
 #include <string>
+#include <chrono>
+#include <iostream>
 
 template <typename Cube>
 class DistanceTable
@@ -93,8 +95,10 @@ public:
 
 	std::vector<Twist> solution(Cube cube) const
 	{
+		uint8_t d = table[index(cube)];
 		std::vector<Twist> path;
-		for (uint8_t d = table[index(cube)]; d > 0; d--)
+		path.reserve(d);
+		for (; d > 0; d--)
 			for (Twist t : twists)
 			{
 				Cube n = cube.twisted(t);
@@ -108,18 +112,91 @@ public:
 		return path;
 	}
 };
-#include <iostream>
 
-template <typename Cube, std::size_t TWISTS>
+
+template <typename Cube>
 class DirectionTable
 {
-	std::vector<nTwists<TWISTS>> table;
+	std::vector<std::pair<uint8_t, Twist>> table;
 	std::function<int64_t(Cube)> index;
 	std::function<Cube(int64_t)> from_index;
 	int8_t max_distance_;
 public:
 	DirectionTable() = default;
 	DirectionTable(
+		std::function<int64_t(Cube)> index_fkt,
+		std::function<Cube(int64_t)> from_index_fkt,
+		std::size_t index_space)
+		: table(index_space)
+		, index(std::move(index_fkt))
+		, from_index(std::move(from_index_fkt))
+		, max_distance_(INT8_MAX)
+	{
+	}
+
+	void fill(const Cube& origin, const std::vector<Twist>& twists)
+	{
+		const int64_t size = static_cast<int64_t>(table.size());
+		const std::pair<uint8_t, Twist> sentinel{ 0xFF, Twist::None };
+		std::ranges::fill(table, sentinel);
+		table[index(origin)] = { 0, Twist::None };
+		auto start = std::chrono::high_resolution_clock::now();
+		for (uint8_t d = 0; d < 0xFE; d++)
+		{
+			bool changed = false;
+			#pragma omp parallel for reduction(||: changed)
+			for (int64_t i = 0; i < size; i++)
+				if (table[i].first == d)
+				{
+					Cube cube = from_index(i);
+					for (Twist t : twists)
+					{
+						Cube n = cube.twisted(t);
+						auto& next = table[index(n)];
+						if (next == sentinel)
+						{
+							next = { d + 1, inversed(t) };
+							changed = true;
+						}
+					}
+				}
+			std::chrono::duration<double> elapsed = std::chrono::high_resolution_clock::now() - start;
+			std::cout << std::format("d = {}, elapsed = {:.2f} seconds", d, elapsed.count()) << std::endl;
+			if (not changed)
+			{
+				max_distance_ = d;
+				break;
+			}
+		}
+	}
+
+	uint8_t operator[](const Cube& cube) const { return table[index(cube)].first; }
+
+	std::vector<Twist> solution(Cube cube) const
+	{
+		auto current = table[index(cube)];
+		std::vector<Twist> path;
+		path.reserve(current.first);
+		while (current.first > 0)
+		{
+			path.push_back(current.second);
+			cube = cube.twisted(current.second);
+			current = table[index(cube)];
+		}
+		return path;
+	}
+};
+
+template <typename Cube, std::size_t TWISTS>
+class PathTable
+{
+	std::vector<nTwists<TWISTS>> table;
+	std::function<int64_t(Cube)> index;
+	std::function<Cube(int64_t)> from_index;
+	int8_t max_distance_;
+public:
+	PathTable() = default;
+	PathTable(
 		std::function<int64_t(Cube)> index_fkt,
 		std::function<Cube(int64_t)> from_index_fkt,
 		std::size_t index_space)
@@ -135,77 +212,82 @@ public:
 		const nTwists<TWISTS> sentinel{ -1 };
 		std::ranges::fill(table, sentinel);
 		table[index(origin)] = nTwists<TWISTS>{};
-		for (int8_t d = 0; d < TWISTS; d++)
+		auto start = std::chrono::high_resolution_clock::now();
+		for (int8_t d = 0; d <= TWISTS; d++)
 		{
 			bool changed = false;
-			//#pragma omp parallel for reduction(||: changed)
+			#pragma omp parallel for reduction(||: changed)
 			for (int64_t i = 0; i < size; i++)
-				if (table[i].size() == d)
+			{
+				if (table[i].size() != d)
+					continue;
+				Cube cube = from_index(i);
+				for (Twist t : twists)
 				{
-					Cube cube = from_index(i);
-					for (Twist t : twists)
+					auto& next = table[index(cube.twisted(t))];
+					if (next == sentinel)
 					{
-						Cube n = cube.twisted(t);
-						auto& n_twists = table[index(n)];
-						if (n_twists == sentinel)
+						#pragma omp critical
 						{
-							n_twists = table[i];
-							n_twists.append(t);
-							changed = true;
+							next = table[i];
+							next.append(t);
 						}
+						changed = true;
 					}
 				}
+			}
+			std::chrono::duration<double> elapsed = std::chrono::high_resolution_clock::now() - start;
+			std::cout << std::format("d = {}, elapsed = {:.2f} seconds", d, elapsed.count()) << std::endl;
 			if (not changed)
 			{
 				max_distance_ = d;
-				for (auto& t : table)
-					t.inverse();
+				#pragma omp parallel for reduction(||: changed)
+				for (int64_t i = 0; i < size; i++)
+					table[i].inverse();
 				break;
 			}
 		}
 	}
 
-	//void read(std::fstream& file)
-	//{
-	//	for (auto& t : table)
-	//	{
-	//		uint8_t size;
-	//		file.read(reinterpret_cast<char*>(&size), sizeof(size));
-	//		t.resize(size);
-	//		file.read(reinterpret_cast<char*>(t.data()), size);
-	//	}
-	//	file.read(reinterpret_cast<char*>(&max_distance_), sizeof(max_distance_));
-	//}
-	//void read(const std::string& file)
-	//{
-	//	std::fstream f(file, std::ios::binary | std::ios::in);
-	//	if (!f.is_open())
-	//		throw std::runtime_error("Failed to open file: " + file);
-	//	read(f);
-	//}
+	void read(std::fstream& file)
+	{
+		file.read(reinterpret_cast<char*>(table.data()), sizeof(nTwists<TWISTS>) * table.size());
+		file.read(reinterpret_cast<char*>(&max_distance_), sizeof(max_distance_));
+	}
+	void read(const std::string& file)
+	{
+		std::fstream f(file, std::ios::binary | std::ios::in);
+		if (!f.is_open())
+			throw std::runtime_error("Failed to open file: " + file);
+		read(f);
+	}
 
-	//void write(std::fstream& file) const
-	//{
-	//	for (const auto& t : table)
-	//	{
-	//		uint8_t size = static_cast<uint8_t>(t.size());
-	//		file.write(reinterpret_cast<const char*>(&size), sizeof(size));
-	//		file.write(reinterpret_cast<const char*>(t.data()), size);
-	//	}
-	//	file.write(reinterpret_cast<const char*>(&max_distance_), sizeof(max_distance_));
-	//}
-	//void write(const std::string& file) const
-	//{
-	//	std::fstream f(file, std::ios::binary | std::ios::out);
-	//	if (!f.is_open())
-	//		throw std::runtime_error("Failed to open file: " + file);
-	//	write(f);
-	//}
+	void write(std::fstream& file) const
+	{
+		for (const auto& t : table)
+		{
+			int8_t size = t.size();
+			file.write(reinterpret_cast<const char*>(&size), sizeof(size));
+			file.write(reinterpret_cast<const char*>(t.data()), sizeof(Twist) * TWISTS);
+		}
+		file.write(reinterpret_cast<const char*>(&max_distance_), sizeof(max_distance_));
+	}
+	void write(const std::string& file) const
+	{
+		std::fstream f(file, std::ios::binary | std::ios::out);
+		if (!f.is_open())
+			throw std::runtime_error("Failed to open file: " + file);
+		write(f);
+	}
 
 	auto begin() const { return table.begin(); }
 	auto end() const { return table.end(); }
 	uint8_t max_distance() const { return max_distance_; }
-	const nTwists<TWISTS>& operator[](const Cube& cube) const { return table[index(cube)]; }
+	uint8_t operator[](const Cube& cube) const { return table[index(cube)].size(); }
+	const nTwists<TWISTS>& solution(const Cube& cube) const
+	{
+		return table[index(cube)];
+	}
 };
 
 template <typename Cube>

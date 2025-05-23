@@ -24,7 +24,7 @@ Cube3x3 Cube3x3::impossible()
 Cube3x3 Cube3x3::superflip()
 {
 	// From https://en.wikipedia.org/wiki/Superflip
-	return Cube3x3::solved().twisted(twist_from_string("U1 R2 F1 B1 R1 B2 R1 U2 L1 B2 R1 U3 D3 R2 F1 R3 L1 B2 U2 F2"));
+	return Cube3x3::solved().twisted(twists_from_string("U1 R2 F1 B1 R1 B2 R1 U2 L1 B2 R1 U3 D3 R2 F1 R3 L1 B2 U2 F2"));
 }
 
 Cube3x3 Cube3x3::twisted(Twist t) const

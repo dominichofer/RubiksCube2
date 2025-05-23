@@ -1,39 +1,28 @@
 #include "pch.h"
 
-class HashTableTest : public ::testing::Test
+TEST(HashTable, states)
 {
-protected:
-    using Key = int;
-    using Value = std::string;
-    Key sentinel_key = -1;
-    Value sentinel_value = "sentinel";
-    std::size_t table_size = 8;
-    HashTable<Key, Value> table{ table_size, sentinel_key, sentinel_value };
-};
+	HashTable<int, int> ht{ /*size*/ 100, /*sentinel_key*/ 0, /*sentinel_value*/ 0 };
+	int key = 13; // arbitrary
+	int value1 = 14; // arbitrary
+	int value2 = 15; // arbitrary
 
-TEST_F(HashTableTest, insert_and_lookup)
-{
-    table.insert(1, "one");
-    table.insert(2, "two");
-    EXPECT_EQ(table.lookup(1), "one");
-    EXPECT_EQ(table.lookup(2), "two");
-}
+	// key is not in table
+	EXPECT_EQ(ht.lookup(key), std::nullopt);
 
-TEST_F(HashTableTest, lookup_inexistant)
-{
-    EXPECT_EQ(table.lookup(42), std::nullopt);
-}
+	// insert value1
+	ht.insert(key, value1);
 
-TEST_F(HashTableTest, overwrite_value)
-{
-    table.insert(3, "three");
-    table.insert(3, "tres");
-    EXPECT_EQ(table.lookup(3), std::optional<std::string>("tres"));
-}
+	// value1 is contained
+	EXPECT_EQ(ht.lookup(key), value1);
 
-TEST_F(HashTableTest, clear)
-{
-    table.insert(4, "four");
-    table.clear();
-    EXPECT_EQ(table.lookup(4), std::nullopt);
+	// overwrite with value2
+	ht.insert(key, value2);
+
+	// value2 is contained
+	EXPECT_EQ(ht.lookup(key), value2);
+
+	// clearing removes key
+	ht.clear();
+	EXPECT_EQ(ht.lookup(key), std::nullopt);
 }

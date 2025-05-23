@@ -24,8 +24,8 @@ class nTwists
 	int8_t size_;
 	std::array<Twist, N> twists;
 public:
-	nTwists() noexcept : size_(0) { twists.fill(Twist::None); }
-	nTwists(int8_t size) noexcept : size_(size) { twists.fill(Twist::None); }
+	nTwists(int8_t size, std::array<Twist, N> twists) noexcept : size_(size), twists(twists) {}
+	nTwists(int8_t size = 0) noexcept : size_(size) { twists.fill(Twist::None); }
 
 	bool operator==(const nTwists& o) const
 	{
@@ -42,6 +42,7 @@ public:
 
 	auto begin() const { return twists.begin(); }
 	auto end() const { return twists.begin() + size_; }
+	auto data() const { return twists.data(); }
 
 	int8_t size() const { return size_; }
 
@@ -72,7 +73,7 @@ template <std::ranges::range R>
 	requires std::same_as<std::ranges::range_value_t<R>, Twist>
 std::string to_string(const R& twists)
 {
-	return join(" ", twists);
+	return join(' ', twists);
 }
 
 auto twist_from_string(std::string_view) -> Twist;
@@ -89,7 +90,6 @@ nTwists<N> inversed(nTwists<N> t)
 
 bool same_plane(Twist, Twist);
 bool commutative(Twist, Twist);
-
 
 template <typename Derived>
 class Twistable

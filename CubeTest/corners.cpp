@@ -15,7 +15,8 @@ TEST(Corners, from_indices)
 	}
 }
 
-TEST(Corners, same_permutation) {
+TEST(Corners, same_permutation)
+{
 	Corners c1(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0);
 	Corners c2(0, 1, 2, 3, 4, 5, 6, 7, 1, 1, 1, 1, 1, 1, 1, 1);
 	Corners c3(7, 6, 5, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -24,7 +25,8 @@ TEST(Corners, same_permutation) {
 	EXPECT_FALSE(same_permutation(c1, c3));
 }
 
-TEST(Corners, same_orientation) {
+TEST(Corners, same_orientation)
+{
 	Corners c1(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0);
 	Corners c2(0, 1, 2, 3, 4, 5, 6, 7, 0, 0, 0, 0, 0, 0, 0, 0);
 	Corners c3(0, 1, 2, 3, 4, 5, 6, 7, 1, 1, 1, 1, 1, 1, 1, 1);

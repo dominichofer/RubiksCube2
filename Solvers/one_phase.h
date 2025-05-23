@@ -1,6 +1,6 @@
 #pragma once
+#include "Std/std.h"
 #include "Cube/cube.h"
-#include "hash_table.h"
 #include "tables.h"
 #include <vector>
 

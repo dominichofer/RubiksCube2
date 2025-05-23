@@ -13,6 +13,7 @@ int main()
 		&Corners::from_index,
 		Corners::index_space
 	};
+	corners_dst.fill(Corners::solved());
 	PartialDistanceTable<Cube3x3> near{ Cube3x3::twists };
 	near.fill(Cube3x3::solved(), 6);
 	HashTable<Cube3x3, int> tt{ 10'000'000, Cube3x3::impossible() };
