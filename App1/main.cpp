@@ -4,7 +4,7 @@
 
 class Foo
 {
-	DistanceTable<Cube3x3> subset{
+	DistanceTable<Cube3x3> phase2_length{
 		H0::twists,
 		[](const Cube3x3& c) { return H0::subset_index(c); },
 		[](uint64_t i) { return H0::from_subset(i); },
@@ -21,7 +21,7 @@ class Foo
 			if (coset[i])
 				continue;
 			Cube3x3 cube = H0::from_coset(coset_number, i).twisted(twists);
-			if (subset[cube] <= depth)
+			if (phase2_length[cube] <= depth)
 				coset[i] = true;
 		}
 	}
@@ -29,7 +29,7 @@ class Foo
 
 int main()
 {
-	DistanceTable<Cube3x3> subset{
+	DistanceTable<Cube3x3> phase2_length{
 		H0::twists,
 		[](const Cube3x3& c) { return H0::subset_index(c); },
 		[](uint64_t i) { return H0::from_subset(i); },

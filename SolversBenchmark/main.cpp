@@ -209,22 +209,24 @@ int main()
 			cubes);
 	}
 	RandomCubeGenerator<Cube3x3> rnd{ /*seed*/ 323470 };
-	for (int i = 0; i < 100; i++)
+	auto start = std::chrono::high_resolution_clock::now();
+	for (int i = 0; i < 1000; i++)
 	{
 		auto cube = rnd(100);
+		auto sol = two_phase.solve(cube, 20);
+		if (not cube.twisted(sol).is_solved())
+			std::cerr << "Solution not found" << std::endl;
+	}
+	auto stop = std::chrono::high_resolution_clock::now();
+	std::cout << "TwoPhaseSolver::solve(random): " << to_string(stop - start) << std::endl;
+
+	{
+		auto cube = Cube3x3::superflip();
 		auto start = std::chrono::high_resolution_clock::now();
 		auto sol = two_phase.solve(cube, 20);
 		auto stop = std::chrono::high_resolution_clock::now();
 		if (not cube.twisted(sol).is_solved())
 			std::cerr << "Solution not found" << std::endl;
-		std::cout << "TwoPhaseSolver::solve(random): " << to_string(stop - start) << std::endl;
+		std::cout << "TwoPhaseSolver::solve(superflip): " << to_string(stop - start) << std::endl;
 	}
-
-	auto cube = Cube3x3::superflip();
-	auto start = std::chrono::high_resolution_clock::now();
-	auto sol = two_phase.solve(cube, 20);
-	auto stop = std::chrono::high_resolution_clock::now();
-	if (not cube.twisted(sol).is_solved())
-		std::cerr << "Solution not found" << std::endl;
-	std::cout << "TwoPhaseSolver::solve(superflip): " << to_string(stop - start) << std::endl;
 }

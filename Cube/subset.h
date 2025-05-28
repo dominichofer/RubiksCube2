@@ -14,6 +14,12 @@ namespace H0
 			Twist::U1, Twist::U2, Twist::U3,
 			Twist::D1, Twist::D2, Twist::D3,
 	};
+	static inline std::vector<Twist> non_twists = {
+			Twist::L1, Twist::L3,
+			Twist::R1, Twist::R3,
+			Twist::F1, Twist::F3,
+			Twist::B1, Twist::B3,
+	};
 
 	// Identifies the cube in the subset.
 	uint64_t subset_index(const Cube3x3&);

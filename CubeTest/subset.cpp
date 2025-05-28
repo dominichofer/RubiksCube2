@@ -6,7 +6,7 @@
 // 2. 'subset_index' is the range [0, H0::set_size).
 // 3. 'subset_index' is unique for each cube.
 // 4. 'from_subset' and 'subset_index' are inverses.
-TEST(H0, subset)
+TEST(H0, phase2_length)
 {
 	RandomCubeGenerator rnd_subset_cube(Cube3x3::solved(), H0::twists, /*seed*/ 124);
 	std::unordered_map<uint64_t, Cube3x3> map;
