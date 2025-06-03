@@ -75,6 +75,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="one_phase.cpp" />
+    <ClCompile Include="tables.cpp" />
     <ClCompile Include="two_phase.cpp" />
   </ItemGroup>
   <ItemGroup>

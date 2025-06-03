@@ -238,12 +238,12 @@ uint64_t EdgesCenter::hash() const
 
 bool same_permutation(const EdgesCenter& a, const EdgesCenter& b)
 {
-	return _mm_test_all_zeros(_mm_xor_si128(a.state, b.state), _mm_set1_epi8(0x7F));
+	return _mm_test_all_zeros(_mm_set1_epi8(0x7F), _mm_xor_si128(a.state, b.state));
 }
 
 bool same_orientation(const EdgesCenter& a, const EdgesCenter& b)
 {
-	return _mm_test_all_zeros(_mm_xor_si128(a.state, b.state), _mm_set1_epi8(0x80));
+	return _mm_test_all_zeros(_mm_set1_epi8(0x80), _mm_xor_si128(a.state, b.state));
 }
 
 bool same_lr_slice_location(const EdgesCenter& a, const EdgesCenter& b)

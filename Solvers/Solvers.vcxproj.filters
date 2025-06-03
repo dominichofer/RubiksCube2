@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="two_phase.cpp" />
     <ClCompile Include="one_phase.cpp" />
+    <ClCompile Include="tables.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="solvers.h" />

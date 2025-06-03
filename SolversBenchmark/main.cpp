@@ -149,12 +149,12 @@ int main()
 
 	//HashTable<Cube3x3, int> tt{ 1'000'000, Cube3x3::impossible() };
 
-	auto file = std::ifstream("..\\irreducible.3x3");
-	std::vector<Twists> irreducible;
-	std::string line;
-	while (std::getline(file, line))
-		irreducible.push_back(twists_from_string(line));
-	file.close();
+	//auto file = std::ifstream("..\\irreducible.3x3");
+	//std::vector<Twists> irreducible;
+	//std::string line;
+	//while (std::getline(file, line))
+	//	irreducible.push_back(twists_from_string(line));
+	//file.close();
 
 	//// One Phase Optimal Solver
 	//DistanceTable<Corners> corners_dst{
@@ -186,47 +186,48 @@ int main()
 	//}
 
 	// Two Phase Solver
-	TwoPhaseSolver two_phase{ Cube3x3::twists };
+	TwoPhaseSolver two_phase;
 	//auto start = std::chrono::high_resolution_clock::now();
 	//two_phase.solve(Cube3x3::superflip());
 	//auto stop = std::chrono::high_resolution_clock::now();
 	//std::cout << "TwoPhaseSolver::solve(superflip): " << to_string(stop - start) << std::endl;
 
 
-	for (int d = 0; d <= 15; d++)
-	{
-		std::vector<Cube3x3> cubes;
-		for (const Twists& t : irreducible)
-			if (t.size() == d)
-				cubes.push_back(Cube3x3::solved().twisted(t));
-		time(
-			std::format("TwoPhaseSolver::solve(dst={})", d),
-			[&](const Cube3x3& cube) {
-				auto sol = two_phase.solve(cube, 20);
-				if (not cube.twisted(sol).is_solved())
-					std::cerr << "Solution not found" << std::endl;
-			},
-			cubes);
-	}
+	//for (int d = 0; d <= 15; d++)
+	//{
+	//	std::vector<Cube3x3> cubes;
+	//	for (const Twists& t : irreducible)
+	//		if (t.size() == d)
+	//			cubes.push_back(Cube3x3::solved().twisted(t));
+	//	time(
+	//		std::format("TwoPhaseSolver::solve(dst={})", d),
+	//		[&](const Cube3x3& cube) {
+	//			auto sol = two_phase.solve(cube, 20);
+	//			if (not cube.twisted(sol).is_solved())
+	//				std::cerr << "Solution not found" << std::endl;
+	//		},
+	//		cubes);
+	//}
 	RandomCubeGenerator<Cube3x3> rnd{ /*seed*/ 323470 };
 	auto start = std::chrono::high_resolution_clock::now();
-	for (int i = 0; i < 1000; i++)
+	int N = 100;
+	for (int i = 0; i < N; i++)
 	{
 		auto cube = rnd(100);
 		auto sol = two_phase.solve(cube, 20);
 		if (not cube.twisted(sol).is_solved())
-			std::cerr << "Solution not found" << std::endl;
+			std::cerr << "Solution not found " << to_string(sol) << std::endl;
 	}
 	auto stop = std::chrono::high_resolution_clock::now();
-	std::cout << "TwoPhaseSolver::solve(random): " << to_string(stop - start) << std::endl;
+	std::cout << "TwoPhaseSolver::solve(random): " << to_string((stop - start) / N) << std::endl;
 
-	{
-		auto cube = Cube3x3::superflip();
-		auto start = std::chrono::high_resolution_clock::now();
-		auto sol = two_phase.solve(cube, 20);
-		auto stop = std::chrono::high_resolution_clock::now();
-		if (not cube.twisted(sol).is_solved())
-			std::cerr << "Solution not found" << std::endl;
-		std::cout << "TwoPhaseSolver::solve(superflip): " << to_string(stop - start) << std::endl;
-	}
+	//{
+	//	auto cube = Cube3x3::superflip();
+	//	auto start = std::chrono::high_resolution_clock::now();
+	//	auto sol = two_phase.solve(cube, 20);
+	//	auto stop = std::chrono::high_resolution_clock::now();
+	//	if (not cube.twisted(sol).is_solved())
+	//		std::cerr << "Solution not found" << std::endl;
+	//	std::cout << "TwoPhaseSolver::solve(superflip): " << to_string(stop - start) << std::endl;
+	//}
 }
