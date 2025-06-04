@@ -4,11 +4,11 @@
 
 uint64_t H0::subset_index(const Cube3x3& cube)
 {
-const auto& c = cube.corners();
-const auto& e = cube.edges();
+	const auto& c = cube.corners();
+	const auto& e = cube.edges();
 	// The parity of the corner permutation is the same as the parity of the edge permutation; thus '/2'.
-uint64_t corner_prm = c.prm_index() / 2;
-uint64_t ud_edges_prm = permutation_index(e.cubie(0), e.cubie(1), e.cubie(2), e.cubie(3), e.cubie(4), e.cubie(5), e.cubie(6), e.cubie(7));
+	uint64_t corner_prm = c.prm_index() / 2;
+	uint64_t ud_edges_prm = permutation_index(e.cubie(0), e.cubie(1), e.cubie(2), e.cubie(3), e.cubie(4), e.cubie(5), e.cubie(6), e.cubie(7));
 	uint64_t ud_slice_prm = permutation_index(e.cubie(8) - 8, e.cubie(9) - 8, e.cubie(10) - 8, e.cubie(11) - 8);
 	uint64_t index = corner_prm;
 	index = index * factorial(8) + ud_edges_prm;

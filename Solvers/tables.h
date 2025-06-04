@@ -98,10 +98,10 @@ std::vector<Twist> solution(const DistanceTable<Cube>& table, const std::vector<
 	return path;
 }
 
-// Distance of a Cube3x3 in the H0 subset to the origin (solved state).
+// Distance to the solved state of a Cube3x3 in the H0 subset.
 const DistanceTable<Cube3x3>& H0_subset_distance_table();
 
-// Distance of a Cube3x3 to the H0 subset.
+// Distance to the H0 subset.
 const DistanceTable<Cube3x3>& H0_coset_distance_table();
 
 //template <typename Cube>

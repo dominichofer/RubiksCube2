@@ -7,11 +7,11 @@
 
 class TwoPhaseSolver
 {
-	thread_local static inline std::vector<Twist> stack;
+	thread_local static inline Twists stack;
 	thread_local static inline uint8_t max_phase2_length;
 	const DistanceTable<Cube3x3> &phase_1, &phase_2;
 
-	std::vector<Twist> phase_2_solution(const Cube3x3& cube) const
+	Twists phase_2_solution(const Cube3x3& cube) const
 	{
 		return solution(phase_2, H0::twists, cube);
 	}
@@ -47,7 +47,7 @@ public:
 		, phase_2(H0_subset_distance_table())
 	{}
 
-	std::vector<Twist> solve(const Cube3x3& cube, uint8_t max_solution_length) const
+	Twists solve(const Cube3x3& cube, uint8_t max_solution_length) const
 	{
 		stack.clear();
 		stack.reserve(max_solution_length);

@@ -1,65 +1,99 @@
 #include "Solvers/solvers.h"
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <ranges>
 
-class Foo
+class CosetCover
 {
-	DistanceTable<Cube3x3> solution_dst{
-		H0::twists,
-		[](const Cube3x3& c) { return H0::subset_index(c); },
-		H0::set_size
-	};
-	std::vector<bool> coset{ H0::set_size, false };
+	const DistanceTable<Cube3x3> &phase_1, &phase_2;
+	std::vector<bool> coset;
+	Twists stack;
 	int64_t coset_number;
+	uint8_t max_solution_length;
 public:
-	Foo(int64_t coset_number) : coset_number(coset_number)
+
+	CosetCover(uint8_t max_solution_length)
+		: phase_1(H0_coset_distance_table())
+		, phase_2(H0_subset_distance_table())
+		, coset(H0::set_size)
+		, max_solution_length(max_solution_length)
+	{}
+
+	void reset(int64_t coset_number)
 	{
-		try
-		{
-			solution_dst.read("D:\\subset.dst");
-		}
-		catch (...)
-		{
-			solution_dst.fill(Cube3x3::solved(), &H0::from_subset);
-			solution_dst.write("D:\\subset.dst");
-		}
+		this->coset_number = coset_number;
+		std::ranges::fill(coset, false);
 	}
 
-	void fill(const Twists& twists, uint8_t max_solution_length)
+	void cover_with(const Twists& twists)
 	{
+		auto start = std::chrono::high_resolution_clock::now();
 		uint8_t twists_count = static_cast<uint8_t>(twists.size());
 		int64_t size = static_cast<int64_t>(coset.size());
+		#pragma omp parallel for schedule(static, 128 * 8)
 		for (int64_t i = 0; i < size; i++)
 		{
 			if (coset[i])
 				continue;
 			Cube3x3 cube = H0::from_coset(coset_number, i).twisted(twists);
-			if (twists_count + solution_dst[cube] <= max_solution_length)
-				coset[i] = true;
+			if (twists_count + phase_2[cube] <= max_solution_length)
+				coset[i].flip();
 		}
+		auto end = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+		uint64_t covered_count = std::ranges::count(coset, true);
+		uint64_t uncovered_count = size - covered_count;
+		std::cout << "Covering coset " << coset_number << " with " << (int)twists_count
+				  << " twists took " << duration << " ms, covered count: "
+			<< covered_count << ", uncovered count: " << uncovered_count << std::endl;
+	}
+
+	void search(const Cube3x3& cube, uint8_t phase1_depth)
+	{
+		if (phase1_depth == 0)
+		{
+			if (H0::in_subset(cube))
+				cover_with(stack);
+			return;
+		}
+
+		if (phase_1[cube] > phase1_depth)
+			return;
+
+		for (Twist t : (phase1_depth == 1 ? H0::non_twists : Cube3x3::twists))
+		{
+			if ((not stack.empty()) and same_plane(t, stack.back()))
+				continue;
+			stack.push_back(t);
+			search(cube.twisted(t), phase1_depth - 1);
+			stack.pop_back();
+		}
+	}
+
+	void cover(uint8_t depth)
+	{
+		Cube3x3 cube = H0::from_coset(coset_number, 0);
+		search(cube, depth);
 	}
 };
 
+
+
 int main()
 {
-	DistanceTable<Cube3x3> solution_dst{
-		H0::twists,
-		[](const Cube3x3& c) { return H0::subset_index(c); },
-		H0::set_size
-	};
-	try
-	{
-		solution_dst.read("D:\\subset.dst");
-	}
-	catch (...)
-	{
-		solution_dst.fill(Cube3x3::solved(), &H0::from_subset);
-		solution_dst.write("D:\\subset.dst");
-	}
-	std::vector<bool> coset{ H0::set_size, false };
-
+	CosetCover set{ 20 };
 	for (int nr = 0; nr < H0::cosets; nr++)
 	{
-		Cube3x3 cube = H0::from_coset(nr, 0);
+		set.reset(nr);
+		for (int i = 0; i < 10; i++)
+		{
+			auto start = std::chrono::high_resolution_clock::now();
+			set.cover(i);
+			auto end = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
+			std::cout << "Covering coset " << nr << " with depth " << i
+				<< " took " << duration << " ms" << std::endl;
+		}
 	}
 }
