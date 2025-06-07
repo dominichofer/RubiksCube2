@@ -2,8 +2,10 @@
 
 const DistanceTable<Cube3x3>& H0_subset_distance_table()
 {
-	static DistanceTable<Cube3x3> table{
-		[](const Cube3x3& c) { return H0::subset_index(c); },
+	static DistanceTable<Cube3x3> table {
+		H0::twists,
+		&H0::subset_index,
+		&H0::from_subset,
 		H0::set_size
 	};
 	static bool initialized = false;
@@ -11,12 +13,12 @@ const DistanceTable<Cube3x3>& H0_subset_distance_table()
 	{
 		try
 		{
-			table.read("D:\\subset.dst");
+			table.read("..\\subset.dst");
 		}
 		catch (...)
 		{
-			table.fill(Cube3x3::solved(), H0::twists, [](uint64_t i) { return H0::from_subset(i); });
-			table.write("D:\\subset.dst");
+			table.fill(Cube3x3::solved());
+			table.write("..\\subset.dst");
 		}
 		initialized = true;
 	}
@@ -25,8 +27,10 @@ const DistanceTable<Cube3x3>& H0_subset_distance_table()
 
 const DistanceTable<Cube3x3>& H0_coset_distance_table()
 {
-	static DistanceTable<Cube3x3> table{
-		[](const Cube3x3& c) { return H0::coset_number(c); },
+	static DistanceTable<Cube3x3> table {
+		Cube3x3::twists,
+		&H0::coset_number,
+		[](uint64_t i) { return H0::from_coset(i, 0); },
 		H0::cosets
 	};
 	static bool initialized = false;
@@ -34,12 +38,12 @@ const DistanceTable<Cube3x3>& H0_coset_distance_table()
 	{
 		try
 		{
-			table.read("D:\\coset.dst");
+			table.read("..\\coset.dst");
 		}
 		catch (...)
 		{
-			table.fill(Cube3x3::solved(), Cube3x3::twists, [](uint64_t i) { return H0::from_coset(i, 0); });
-			table.write("D:\\coset.dst");
+			table.fill(Cube3x3::solved());
+			table.write("..\\coset.dst");
 		}
 		initialized = true;
 	}

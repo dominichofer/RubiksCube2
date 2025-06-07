@@ -11,24 +11,19 @@ class TwoPhaseSolver
 	thread_local static inline uint8_t max_phase2_length;
 	const DistanceTable<Cube3x3> &phase_1, &phase_2;
 
-	Twists phase_2_solution(const Cube3x3& cube) const
-	{
-		return solution(phase_2, H0::twists, cube);
-	}
-
 	void search(const Cube3x3& cube, uint8_t phase1_depth) const
 	{
 		if (phase1_depth == 0)
 		{
-			if (H0::in_subset(cube) and phase_2[cube] <= max_phase2_length)
+			if (H0::in_subset(cube) and phase_2.distance(cube) <= max_phase2_length)
 			{
-				stack.append_range(phase_2_solution(cube));
+				stack.append_range(phase_2.solution(cube));
 				throw 0;
 			}
 			return;
 		}
 
-		if (phase_1[cube] > phase1_depth)
+		if (phase_1.distance(cube) > phase1_depth)
 			return;
 
 		for (Twist t : (phase1_depth == 1 ? H0::non_twists : Cube3x3::twists))

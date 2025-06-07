@@ -11,18 +11,24 @@
 template <typename Cube>
 class DistanceTable
 {
+	Twists twists;
 	std::vector<uint8_t> table;
 	std::function<int64_t(Cube)> index;
+	std::function<Cube(int64_t)> from_index;
 public:
 	DistanceTable() = default;
 	DistanceTable(
+		Twists twists,
 		std::function<int64_t(Cube)> index_fkt,
+		std::function<Cube(int64_t)> from_index_fkt,
 		std::size_t index_space)
-		: table(index_space)
+		: twists(std::move(twists))
+		, table(index_space)
 		, index(std::move(index_fkt))
+		, from_index(std::move(from_index_fkt))
 	{}
 
-	void fill(const Cube& origin, const std::vector<Twist>& twists, std::function<Cube(int64_t)> from_index)
+	void fill(const Cube& origin)
 	{
 		int64_t size = static_cast<int64_t>(table.size());
 		std::ranges::fill(table, 0xFF);
@@ -30,7 +36,7 @@ public:
 		for (uint8_t d = 0; d < 0xFE; d++)
 		{
 			bool changed = false;
-			#pragma omp parallel for reduction(||: changed) schedule(static, 64)
+			#pragma omp parallel for reduction(||: changed) schedule(static, 128)
 			for (int64_t i = 0; i < size; i++)
 				if (table[i] == d)
 				{
@@ -75,28 +81,26 @@ public:
 		write(f);
 	}
 
-	uint8_t operator[](const Cube& cube) const { return table[index(cube)]; }
-};
+	uint8_t distance(const Cube& cube) const { return table[index(cube)]; }
+	uint8_t operator[](const Cube& cube) const { return distance(cube); }
 
-template <typename Cube>
-std::vector<Twist> solution(const DistanceTable<Cube>& table, const std::vector<Twist>& twists, Cube cube)
-{
-	uint8_t d = table[cube];
-	std::vector<Twist> path;
-	path.reserve(d);
-	for (; d > 0; d--)
-		for (Twist t : twists)
-		{
-			Cube n = cube.twisted(t);
-			if (table[n] == d - 1)
+	Twists solution(Cube cube) const
+	{
+		Twists ret;
+		for (uint8_t d = distance(cube); d > 0; d--)
+			for (Twist t : twists)
 			{
-				path.push_back(t);
-				cube = n;
-				break;
+				Cube n = cube.twisted(t);
+				if (distance(n) == d - 1)
+				{
+					ret.push_back(t);
+					cube = n;
+					break;
+				}
 			}
-		}
-	return path;
-}
+		return ret;
+	}
+};
 
 // Distance to the solved state of a Cube3x3 in the H0 subset.
 const DistanceTable<Cube3x3>& H0_subset_distance_table();
@@ -124,7 +128,7 @@ const DistanceTable<Cube3x3>& H0_coset_distance_table();
 //	{
 //	}
 //
-//	void fill(const Cube& origin, const std::vector<Twist>& twists)
+//	void fill(const Cube& origin, const Twists& twists)
 //	{
 //		const int64_t size = static_cast<int64_t>(table.size());
 //		const std::pair<uint8_t, Twist> sentinel{ 0xFF, Twist::None };
@@ -162,10 +166,10 @@ const DistanceTable<Cube3x3>& H0_coset_distance_table();
 //
 //	uint8_t operator[](const Cube& cube) const { return table[index(cube)].first; }
 //
-//	std::vector<Twist> solution(Cube cube) const
+//	Twists solution(Cube cube) const
 //	{
 //		auto current = table[index(cube)];
-//		std::vector<Twist> path;
+//		Twists path;
 //		path.reserve(current.first);
 //		while (current.first > 0)
 //		{
@@ -196,7 +200,7 @@ const DistanceTable<Cube3x3>& H0_coset_distance_table();
 //		, max_distance_(INT8_MAX)
 //	{}
 //
-//	void fill(const Cube& origin, const std::vector<Twist>& twists)
+//	void fill(const Cube& origin, const Twists& twists)
 //	{
 //		const int64_t size = static_cast<int64_t>(table.size());
 //		const nTwists<TWISTS> sentinel{ -1 };
@@ -284,10 +288,10 @@ template <typename Cube>
 class PartialDistanceTable
 {
 	std::unordered_map<Cube, uint8_t> table;
-	std::vector<Twist> twists;
+	Twists twists;
 	int max_distance_;
 public:
-	PartialDistanceTable(std::vector<Twist> twists) : twists(std::move(twists)), max_distance_(-1) {}
+	PartialDistanceTable(Twists twists) : twists(std::move(twists)), max_distance_(-1) {}
 
 	void fill(const Cube& origin, int max_distance)
 	{
@@ -300,19 +304,21 @@ public:
 		}
 	}
 
-	std::optional<uint8_t> operator[](const Cube& cube) const
+	std::optional<uint8_t> distance(const Cube& cube) const
 	{
 		auto it = table.find(cube);
 		if (it == table.end())
 			return std::nullopt;
 		return it->second;
 	}
-	std::vector<Twist> solution(Cube cube) const
+	std::optional<uint8_t> operator[](const Cube& cube) const { return distance(cube); }
+
+	Twists solution(Cube cube) const
 	{
 		auto it = table.find(cube);
 		if (it == table.end())
 			return {};
-		std::vector<Twist> path;
+		Twists path;
 		for (int d = it->second; d > 0; d--)
 			for (Twist t : twists)
 			{
@@ -333,10 +339,11 @@ public:
 	auto end() const { return table.end(); }
 };
 
+
 template <typename Cube>
 class SolutionTable
 {
-	std::unordered_map<Cube, std::vector<Twist>> table;
+	std::unordered_map<Cube, Twists> table;
 	int max_distance_ = -1;
 public:
 	SolutionTable() = default;
@@ -347,7 +354,7 @@ public:
 		max_distance_ = -1;
 	}
 
-	void fill(const Cube& origin, const std::vector<Twist>& twists, int max_distance)
+	void fill(const Cube& origin, const Twists& twists, int max_distance)
 	{
 		table = path_to_neighbours(0, max_distance, origin, twists);
 		max_distance_ = -1;
@@ -358,7 +365,7 @@ public:
 		}
 	}
 
-	std::optional<std::vector<Twist>> operator[](const Cube& cube) const
+	std::optional<Twists> operator[](const Cube& cube) const
 	{
 		auto it = table.find(cube);
 		if (it == table.end())
