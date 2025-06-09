@@ -77,6 +77,15 @@ BENCH(EdgesCenter, lr_slice_location)
 BENCH(EdgesCenter, ud_slice_location)
 BENCH(EdgesCenter, fb_slice_location)
 
+void from_prm_index_Corners(benchmark::State& state)
+{
+	std::mt19937_64 rng{ 2342311 };
+	std::uniform_int_distribution<std::size_t> dist(0, Corners::prm_size - 1);
+	auto index = dist(rng);
+	for (auto _ : state)
+		benchmark::DoNotOptimize(Corners::from_prm_index(index));
+}
+
 void same_permutation_EdgesCenter(benchmark::State& state)
 {
 	auto cube1 = RandomCube<EdgesCenter>();

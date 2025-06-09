@@ -27,6 +27,14 @@ void n_k_args(benchmark::internal::Benchmark* b)
 		for (int k = 0; k <= n / 2; ++k)
 			b->Args({ n, k });
 }
+void bm_is_even_permutation(benchmark::State& state)
+{
+	int n = state.range(0);
+	std::vector<int> perm = random_permutation(n);
+	for (auto _ : state)
+		benchmark::DoNotOptimize(is_even_permutation(perm));
+}
+BENCHMARK(bm_is_even_permutation)->DenseRange(1, 12);
 
 void bm_permutation_index(benchmark::State& state)
 {
@@ -78,6 +86,15 @@ void bm_nth_combination(benchmark::State& state)
 		benchmark::DoNotOptimize(nth_combination(n, k, index));
 }
 BENCHMARK(bm_nth_combination)->Apply(n_k_args);
+
+void bm_nth_combination_4(benchmark::State& state)
+{
+	int n = state.range(0);
+	int index = rand() % binomial(n, 4);
+	for (auto _ : state)
+		benchmark::DoNotOptimize(nth_combination<4>(n, index));
+}
+BENCHMARK(bm_nth_combination_4)->DenseRange(4, 12);
 
 void bm_path_to_neighbours(benchmark::State& state)
 {

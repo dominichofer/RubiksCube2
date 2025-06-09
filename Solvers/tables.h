@@ -82,7 +82,9 @@ public:
 	}
 
 	uint8_t distance(const Cube& cube) const { return table[index(cube)]; }
+	uint8_t distance(int64_t index) const { return table[index]; }
 	uint8_t operator[](const Cube& cube) const { return distance(cube); }
+	uint8_t operator[](int64_t index) const { return distance(index); }
 
 	Twists solution(Cube cube) const
 	{

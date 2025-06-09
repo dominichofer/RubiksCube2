@@ -30,15 +30,16 @@ public:
 	{
 		auto start = std::chrono::high_resolution_clock::now();
 		uint8_t twists_count = static_cast<uint8_t>(twists.size());
-		int64_t size = static_cast<int64_t>(coset.size());
-		#pragma omp parallel for schedule(static, 128 * 8)
+		int64_t size = static_cast<int64_t>(H0::set_size);
+		#pragma omp parallel for
 		for (int64_t i = 0; i < size; i++)
 		{
-			if (coset[i])
-				continue;
-			Cube3x3 cube = H0::from_coset(coset_number, i).twisted(twists);
-			if (twists_count + phase_2[cube] <= max_solution_length)
-				coset[i].flip();
+			if (phase_2[i] + twists_count > max_solution_length)
+				continue; // skip cubes that cannot be covered with this many twists
+			Cube3x3 subset_cube = H0::from_subset(i);
+			Cube3x3 coset_cube = subset_cube.twisted(twists);
+			auto index = H0::coset_index(coset_cube);
+			coset[index] = true;
 		}
 		auto end = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
@@ -54,7 +55,7 @@ public:
 		if (phase1_depth == 0)
 		{
 			if (H0::in_subset(cube))
-				cover_with(stack);
+				cover_with(inversed(stack));
 			return;
 		}
 
