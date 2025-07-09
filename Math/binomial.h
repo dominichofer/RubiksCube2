@@ -5,9 +5,7 @@
 
 namespace
 {
-	// Lookup table for binomial coefficients.
-	// The table is filled with the values of "n choose k" for n = 0 to 12 and k = 0 to n.
-	static std::array<std::array<int64_t, 13>, 13> binomial_lookup = [] {
+	constexpr std::array<std::array<int64_t, 13>, 13> make_binomial_lookup() {
 		std::array<std::array<int64_t, 13>, 13> table{};
 		for (int64_t n = 0; n <= 12; ++n) {
 			table[n][0] = 1;
@@ -16,33 +14,35 @@ namespace
 			}
 		}
 		return table;
-		}();
+	}
+
+	// constexpr lookup table (evaluated at compile time)
+	constexpr static auto binomial_lookup = make_binomial_lookup();
 }
 
-// Returns the binomial coefficient "n choose k".
+// Binomial coefficient "n choose k".
 constexpr int64_t binomial(int64_t n, int64_t k)
 {
-    if (n <= 12)
-        return binomial_lookup[n][k];
-    
-    if (k > n)
-        return 0;
-    if (k == 0 or k == n)
-        return 1;
-    if (k > n - k)
-        k = n - k;
+	if (k > n)
+		return 0;
+	if (n <= 12)
+		return binomial_lookup[n][k];
+	if (k == 0 || k == n)
+		return 1;
+	if (k > n - k)
+		k = n - k;
 
-    int64_t result = 1;
-    for (int64_t i = 0; i < k; ++i)
-    {
-        if ((n - i) % (i + 1) == 0)
-            result *= (n - i) / (i + 1);
-        else if (result % (i + 1) == 0)
-            result = result / (i + 1) * (n - i);
-        else
-            result = result * (n - i) / (i + 1);
-    }
-    return result;
+	int64_t result = 1;
+	for (int64_t i = 0; i < k; ++i)
+	{
+		if ((n - i) % (i + 1) == 0)
+			result *= (n - i) / (i + 1);
+		else if (result % (i + 1) == 0)
+			result = result / (i + 1) * (n - i);
+		else
+			result = result * (n - i) / (i + 1);
+	}
+	return result;
 }
 
 // Returns the index of the combination

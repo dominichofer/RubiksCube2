@@ -1,33 +1,41 @@
 #include "pch.h"
 #include <unordered_map>
 
-// Generates cubes in the subset and tests:
+TEST(H0, subset_twists)
+{
+	for (Twist t : H0::twists)
+		EXPECT_TRUE(H0::in_subset(Cube3x3::solved().twisted(t)))
+			<< "Twist " << t << " is not in H0 subset";
+	for (Twist t : H0::non_twists)
+		EXPECT_FALSE(H0::in_subset(Cube3x3::solved().twisted(t)))
+			<< "Non-twist " << t << " is in H0 subset";
+}
+
+
+// Generates cubes in the H0 subset and tests:
 // 1. 'in_subset' is true.
-// 2. 'subset_index' is the range [0, H0::set_size).
-// 3. 'subset_index' is unique for each cube.
-// 4. 'from_subset' and 'subset_index' are inverses.
-TEST(H0, solution_dst)
+// 2. 'coset_index' is the range [0, H0::set_size).
+// 3. 'coset_index' is unique for each cube.
+TEST(H0, subset)
 {
 	RandomCubeGenerator rnd_subset_cube(Cube3x3::solved(), H0::twists, /*seed*/ 124);
 	std::unordered_map<uint64_t, Cube3x3> map;
 	for (int i = 0; i < 1'000'000; i++)
 	{
 		auto cube = rnd_subset_cube();
-		auto index = H0::subset_index(cube);
+		auto index = H0::coset_index(cube);
 
+		// 'in_subset' is true.
 		ASSERT_TRUE(H0::in_subset(cube));
 
-		// subset_index is the range [0, H0::set_size).
+		// 'coset_index' is the range [0, H0::set_size).
 		ASSERT_GE(index, 0);
 		ASSERT_LT(index, H0::set_size);
 
-		// subset_index is unique for each cube.
+		// 'coset_index' is unique for each cube.
 		if (map.contains(index))
 			ASSERT_EQ(map[index], cube);
 		map[index] = cube;
-
-		// from_subset and subset_index are inverses.
-		ASSERT_EQ(cube, H0::from_subset(index));
 	}
 }
 
@@ -37,7 +45,6 @@ TEST(H0, solution_dst)
 // 3. 'coset_number' is the range [0, H0::cosets).
 // 4. 'coset_index' is the range [0, H0::set_size).
 // 5. 'coset_index' is unique for each cube.
-// 6. 'from_coset' and (coset_number, coset_index) are inverses.
 TEST(H0, coset)
 {
 	RandomTwistGenerator rnd_twists(Cube3x3::twists, /*seed*/ 125);
@@ -55,24 +62,24 @@ TEST(H0, coset)
 			auto number = H0::coset_number(cube);
 			auto index = H0::coset_index(cube);
 
+			// 'same_coset' is true.
 			ASSERT_TRUE(H0::same_coset(cube, ref_cube));
+
+			// 'coset_number' is the same for all cubes in the coset.
 			ASSERT_EQ(ref_number, number);
 
-			// coset_number is the range [0, H0::cosets).
+			// 'coset_number' is the range [0, H0::cosets).
 			ASSERT_GE(number, 0);
 			ASSERT_LT(number, H0::cosets);
 
-			// coset_index is the range [0, H0::set_size).
+			// 'coset_index' is the range [0, H0::set_size).
 			ASSERT_GE(index, 0);
 			ASSERT_LT(index, H0::set_size);
 
-			// coset_index is unique for each cube.
+			// 'coset_index' is unique for each cube.
 			if (map.contains(index))
 				ASSERT_EQ(map[index], cube);
 			map[index] = cube;
-
-			// from_coset and (cosed_number, coset_index) are inverses.
-			ASSERT_EQ(cube, H0::from_coset(number, index));
 		}
 	}
 }

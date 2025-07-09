@@ -74,8 +74,6 @@ public:
 			return "FacesCenter";
 		else if constexpr (std::is_same_v<T, FacesSide>)
 			return "FacesSide";
-		else if constexpr (std::is_same_v<T, Cube2x2>)
-			return "Cube2x2";
 		else if constexpr (std::is_same_v<T, Cube3x3>)
 			return "Cube3x3";
 		else if constexpr (std::is_same_v<T, Cube4x4>)
@@ -90,7 +88,7 @@ public:
 template <typename CubeType>
 class CubeTest : public testing::Test {};
 
-using CubeTypes = ::testing::Types<Corners, EdgesCenter, EdgesSide, FacesCenter, FacesSide, Cube2x2, Cube3x3, Cube4x4, Cube5x5>;
+using CubeTypes = ::testing::Types<Corners, EdgesCenter, EdgesSide, FacesCenter, FacesSide, Cube3x3, Cube4x4, Cube5x5>;
 TYPED_TEST_CASE(CubeTest, CubeTypes, NameGenerator);
 
 TYPED_TEST(CubeTest, is_solved)
@@ -114,49 +112,48 @@ TYPED_TEST(CubeTest, hash)
 TYPED_TEST(CubeTest, composed_twists)
 {
 	const auto c = TypeParam::solved();
-	EXPECT_EQ(c.twisted(Twist::L2), c.twisted(Twist::L1, Twist::L1));
-	EXPECT_EQ(c.twisted(Twist::L3), c.twisted(Twist::L1, Twist::L1, Twist::L1));
-	EXPECT_EQ(c.twisted(Twist::R2), c.twisted(Twist::R1, Twist::R1));
-	EXPECT_EQ(c.twisted(Twist::R3), c.twisted(Twist::R1, Twist::R1, Twist::R1));
-	EXPECT_EQ(c.twisted(Twist::U2), c.twisted(Twist::U1, Twist::U1));
-	EXPECT_EQ(c.twisted(Twist::U3), c.twisted(Twist::U1, Twist::U1, Twist::U1));
-	EXPECT_EQ(c.twisted(Twist::D2), c.twisted(Twist::D1, Twist::D1));
-	EXPECT_EQ(c.twisted(Twist::D3), c.twisted(Twist::D1, Twist::D1, Twist::D1));
-	EXPECT_EQ(c.twisted(Twist::F2), c.twisted(Twist::F1, Twist::F1));
-	EXPECT_EQ(c.twisted(Twist::F3), c.twisted(Twist::F1, Twist::F1, Twist::F1));
-	EXPECT_EQ(c.twisted(Twist::B2), c.twisted(Twist::B1, Twist::B1));
-	EXPECT_EQ(c.twisted(Twist::B3), c.twisted(Twist::B1, Twist::B1, Twist::B1));
-	EXPECT_EQ(c.twisted(Twist::l2), c.twisted(Twist::l1, Twist::l1));
-	EXPECT_EQ(c.twisted(Twist::l3), c.twisted(Twist::l1, Twist::l1, Twist::l1));
-	EXPECT_EQ(c.twisted(Twist::r2), c.twisted(Twist::r1, Twist::r1));
-	EXPECT_EQ(c.twisted(Twist::r3), c.twisted(Twist::r1, Twist::r1, Twist::r1));
-	EXPECT_EQ(c.twisted(Twist::u2), c.twisted(Twist::u1, Twist::u1));
-	EXPECT_EQ(c.twisted(Twist::u3), c.twisted(Twist::u1, Twist::u1, Twist::u1));
-	EXPECT_EQ(c.twisted(Twist::d2), c.twisted(Twist::d1, Twist::d1));
-	EXPECT_EQ(c.twisted(Twist::d3), c.twisted(Twist::d1, Twist::d1, Twist::d1));
-	EXPECT_EQ(c.twisted(Twist::f2), c.twisted(Twist::f1, Twist::f1));
-	EXPECT_EQ(c.twisted(Twist::f3), c.twisted(Twist::f1, Twist::f1, Twist::f1));
-	EXPECT_EQ(c.twisted(Twist::b2), c.twisted(Twist::b1, Twist::b1));
-	EXPECT_EQ(c.twisted(Twist::b3), c.twisted(Twist::b1, Twist::b1, Twist::b1));
-
+	EXPECT_EQ(c.twisted(Twist::L2), c.twisted({ Twist::L1, Twist::L1 }));
+	EXPECT_EQ(c.twisted(Twist::L3), c.twisted({ Twist::L1, Twist::L1, Twist::L1 }));
+	EXPECT_EQ(c.twisted(Twist::R2), c.twisted({ Twist::R1, Twist::R1 }));
+	EXPECT_EQ(c.twisted(Twist::R3), c.twisted({ Twist::R1, Twist::R1, Twist::R1 }));
+	EXPECT_EQ(c.twisted(Twist::U2), c.twisted({ Twist::U1, Twist::U1 }));
+	EXPECT_EQ(c.twisted(Twist::U3), c.twisted({ Twist::U1, Twist::U1, Twist::U1 }));
+	EXPECT_EQ(c.twisted(Twist::D2), c.twisted({ Twist::D1, Twist::D1 }));
+	EXPECT_EQ(c.twisted(Twist::D3), c.twisted({ Twist::D1, Twist::D1, Twist::D1 }));
+	EXPECT_EQ(c.twisted(Twist::F2), c.twisted({ Twist::F1, Twist::F1 }));
+	EXPECT_EQ(c.twisted(Twist::F3), c.twisted({ Twist::F1, Twist::F1, Twist::F1 }));
+	EXPECT_EQ(c.twisted(Twist::B2), c.twisted({ Twist::B1, Twist::B1 }));
+	EXPECT_EQ(c.twisted(Twist::B3), c.twisted({ Twist::B1, Twist::B1, Twist::B1 }));
+	EXPECT_EQ(c.twisted(Twist::l2), c.twisted({ Twist::l1, Twist::l1 }));
+	EXPECT_EQ(c.twisted(Twist::l3), c.twisted({ Twist::l1, Twist::l1, Twist::l1 }));
+	EXPECT_EQ(c.twisted(Twist::r2), c.twisted({ Twist::r1, Twist::r1 }));
+	EXPECT_EQ(c.twisted(Twist::r3), c.twisted({ Twist::r1, Twist::r1, Twist::r1 }));
+	EXPECT_EQ(c.twisted(Twist::u2), c.twisted({ Twist::u1, Twist::u1 }));
+	EXPECT_EQ(c.twisted(Twist::u3), c.twisted({ Twist::u1, Twist::u1, Twist::u1 }));
+	EXPECT_EQ(c.twisted(Twist::d2), c.twisted({ Twist::d1, Twist::d1 }));
+	EXPECT_EQ(c.twisted(Twist::d3), c.twisted({ Twist::d1, Twist::d1, Twist::d1 }));
+	EXPECT_EQ(c.twisted(Twist::f2), c.twisted({ Twist::f1, Twist::f1 }));
+	EXPECT_EQ(c.twisted(Twist::f3), c.twisted({ Twist::f1, Twist::f1, Twist::f1 }));
+	EXPECT_EQ(c.twisted(Twist::b2), c.twisted({ Twist::b1, Twist::b1 }));
+	EXPECT_EQ(c.twisted(Twist::b3), c.twisted({ Twist::b1, Twist::b1, Twist::b1 }));
 }
 
 TYPED_TEST(CubeTest, inverse_twists)
 {
 	for (Twist t : all_twists)
-		EXPECT_TRUE(TypeParam::solved().twisted(t, inversed(t)).is_solved());
+		EXPECT_TRUE(TypeParam::solved().twisted({ t, inversed(t) }).is_solved());
 }
 
 TYPED_TEST(CubeTest, twists_cycle)
 {
 	for (Twist t : all_twists)
-		EXPECT_TRUE(TypeParam::solved().twisted(t, t, t, t).is_solved());
+		EXPECT_TRUE(TypeParam::solved().twisted({ t, t, t, t }).is_solved());
 }
 
 template <typename Twistable>
 void expect_pairwise_commutation(const Twistable& t, Twist a, Twist b)
 {
-	EXPECT_EQ(t.twisted(a, b), t.twisted(b, a));
+	EXPECT_EQ(t.twisted({ a, b }), t.twisted({ b, a }));
 }
 
 template <typename Twistable>
@@ -244,8 +241,8 @@ void cubie_twist_fuzzing(int n, int max_value)
 		for (int j = 0; j < n; j++)
 		{
 			auto cubie = c.cubie(j);
-			EXPECT_GE(cubie, 0);
-			EXPECT_LT(cubie, max_value);
+			ASSERT_GE(cubie, 0);
+			ASSERT_LT(cubie, max_value);
 			cubie_count[cubie]++;
 		}
 
@@ -302,15 +299,6 @@ TEST(Corners, prm_index)
 	EXPECT_EQ(indices.size(), factorial(8));
 	for (int i = 0; i < factorial(8); i++)
 		EXPECT_EQ(indices[i], i);
-}
-
-TEST(EdgesCenter, prm_index)
-{
-	EdgesCenter first({ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-	EXPECT_EQ(first.prm_index(), 0);
-
-	EdgesCenter last({ 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 }, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
-	EXPECT_EQ(last.prm_index(), factorial(12) - 1);
 }
 
 TEST(EdgesSide, prm_index)

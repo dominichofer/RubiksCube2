@@ -1,8 +1,10 @@
 #include "cube3x3.h"
+#include "cube3x3.h"
+#include "cube3x3.h"
 #include "twist.h"
 #include "Math/math.h"
 
-const std::vector<Twist> Cube3x3::twists = {
+const Twists Cube3x3::twists = {
 	Twist::L1, Twist::L2, Twist::L3,
 	Twist::R1, Twist::R2, Twist::R3,
 	Twist::U1, Twist::U2, Twist::U3,

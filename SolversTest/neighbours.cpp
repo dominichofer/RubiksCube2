@@ -96,7 +96,7 @@ uint64_t sum_pos_at_dst_QT(int min, int max)
 	return std::accumulate(pos_at_dst_QT.begin() + min, pos_at_dst_QT.begin() + max + 1, 0);
 }
 
-std::vector<Twist> QT = {
+Twists QT = {
 	Twist::L1, Twist::L3,
 	Twist::R1, Twist::R3,
 	Twist::U1, Twist::U3,

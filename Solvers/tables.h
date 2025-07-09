@@ -1,10 +1,10 @@
 #pragma once
-#include "Math/math.h"
 #include "Cube/cube.h"
 #include "neighbours.h"
-#include <array>
 #include <fstream>
+#include <ranges>
 #include <string>
+#include <vector>
 #include <chrono>
 #include <iostream>
 
@@ -30,7 +30,7 @@ public:
 
 	void fill(const Cube& origin)
 	{
-		int64_t size = static_cast<int64_t>(table.size());
+		const int64_t size = static_cast<int64_t>(table.size());
 		std::ranges::fill(table, 0xFF);
 		table[index(origin)] = 0;
 		for (uint8_t d = 0; d < 0xFE; d++)
@@ -57,6 +57,12 @@ public:
 		}
 	}
 
+	uint8_t distance(const Cube& cube) const { return table[index(cube)]; }
+	uint8_t distance(int64_t index) const { return table[index]; }
+	uint8_t operator[](const Cube& cube) const { return distance(cube); }
+	uint8_t operator[](int64_t index) const { return distance(index); }
+
+
 	void read(std::fstream& file)
 	{
 		file.read(reinterpret_cast<char*>(table.data()), table.size());
@@ -80,11 +86,8 @@ public:
 			throw std::runtime_error("Failed to open file: " + file);
 		write(f);
 	}
-
-	uint8_t distance(const Cube& cube) const { return table[index(cube)]; }
-	uint8_t distance(int64_t index) const { return table[index]; }
-	uint8_t operator[](const Cube& cube) const { return distance(cube); }
-	uint8_t operator[](int64_t index) const { return distance(index); }
+	auto begin() const { return table.begin(); }
+	auto end() const { return table.end(); }
 
 	Twists solution(Cube cube) const
 	{
@@ -104,11 +107,14 @@ public:
 	}
 };
 
-// Distance to the solved state of a Cube3x3 in the H0 subset.
+// Distance to the solved state of a Cube3x3 in the H1 subset.
 const DistanceTable<Cube3x3>& H0_subset_distance_table();
 
-// Distance to the H0 subset.
+// Distance to the H1 subset.
 const DistanceTable<Cube3x3>& H0_coset_distance_table();
+
+// Distance table for the Corners.
+const DistanceTable<Corners>& Corners_distance_table();
 
 //template <typename Cube>
 //class DirectionTable

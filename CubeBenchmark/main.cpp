@@ -31,14 +31,14 @@ void perft()
 	}
 }
 
-void EdgesCenter_lt(benchmark::State& state)
-{
-	auto cube1 = RandomCube<EdgesCenter>();
-	auto cube2 = RandomCube<EdgesCenter>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(cube1 < cube2);
-}
-BENCHMARK(EdgesCenter_lt);
+//void EdgesCenter_lt(benchmark::State& state)
+//{
+//	auto cube1 = RandomCube<EdgesCenter>();
+//	auto cube2 = RandomCube<EdgesCenter>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(cube1 < cube2);
+//}
+//BENCHMARK(EdgesCenter_lt);
 
 #define BENCH(cls, func) \
 void func##_##cls(benchmark::State& state) \
@@ -49,129 +49,140 @@ void func##_##cls(benchmark::State& state) \
 } \
 BENCHMARK(func##_##cls);
 
-BENCH(Corners, hash)
-BENCH(EdgesCenter, hash)
-BENCH(EdgesSide, hash)
-BENCH(FacesCenter, hash)
-BENCH(FacesSide, hash)
-BENCH(Cube3x3, hash)
-BENCH(Cube4x4, hash)
-BENCH(Cube5x5, hash)
+//BENCH(Corners, hash)
+//BENCH(EdgesCenter, hash)
+//BENCH(EdgesSide, hash)
+//BENCH(FacesCenter, hash)
+//BENCH(FacesSide, hash)
+//BENCH(Cube3x3, hash)
+//BENCH(Cube4x4, hash)
+//BENCH(Cube5x5, hash)
+//
+//BENCH(Corners, prm_index)
+//BENCH(EdgesCenter, prm_index)
+//BENCH(EdgesSide, prm_index)
+//BENCH(FacesCenter, prm_index)
+//BENCH(FacesSide, prm_index)
+//
+//BENCH(Corners, ori_index)
+//BENCH(EdgesCenter, ori_index)
+//
+BENCH(EdgesCenter, lr_slice_loc_index)
+BENCH(EdgesCenter, ud_slice_loc_index)
+BENCH(EdgesCenter, fb_slice_loc_index)
+BENCH(EdgesCenter, lr_prm_index)
+BENCH(EdgesCenter, ud_prm_index)
+BENCH(EdgesCenter, fb_prm_index)
+//
+//BENCH(Corners, index)
+//BENCH(EdgesCenter, index)
+//BENCH(EdgesSide, index)
+//BENCH(FacesCenter, index)
+//BENCH(FacesSide, index)
+//
+//BENCH(EdgesCenter, lr_slice_mask)
+//BENCH(EdgesCenter, ud_slice_mask)
+//BENCH(EdgesCenter, fb_slice_mask)
+//
+//BENCH(EdgesCenter, lr_slice_location)
+//BENCH(EdgesCenter, ud_slice_location)
+//BENCH(EdgesCenter, fb_slice_location)
+//
+//void from_prm_index_Corners(benchmark::State& state)
+//{
+//	std::mt19937_64 rng{ 2342311 };
+//	std::uniform_int_distribution<std::size_t> dist(0, Corners::prm_size - 1);
+//	auto index = dist(rng);
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(Corners::from_prm_index(index));
+//}
+//
+//void same_permutation_EdgesCenter(benchmark::State& state)
+//{
+//	auto cube1 = RandomCube<EdgesCenter>();
+//	auto cube2 = RandomCube<EdgesCenter>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(same_permutation(cube1, cube2));
+//}
+//BENCHMARK(same_permutation_EdgesCenter);
+//
+//void same_orientation_EdgesCenter(benchmark::State& state)
+//{
+//	auto cube1 = RandomCube<EdgesCenter>();
+//	auto cube2 = RandomCube<EdgesCenter>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(same_orientation(cube1, cube2));
+//}
+//BENCHMARK(same_orientation_EdgesCenter);
+//
+//void same_lr_slice_location_EdgesCenter(benchmark::State& state)
+//{
+//	auto cube1 = RandomCube<EdgesCenter>();
+//	auto cube2 = RandomCube<EdgesCenter>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(same_lr_slice_location(cube1, cube2));
+//}
+//BENCHMARK(same_lr_slice_location_EdgesCenter);
+//
+//void same_ud_slice_location_EdgesCenter(benchmark::State& state)
+//{
+//	auto cube1 = RandomCube<EdgesCenter>();
+//	auto cube2 = RandomCube<EdgesCenter>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(same_ud_slice_location(cube1, cube2));
+//}
+//BENCHMARK(same_ud_slice_location_EdgesCenter);
+//
+//void same_fb_slice_location_EdgesCenter(benchmark::State& state)
+//{
+//	auto cube1 = RandomCube<EdgesCenter>();
+//	auto cube2 = RandomCube<EdgesCenter>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(same_fb_slice_location(cube1, cube2));
+//}
+//BENCHMARK(same_fb_slice_location_EdgesCenter);
+//
+//void H0_subset_index(benchmark::State& state)
+//{
+//	auto cube = RandomCube<Cube3x3>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(H1::subset_index(cube));
+//}
+//BENCHMARK(H0_subset_index);
+//
+//void H0_coset_number(benchmark::State& state)
+//{
+//	auto cube = RandomCube<Cube3x3>();
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(H1::coset_number(cube));
+//}
+//BENCHMARK(H0_coset_number);
 
-BENCH(Corners, prm_index)
-BENCH(EdgesCenter, prm_index)
-BENCH(EdgesSide, prm_index)
-BENCH(FacesCenter, prm_index)
-BENCH(FacesSide, prm_index)
-
-BENCH(Corners, ori_index)
-BENCH(EdgesCenter, ori_index)
-
-BENCH(Corners, index)
-BENCH(EdgesCenter, index)
-BENCH(EdgesSide, index)
-BENCH(FacesCenter, index)
-BENCH(FacesSide, index)
-
-BENCH(EdgesCenter, lr_slice_location)
-BENCH(EdgesCenter, ud_slice_location)
-BENCH(EdgesCenter, fb_slice_location)
-
-void from_prm_index_Corners(benchmark::State& state)
-{
-	std::mt19937_64 rng{ 2342311 };
-	std::uniform_int_distribution<std::size_t> dist(0, Corners::prm_size - 1);
-	auto index = dist(rng);
-	for (auto _ : state)
-		benchmark::DoNotOptimize(Corners::from_prm_index(index));
-}
-
-void same_permutation_EdgesCenter(benchmark::State& state)
-{
-	auto cube1 = RandomCube<EdgesCenter>();
-	auto cube2 = RandomCube<EdgesCenter>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(same_permutation(cube1, cube2));
-}
-BENCHMARK(same_permutation_EdgesCenter);
-
-void same_orientation_EdgesCenter(benchmark::State& state)
-{
-	auto cube1 = RandomCube<EdgesCenter>();
-	auto cube2 = RandomCube<EdgesCenter>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(same_orientation(cube1, cube2));
-}
-BENCHMARK(same_orientation_EdgesCenter);
-
-void same_lr_slice_location_EdgesCenter(benchmark::State& state)
-{
-	auto cube1 = RandomCube<EdgesCenter>();
-	auto cube2 = RandomCube<EdgesCenter>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(same_lr_slice_location(cube1, cube2));
-}
-BENCHMARK(same_lr_slice_location_EdgesCenter);
-
-void same_ud_slice_location_EdgesCenter(benchmark::State& state)
-{
-	auto cube1 = RandomCube<EdgesCenter>();
-	auto cube2 = RandomCube<EdgesCenter>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(same_ud_slice_location(cube1, cube2));
-}
-BENCHMARK(same_ud_slice_location_EdgesCenter);
-
-void same_fb_slice_location_EdgesCenter(benchmark::State& state)
-{
-	auto cube1 = RandomCube<EdgesCenter>();
-	auto cube2 = RandomCube<EdgesCenter>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(same_fb_slice_location(cube1, cube2));
-}
-BENCHMARK(same_fb_slice_location_EdgesCenter);
-
-void H0_subset_index(benchmark::State& state)
+void H1_coset_index(benchmark::State& state)
 {
 	auto cube = RandomCube<Cube3x3>();
 	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::subset_index(cube));
+		benchmark::DoNotOptimize(H1::coset_index(cube));
 }
-BENCHMARK(H0_subset_index);
+BENCHMARK(H1_coset_index);
 
-void H0_coset_number(benchmark::State& state)
-{
-	auto cube = RandomCube<Cube3x3>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::coset_number(cube));
-}
-BENCHMARK(H0_coset_number);
+//void H0_from_subset(benchmark::State& state)
+//{
+//	auto index = H1::subset_index(RandomCube<Cube3x3>());
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(H1::from_subset(index));
+//}
+//BENCHMARK(H0_from_subset);
 
-void H0_coset_index(benchmark::State& state)
-{
-	auto cube = RandomCube<Cube3x3>();
-	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::coset_index(cube));
-}
-BENCHMARK(H0_coset_index);
-
-void H0_from_subset(benchmark::State& state)
-{
-	auto index = H0::subset_index(RandomCube<Cube3x3>());
-	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::from_subset(index));
-}
-BENCHMARK(H0_from_subset);
-
-void H0_from_coset(benchmark::State& state)
-{
-	auto cube = RandomCube<Cube3x3>(6844);
-	auto number = H0::coset_number(cube);
-	auto index = H0::coset_index(cube);
-	for (auto _ : state)
-		benchmark::DoNotOptimize(H0::from_coset(number, index));
-}
-BENCHMARK(H0_from_coset);
+//void H0_from_coset(benchmark::State& state)
+//{
+//	auto cube = RandomCube<Cube3x3>(6844);
+//	auto number = H1::coset_number(cube);
+//	auto index = H1::coset_index(cube);
+//	for (auto _ : state)
+//		benchmark::DoNotOptimize(H1::from_coset(number, index));
+//}
+//BENCHMARK(H0_from_coset);
 
 int main(int argc, char** argv)
 {

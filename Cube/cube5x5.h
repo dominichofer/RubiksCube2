@@ -16,7 +16,7 @@ class Cube5x5 : public Twistable<Cube5x5>
 	FacesCenter fc;
 	FacesSide fs;
 public:
-	static const std::vector<Twist> twists;
+	static const Twists twists;
 
 	Cube5x5() noexcept = default;
 	Cube5x5(Corners c, EdgesCenter ec, EdgesSide es, FacesCenter fc, FacesSide fs) noexcept : c(c), ec(ec), es(es), fc(fc), fs(fs) {}

@@ -65,7 +65,6 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="nTwists.cpp" />
     <ClCompile Include="tables.cpp" />
     <ClCompile Include="neighbours.cpp" />
     <ClCompile Include="one_phase.cpp" />

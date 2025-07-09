@@ -74,7 +74,7 @@
 //		twists.pop_back();
 //}
 //
-//std::vector<Twist> TwoPhaseOptimalSolver::solve(const Cube3x3& cube, int max_depth)
+//Twists TwoPhaseOptimalSolver::solve(const Cube3x3& cube, int max_depth)
 //{
 //	twists.clear();
 //	try

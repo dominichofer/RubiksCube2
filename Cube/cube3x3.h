@@ -11,7 +11,7 @@ class Cube3x3 : public Twistable<Cube3x3>
 	EdgesCenter e;
 
 public:
-	static const std::vector<Twist> twists;
+	static const Twists twists;
 
 	Cube3x3() noexcept = default;
 	Cube3x3(Corners c, EdgesCenter e) noexcept : c(c), e(e) {}

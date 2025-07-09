@@ -31,7 +31,7 @@ void OnePhaseOptimalSolver::solve_(const Cube3x3& cube, int depth)
 	tt.insert(cube, depth);
 }
 
-std::vector<Twist> OnePhaseOptimalSolver::solve(const Cube3x3& cube, int max_depth)
+Twists OnePhaseOptimalSolver::solve(const Cube3x3& cube, int max_depth)
 {
 	stack.clear();
 	try

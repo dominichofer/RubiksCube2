@@ -6,7 +6,7 @@
 template <typename Cube>
 class BruteForceSolver
 {
-	std::vector<Twist> twists, stack;
+	Twists twists, stack;
 
 	void solve_(const Cube& cube, int depth)
 	{
@@ -24,9 +24,9 @@ class BruteForceSolver
 		}
 	}
 public:
-	BruteForceSolver(std::vector<Twist> twists) noexcept : twists(std::move(twists)) {}
+	BruteForceSolver(Twists twists) noexcept : twists(std::move(twists)) {}
 
-	std::vector<Twist> solve(const Cube& cube, int max_depth)
+	Twists solve(const Cube& cube, int max_depth)
 	{
 		stack.clear();
 		try

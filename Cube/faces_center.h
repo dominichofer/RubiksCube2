@@ -53,7 +53,7 @@ class FacesCenter : public Twistable<FacesCenter>
 	FacesCenter(uint64_t a, uint64_t b, uint64_t c) noexcept : a(a), b(b), c(c) {}
 public:
 	static const uint64_t prm_size = 3'246'670'537'110'000; // 24! / 24^6
-	static const std::vector<Twist> twists;
+	static const Twists twists;
 
 	FacesCenter() noexcept = default;
 	FacesCenter(

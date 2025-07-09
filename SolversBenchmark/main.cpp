@@ -187,6 +187,7 @@ int main()
 
 	// Two Phase Solver
 	TwoPhaseSolver two_phase;
+	std::this_thread::sleep_for(1000ms); // Give the solver time to initialize
 	//auto start = std::chrono::high_resolution_clock::now();
 	//two_phase.solve(Cube3x3::superflip());
 	//auto stop = std::chrono::high_resolution_clock::now();

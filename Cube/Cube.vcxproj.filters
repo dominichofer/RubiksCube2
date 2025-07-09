@@ -5,26 +5,19 @@
     <ClCompile Include="cube3x3.cpp" />
     <ClCompile Include="cube4x4.cpp" />
     <ClCompile Include="cube5x5.cpp" />
-    <ClCompile Include="corners.cpp" />
-    <ClCompile Include="edges_center.cpp" />
     <ClCompile Include="edges_side.cpp" />
     <ClCompile Include="faces_center.cpp" />
     <ClCompile Include="faces_side.cpp" />
     <ClCompile Include="subset.cpp" />
-    <ClCompile Include="twist.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="cube.h" />
     <ClInclude Include="cube3x3.h" />
     <ClInclude Include="cube4x4.h" />
     <ClInclude Include="cube5x5.h" />
-    <ClInclude Include="corners.h" />
-    <ClInclude Include="edges_center.h" />
     <ClInclude Include="edges_side.h" />
     <ClInclude Include="faces_center.h" />
     <ClInclude Include="faces_side.h" />
-    <ClInclude Include="random.h" />
-    <ClInclude Include="twist.h" />
     <ClInclude Include="subset.h" />
   </ItemGroup>
 </Project>

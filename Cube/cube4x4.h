@@ -12,7 +12,7 @@ class Cube4x4 : public Twistable<Cube4x4>
 	EdgesSide e;
 	FacesSide f;
 public:
-	static const std::vector<Twist> twists;
+	static const Twists twists;
 
 	Cube4x4() noexcept = default;
 	Cube4x4(Corners c, EdgesSide e, FacesSide f) noexcept : c(c), e(e), f(f) {}

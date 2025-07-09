@@ -6,8 +6,8 @@
 
 class OnePhaseOptimalSolver
 {
-	std::vector<Twist> stack;
-	const std::vector<Twist> twists;
+	Twists stack;
+	const Twists twists;
 	const DistanceTable<Corners>& corners_dst;
 	const PartialDistanceTable<Cube3x3>& near;
 	HashTable<Cube3x3, int>& tt;
@@ -15,7 +15,7 @@ class OnePhaseOptimalSolver
 	void solve_(const Cube3x3&, int depth);
 public:
 	OnePhaseOptimalSolver(
-		std::vector<Twist> twists,
+		Twists twists,
 		const DistanceTable<Corners>& corners_dst,
 		const PartialDistanceTable<Cube3x3>& near,
 		HashTable<Cube3x3, int>& tt)
@@ -25,5 +25,5 @@ public:
 		, tt(tt)
 	{}
 
-	std::vector<Twist> solve(const Cube3x3& cube, int max_depth = 20);
+	Twists solve(const Cube3x3& cube, int max_depth = 20);
 };

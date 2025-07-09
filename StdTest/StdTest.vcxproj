@@ -69,7 +69,6 @@
     <ClCompile Include="hash.cpp" />
     <ClCompile Include="hash_table.cpp" />
     <ClCompile Include="join.cpp" />
-    <ClCompile Include="mutexed_access.cpp" />
     <ClCompile Include="numeric.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

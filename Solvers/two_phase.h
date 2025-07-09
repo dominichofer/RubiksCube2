@@ -7,33 +7,36 @@
 
 class TwoPhaseSolver
 {
-	thread_local static inline Twists stack;
-	thread_local static inline uint8_t max_phase2_length;
 	const DistanceTable<Cube3x3> &phase_1, &phase_2;
+	HashTable<Cube3x3, uint8_t> tt{ 1'000'000, Cube3x3::impossible(), 0 };
 
-	void search(const Cube3x3& cube, uint8_t phase1_depth) const
+	void search(const Cube3x3& cube, uint8_t p1_depth, uint8_t p2_depth, Twist last = Twist::None)
 	{
-		if (phase1_depth == 0)
+		if (p1_depth == 0)
 		{
-			if (H0::in_subset(cube) and phase_2.distance(cube) <= max_phase2_length)
-			{
-				stack.append_range(phase_2.solution(cube));
+			if (H0::in_subset(cube) and phase_2.distance(cube) <= p2_depth)
 				throw 0;
-			}
 			return;
 		}
 
-		if (phase_1.distance(cube) > phase1_depth)
+		if (phase_1.distance(cube) > p1_depth)
 			return;
 
-		for (Twist t : (phase1_depth == 1 ? H0::non_twists : Cube3x3::twists))
+		auto x = tt.lookup(cube);
+		if (x.value_or(0) >= p1_depth)
+			return;
+
+		if (H0::in_subset(cube))
+			return;
+
+		for (Twist t : (p1_depth == 1 ? H0::non_twists : Cube3x3::twists))
 		{
-			if ((not stack.empty()) and same_plane(t, stack.back()))
+			if (same_plane(t, last))
 				continue;
-			stack.push_back(t);
-			search(cube.twisted(t), phase1_depth - 1);
-			stack.pop_back();
+			search(cube.twisted(t), p1_depth - 1, p2_depth, t);
 		}
+
+		tt.insert(cube, p1_depth);
 	}
 
 public:
@@ -42,21 +45,17 @@ public:
 		, phase_2(H0_subset_distance_table())
 	{}
 
-	Twists solve(const Cube3x3& cube, uint8_t max_solution_length) const
+	Twists solve(const Cube3x3& cube, uint8_t max_solution_length)
 	{
-		stack.clear();
-		stack.reserve(max_solution_length);
+		tt.clear();
 		try
 		{
-			for (uint8_t d = 0; d <= max_solution_length; d++)
-			{
-				max_phase2_length = max_solution_length - d;
-				search(cube, d);
-			}
+			for (uint8_t d = phase_1.distance(cube); d <= max_solution_length; d++)
+				search(cube, d, max_solution_length - d);
 		}
 		catch (...)
 		{
-			return stack;
+			return {};
 		}
 		throw std::runtime_error("No solution found");
 	}

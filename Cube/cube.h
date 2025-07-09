@@ -12,3 +12,10 @@
 #include "random.h"
 #include "subset.h"
 #include "twist.h"
+
+template <typename T>
+	requires requires(T t) { to_string(t); }
+std::ostream& operator<<(std::ostream& os, const T& t)
+{
+	return os << to_string(t);
+}

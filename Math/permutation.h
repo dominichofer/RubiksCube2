@@ -51,7 +51,7 @@ int64_t permutation_index(const std::ranges::random_access_range auto& permutati
 		int64_t smaller = permutation[i] - std::popcount(bitboard & (mask - 1));
 
 		// Total number of elements bigger than the current element
-		std::size_t bigger = size - i - 1;
+		int64_t bigger = size - i - 1;
 
 		index += smaller * factorial(bigger);
 		bitboard |= mask;

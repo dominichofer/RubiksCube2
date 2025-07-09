@@ -5,7 +5,7 @@ TEST(DistanceTable, Corners)
 {
 	DistanceTable<Corners> table{
 		Corners::twists,
-		[](const Corners& c) { return c.index(); },
+		&Corners::index,
 		[](uint64_t i) { return Corners::from_index(i); },
 		Corners::index_space
 	};
@@ -24,7 +24,7 @@ TEST(DistanceTable, Corners)
 	EXPECT_EQ(std::ranges::count(table, 9),  45'391'616);
 	EXPECT_EQ(std::ranges::count(table, 10), 15'139'616);
 	EXPECT_EQ(std::ranges::count(table, 11),     64'736);
-	EXPECT_EQ(table.max_distance(), 11);
+	EXPECT_EQ(std::ranges::count(table, 12),          0);
 
 	RandomCubeGenerator<Corners> rnd{ 53412 };
 	for (int i = 0; i < 100'000; i++)

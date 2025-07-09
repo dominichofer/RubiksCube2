@@ -1,26 +1,17 @@
 #include "pch.h"
 
-// Fuzz test
-TEST(EdgesCenter, from_indices)
+// Fuzz
+TEST(EdgesCenter, from_index)
 {
-	RandomCubeGenerator<EdgesCenter> rnd(/*seed*/ 68453);
+	RandomCubeGenerator<EdgesCenter> rnd(EdgesCenter::solved(), EdgesCenter::twists, /*seed*/ 3287);
 	for (int i = 0; i < 1'000'000; i++)
 	{
-		auto ref = rnd();
-		auto p = ref.prm_index();
-		auto o = ref.ori_index();
-		auto cube = EdgesCenter{ EdgesCenter::from_prm_index(p), EdgesCenter::from_ori_index(o) };
-		EXPECT_EQ(cube, ref);
-	}
-}
-
-TEST(EdgesCenter, ud_slice_location_index)
-{
-	auto solved_loc = EdgesCenter::solved().ud_slice_location();
-	for (Twist twits : EdgesCenter::twists)
-	{
-		auto twisted_loc = EdgesCenter::solved().twisted(twits).ud_slice_location();
-		bool H0_twist = std::ranges::contains(H0::twists, twits);
-		EXPECT_EQ(twisted_loc == solved_loc, H0_twist);
+		auto cube = rnd();
+		uint64_t slice_loc = cube.ud_slice_loc_index();
+		uint64_t prm = cube.ud_prm_index();
+		uint64_t ori = cube.ori_index();
+		auto from_index = EdgesCenter::from_index(slice_loc, prm, ori);
+		EXPECT_EQ(from_index, cube)
+			<< "Failed for slice_loc: " << slice_loc << ", prm: " << prm << ", ori: " << ori;
 	}
 }

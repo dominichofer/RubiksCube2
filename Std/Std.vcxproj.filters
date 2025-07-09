@@ -4,11 +4,11 @@
     <ClInclude Include="join.h" />
     <ClInclude Include="bit.h" />
     <ClInclude Include="intrin.h" />
-    <ClInclude Include="mutexed_access.h" />
     <ClInclude Include="std.h" />
     <ClInclude Include="numeric.h" />
     <ClInclude Include="hash.h" />
     <ClInclude Include="hash_table.h" />
+    <ClInclude Include="inplace_vector.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bit.cpp" />
