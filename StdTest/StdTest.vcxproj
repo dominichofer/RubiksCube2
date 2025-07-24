@@ -66,6 +66,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bit.cpp" />
+    <ClCompile Include="chrono.cpp" />
     <ClCompile Include="hash.cpp" />
     <ClCompile Include="hash_table.cpp" />
     <ClCompile Include="join.cpp" />

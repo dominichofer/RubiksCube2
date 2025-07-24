@@ -1,16 +1,33 @@
 #include "pch.h"
-#include <unordered_set>
 
-TEST(Corners, from_index)
+TEST(Corners, index_1)
 {
-	RandomCubeGenerator<Corners> gen{ 928322 };
-	for (int i = 0; i < 1'000'000; i++)
+	for (uint16_t prm = 0; prm < Corners::prm_size; prm++)
+		for (uint16_t ori = 0; ori < Corners::ori_size; ori++)
+		{
+			Corners c1 = Corners::from_index(prm, ori);
+
+			auto prm2 = c1.prm_index();
+			ASSERT_GE(prm2, 0);
+			ASSERT_LT(prm2, Corners::prm_size);
+			EXPECT_EQ(prm, prm2);
+
+			auto ori2 = c1.ori_index();
+			ASSERT_GE(ori2, 0);
+			ASSERT_LT(ori2, Corners::ori_size);
+			EXPECT_EQ(ori, ori2);
+		}
+}
+
+TEST(Corners, index_2)
+{
+	for (uint32_t index = 0; index < Corners::size; index++)
 	{
-		Corners c1 = gen();
-		auto prm = c1.prm_index();
-		auto ori = c1.ori_index();
-		auto c2 = Corners::from_index(prm, ori);
-		EXPECT_EQ(c1, c2) << "prm: " << prm << ", ori: " << ori;
+		Corners c1 = Corners::from_index(index);
+		auto index2 = c1.index();
+		ASSERT_GE(index2, 0);
+		ASSERT_LT(index2, Corners::size);
+		EXPECT_EQ(index, index2);
 	}
 }
 
@@ -66,55 +83,4 @@ TEST(Corners, is_solved)
 {
 	EXPECT_TRUE(Corners{}.is_solved());
 	EXPECT_FALSE(Corners{}.twisted(Twist::L1).is_solved());
-}
-
-TEST(Corners, prm_index)
-{
-	std::vector<int> pigeonhole(Corners::prm_size, 0);
-
-	std::array<uint8_t, 8> p = { 0, 1, 2, 3, 4, 5, 6, 7 };
-	do // For all permutations of the cubies.
-	{
-		Corners c{ p, { 0, 0, 0, 0, 0, 0, 0, 0 } };
-		auto index = c.prm_index();
-		ASSERT_GE(index, 0);
-		ASSERT_LT(index, Corners::prm_size);
-
-		pigeonhole[index]++;
-	} while (std::next_permutation(p.begin(), p.end()));
-
-	for (int pigeons : pigeonhole)
-		ASSERT_EQ(pigeons, 1);
-}
-
-static std::array<uint8_t, 8> ori_from_index(uint64_t index)
-{
-	std::array<uint8_t, 8> o;
-	for (auto& x : o)
-	{
-		x = index % 3;
-		index /= 3;
-	}
-	return o;
-}
-
-TEST(Corners, ori_index)
-{
-	// This generates all possible orientations of the cubies.
-	// Some are only rechable by disassembling the cube.
-	// Thus each index is generated 3 times.
-	std::vector<int> pigeonhole(Corners::ori_size, 0);
-
-	for (int i = 0; i < Corners::ori_size * 3; i++)
-	{
-		Corners c{ { 0, 0, 0, 0, 0, 0, 0, 0 }, ori_from_index(i) };
-		auto index = c.ori_index();
-		ASSERT_GE(index, 0);
-		ASSERT_LT(index, Corners::ori_size);
-
-		pigeonhole[index]++;
-	}
-
-	for (int pigeons : pigeonhole)
-		ASSERT_EQ(pigeons, 3);
 }

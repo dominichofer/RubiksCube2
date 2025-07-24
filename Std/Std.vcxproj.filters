@@ -9,8 +9,10 @@
     <ClInclude Include="hash.h" />
     <ClInclude Include="hash_table.h" />
     <ClInclude Include="inplace_vector.h" />
+    <ClInclude Include="chrono.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bit.cpp" />
+    <ClCompile Include="chrono.cpp" />
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
     <ClCompile Include="cubie.h" />
     <ClCompile Include="edges_center.cpp" />
     <ClCompile Include="twist.cpp" />
+    <ClCompile Include="subset.cpp" />
     <ClCompile Include="cube3x3.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -13,7 +14,7 @@
     <ClInclude Include="twist.h" />
     <ClInclude Include="random.h" />
     <ClInclude Include="subset.h" />
-    <ClInclude Include="cube3x3.h" />
     <ClInclude Include="twister.h" />
+    <ClInclude Include="cube3x3.h" />
   </ItemGroup>
 </Project>

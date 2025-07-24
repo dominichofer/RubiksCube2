@@ -1,16 +1,30 @@
 #include "pch.h"
 
-TEST(EdgesCenter, from_index)
+TEST(EdgesCenter, index)
 {
 	RandomCubeGenerator<EdgesCenter> gen{ 928322 };
 	for (int i = 0; i < 1'000'000; i++)
 	{
 		EdgesCenter e1 = gen();
-		auto prm = e1.prm_index();
+
+		auto slice_prm = e1.slice_prm_index();
+		ASSERT_GE(slice_prm, 0);
+		ASSERT_LT(slice_prm, EdgesCenter::slice_prm_size);
+
+		auto non_slice_prm = e1.non_slice_prm_index();
+		ASSERT_GE(non_slice_prm, 0);
+		ASSERT_LT(non_slice_prm, EdgesCenter::non_slice_prm_size);
+
 		auto slice_loc = e1.slice_loc_index();
+		ASSERT_GE(slice_loc, 0);
+		ASSERT_LT(slice_loc, EdgesCenter::slice_loc_size);
+
 		auto ori = e1.ori_index();
-		auto e2 = EdgesCenter::from_index(prm, slice_loc, ori);
-		EXPECT_EQ(e1, e2) << "prm: " << prm << ", slice_loc: " << slice_loc << ", ori: " << ori;
+		ASSERT_GE(ori, 0);
+		ASSERT_LT(ori, EdgesCenter::ori_size);
+
+		auto e2 = EdgesCenter::from_index(slice_prm, non_slice_prm, slice_loc, ori);
+		EXPECT_EQ(e1, e2);
 	}
 }
 
@@ -66,69 +80,4 @@ TEST(EdgesCenter, is_solved)
 {
 	EXPECT_TRUE(EdgesCenter{}.is_solved());
 	EXPECT_FALSE(EdgesCenter{}.twisted(Twist::L1).is_solved());
-}
-
-TEST(EdgesCenter, prm_and_slice_loc_index)
-{
-	std::vector<int> prm_pigeonhole(EdgesCenter::prm_size, 0);
-	std::vector<int> slice_loc_pigeonhole(EdgesCenter::slice_loc_size, 0);
-	std::vector<int> full_pigeonhole(EdgesCenter::prm_size * EdgesCenter::slice_loc_size, 0);
-	std::array<uint8_t, 12> p = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-	do // For all permutations of the cubies.
-	{
-		EdgesCenter c{ p, { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 } };
-
-		auto prm_index = c.prm_index();
-		ASSERT_GE(prm_index, 0);
-		ASSERT_LT(prm_index, EdgesCenter::prm_size);
-
-		auto slice_loc_index = c.slice_loc_index();
-		ASSERT_GE(slice_loc_index, 0);
-		ASSERT_LT(slice_loc_index, EdgesCenter::slice_loc_size);
-
-		prm_pigeonhole[prm_index]++;
-		slice_loc_pigeonhole[slice_loc_index]++;
-		full_pigeonhole[prm_index * EdgesCenter::slice_loc_size + slice_loc_index]++;
-	} while (std::next_permutation(p.begin(), p.end()));
-
-	for (int pigeons : prm_pigeonhole)
-		ASSERT_EQ(pigeons, EdgesCenter::slice_loc_size);
-
-	for (int pigeons : slice_loc_pigeonhole)
-		ASSERT_EQ(pigeons, EdgesCenter::prm_size);
-
-	for (int pigeons : full_pigeonhole)
-		ASSERT_EQ(pigeons, 1);
-}
-
-static std::array<uint8_t, 12> ori_from_index(uint64_t index)
-{
-	std::array<uint8_t, 12> o;
-	for (auto& x : o)
-	{
-		x = index % 2;
-		index /= 2;
-	}
-	return o;
-}
-
-TEST(EdgesCenter, ori_index)
-{
-	// This generates all possible orientations of the cubies.
-	// Some are only rechable by disassembling the cube.
-	// Thus each index is generated 2 times.
-	std::vector<int> pigeonhole(EdgesCenter::ori_size, 0);
-
-	for (int i = 0; i < EdgesCenter::ori_size * 2; i++)
-	{
-		EdgesCenter c{ { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, ori_from_index(i) };
-		auto index = c.ori_index();
-		ASSERT_GE(index, 0);
-		ASSERT_LT(index, EdgesCenter::ori_size);
-
-		pigeonhole[index]++;
-	}
-
-	for (int pigeons : pigeonhole)
-		ASSERT_EQ(pigeons, 2);
 }

@@ -73,6 +73,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="random.cpp" />
+    <ClCompile Include="subset.cpp" />
     <ClCompile Include="twist.cpp" />
   </ItemGroup>
   <ItemGroup>

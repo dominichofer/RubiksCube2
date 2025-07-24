@@ -11,39 +11,6 @@
 
 using namespace std::chrono_literals;
 
-std::string to_string(std::chrono::nanoseconds duration)
-{
-	double value;
-	std::string unit;
-
-	auto d = duration.count();
-
-	if (d < 1'000) {
-		value = static_cast<double>(d);
-		unit = "ns";
-	}
-	else if (d < 1'000'000) {
-		value = d / 1'000.0;
-		unit = "us";
-	}
-	else if (d < 1'000'000'000) {
-		value = d / 1'000'000.0;
-		unit = "ms";
-	}
-	else {
-		value = d / 1'000'000'000.0;
-		unit = "s";
-	}
-
-	// Determine number of digits before the decimal
-	int int_digits = (value < 1) ? 0 : static_cast<int>(std::log10(value)) + 1;
-	int precision = std::max(0, 3 - int_digits);
-
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(precision) << value << ' ' << unit;
-	return oss.str();
-}
-
 template <typename F>
 void time(std::string name, F function)
 {
@@ -84,22 +51,22 @@ int main()
 	//		[&]() { return neighbours(d, Cube3x3::solved()); });
 
 	//// DistanceTable
-	//DistanceTable<Corners> corners_dst{
+	//DistanceTable corners_dst{
 	//	Corners::twists,
 	//	[](const Corners& c) { return c.index(); },
 	//	&Corners::from_index,
-	//	Corners::index_space
+	//	Corners::size
 	//};
 	//auto rnd_corners = RandomCubes<Corners>(1'000'000, /*seed*/ 565248);
 	//time(
-	//	"DistanceTable<Corners>::fill()",
+	//	"DistanceTable::fill()",
 	//	[&]() { corners_dst.fill(Corners::solved()); });
 	//time(
-	//	"DistanceTable<Corners>::operator[]",
+	//	"DistanceTable::operator[]",
 	//	[&](const auto& x) { return corners_dst[x]; },
 	//	rnd_corners);
 	//time(
-	//	"DistanceTable<Corners>::solution()",
+	//	"DistanceTable::solution()",
 	//	[&](const auto& x) { return corners_dst.solution(x); },
 	//	rnd_corners);
 
@@ -136,15 +103,15 @@ int main()
 	//		cube3x3_of_distance[d]);
 
 	//// One Phase Optimal Solver
-	//DistanceTable<Corners> corners_dst{
+	//DistanceTable corners_dst{
 	//	Corners::twists,
 	//	[](const Corners& c) { return c.index(); },
 	//	&Corners::from_index,
-	//	Corners::index_space
+	//	Corners::size
 	//};
 	//corners_dst.fill(Corners::solved());
 
-	//PartialDistanceTable<Cube3x3> near{ Cube3x3::twists };
+	//PartialDistanceTable near{ Cube3x3::twists };
 	//near.fill(Cube3x3::solved"), 6);
 
 	//HashTable<Cube3x3, int> tt{ 1'000'000, Cube3x3::impossible() };
@@ -157,13 +124,13 @@ int main()
 	//file.close();
 
 	//// One Phase Optimal Solver
-	//DistanceTable<Corners> corners_dst{
+	//DistanceTable corners_dst{
 	//	Corners::twists,
 	//	[](const Corners& c) { return c.index(); },
 	//	&Corners::from_index,
-	//	Corners::index_space
+	//	Corners::size
 	//};
-	//PartialDistanceTable<Cube3x3> near{ Cube3x3::twists };
+	//PartialDistanceTable near{ Cube3x3::twists };
 	//near.fill(Cube3x3::solved(), 6);
 	//HashTable<Cube3x3, int> tt{ 10'000'000, Cube3x3::impossible() };
 
@@ -186,41 +153,24 @@ int main()
 	//}
 
 	// Two Phase Solver
-	TwoPhaseSolver two_phase;
-	std::this_thread::sleep_for(1000ms); // Give the solver time to initialize
-	//auto start = std::chrono::high_resolution_clock::now();
-	//two_phase.solve(Cube3x3::superflip());
-	//auto stop = std::chrono::high_resolution_clock::now();
-	//std::cout << "TwoPhaseSolver::solve(superflip): " << to_string(stop - start) << std::endl;
-
-
-	//for (int d = 0; d <= 15; d++)
-	//{
-	//	std::vector<Cube3x3> cubes;
-	//	for (const Twists& t : irreducible)
-	//		if (t.size() == d)
-	//			cubes.push_back(Cube3x3::solved().twisted(t));
-	//	time(
-	//		std::format("TwoPhaseSolver::solve(dst={})", d),
-	//		[&](const Cube3x3& cube) {
-	//			auto sol = two_phase.solve(cube, 20);
-	//			if (not cube.twisted(sol).is_solved())
-	//				std::cerr << "Solution not found" << std::endl;
-	//		},
-	//		cubes);
-	//}
+	TwoPhaseSolver solver;
 	RandomCubeGenerator<Cube3x3> rnd{ /*seed*/ 323470 };
 	auto start = std::chrono::high_resolution_clock::now();
 	int N = 100;
 	for (int i = 0; i < N; i++)
 	{
 		auto cube = rnd(100);
-		auto sol = two_phase.solve(cube, 20);
+		auto start_ = std::chrono::high_resolution_clock::now();
+		auto sol = solver.solve(cube, 20);
+		auto stop_ = std::chrono::high_resolution_clock::now();
+		std::cout << "Solution time: " << to_string(stop_ - start_) << std::endl;
 		if (not cube.twisted(sol).is_solved())
 			std::cerr << "Solution not found " << to_string(sol) << std::endl;
+		if (sol.size() > 20)
+			std::cerr << "Solution too long: " << sol.size() << std::endl;
 	}
 	auto stop = std::chrono::high_resolution_clock::now();
-	std::cout << "TwoPhaseSolver::solve(random): " << to_string((stop - start) / N) << std::endl;
+	std::cout << "Avg solution time: " << to_string((stop - start) / N) << std::endl;
 
 	//{
 	//	auto cube = Cube3x3::superflip();

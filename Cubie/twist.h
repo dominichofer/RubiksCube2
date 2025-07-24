@@ -23,14 +23,22 @@ std::string to_string(const Twists&);
 auto twist_from_string(std::string_view) -> Twist;
 auto twists_from_string(std::string_view) -> Twists;
 
-static inline Twists all_twists = {
+static inline const Twists all_twists = {
 	Twist::L1, Twist::L2, Twist::L3,
 	Twist::R1, Twist::R2, Twist::R3,
 	Twist::U1, Twist::U2, Twist::U3,
 	Twist::D1, Twist::D2, Twist::D3,
 	Twist::F1, Twist::F2, Twist::F3,
-	Twist::B1, Twist::B2, Twist::B3,
-	Twist::None
+	Twist::B1, Twist::B2, Twist::B3
+};
+
+static inline const Twists H0_twists = {
+	Twist::L2,
+	Twist::R2,
+	Twist::U1, Twist::U2, Twist::U3,
+	Twist::D1, Twist::D2, Twist::D3,
+	Twist::F2,
+	Twist::B2
 };
 
 Twist inversed(Twist);

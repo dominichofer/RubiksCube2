@@ -73,11 +73,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Math\permutation.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Solvers\Solvers.vcxproj">
-      <Project>{954b9d15-d42d-4a2d-99f1-e42025183e67}</Project>
+    <ProjectReference Include="..\Cubie\Cubie.vcxproj">
+      <Project>{154dd3f1-9ef9-483c-bf12-14e93062168f}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,9 +1,15 @@
 #include "tables.h"
 
-template <typename T, typename... Args>
-const DistanceTable<T>& get_distance_table(const char* filename, Args&&... args)
+template <typename Cube, typename F1, typename F2>
+const DistanceTable& get_distance_table(
+	const char* filename,
+	Twists twists,
+	const Cube& origin,
+	F1 index,
+	F2 from_index,
+	std::size_t index_space)
 {
-	static DistanceTable<T> table{ std::forward<Args>(args)... };
+	static DistanceTable table{ std::move(twists), index_space };
 	static bool initialized = false;
 	if (!initialized)
 	{
@@ -13,7 +19,7 @@ const DistanceTable<T>& get_distance_table(const char* filename, Args&&... args)
 		}
 		catch (...)
 		{
-			table.fill(T::solved());
+			table.fill(origin, index, from_index);
 			table.write(filename);
 		}
 		initialized = true;
@@ -21,35 +27,38 @@ const DistanceTable<T>& get_distance_table(const char* filename, Args&&... args)
 	return table;
 }
 
-const DistanceTable<Cube3x3>& H0_subset_distance_table()
+const DistanceTable& Corners_distance_table()
 {
-	return get_distance_table<Cube3x3>(
+	return get_distance_table(
+		"..\\corners.dst",
+		all_twists,
+		Corners{},
+		[](const Corners& c) { return c.index(); },
+		[](uint32_t i) { return Corners::from_index(i); },
+		Corners::size
+	);
+}
+
+const DistanceTable& H0_solution_distance_table()
+{
+	return get_distance_table(
 		"..\\subset.dst",
 		H0::twists,
-		[](const Cube3x3& c) { return H0::coset_index(c); },
-		[](uint64_t i) { return H0::from_coset(0, i); },
-		H0::set_size
+		SubsetCube{},
+		[](const SubsetCube& c) { return c.subset_index(); },
+		&SubsetCube::from_subset_index,
+		SubsetCube::size
 	);
 }
 
-const DistanceTable<Cube3x3>& H0_coset_distance_table()
+const DistanceTable& H0_subset_distance_table()
 {
-	return get_distance_table<Cube3x3>(
+	return get_distance_table(
 		"..\\coset.dst",
-		Cube3x3::twists,
-		[](const Cube3x3& c) { return H0::coset_number(c); },
-		[](uint64_t i) { return H0::from_coset(i, 0); },
-		H0::cosets
-	);
-}
-
-const DistanceTable<Corners>& Corners_distance_table()
-{
-	return get_distance_table<Corners>(
-		"..\\corners.dst",
-		Corners::twists,
-		&Corners::index,
-		[](uint64_t i) { return Corners::from_index(i); },
-		Corners::index_space
+		all_twists,
+		CosetNumberCube{},
+		[](const CosetNumberCube& c) { return c.coset_number(); },
+		&CosetNumberCube::from_coset_number,
+		CosetNumberCube::size
 	);
 }

@@ -9,5 +9,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="binomial.cpp" />
+    <ClCompile Include="permutation.cpp" />
   </ItemGroup>
 </Project>

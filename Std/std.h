@@ -1,5 +1,6 @@
 #pragma once
 #include "bit.h"
+#include "chrono.h"
 #include "hash.h"
 #include "hash_table.h"
 #include "inplace_vector.h"

@@ -11,6 +11,26 @@ TEST(factorial, recursive)
 		EXPECT_EQ(factorial(i), factorial(i - 1) * i);
 }
 
+TEST(is_even_permutation, of_range)
+{
+	EXPECT_TRUE(is_even_permutation(std::vector<int>{0, 1, 2}));
+	EXPECT_TRUE(is_odd_permutation(std::vector<int>{0, 2, 1}));
+	EXPECT_TRUE(is_even_permutation(std::vector<int>{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10}));
+	EXPECT_TRUE(is_even_permutation(std::vector<int>{0, 1, 3, 2, 4, 5, 6, 8, 7, 9, 10}));
+}
+
+TEST(is_even_permutation, of_lexicographical_index)
+{
+	std::mt19937 rnd{ 2349873 };
+	std::vector<int> p(20);
+	for (int i = 0; i < 1'000'000; ++i)
+	{
+		std::ranges::iota(p, 0);
+		std::ranges::shuffle(p, rnd);
+		EXPECT_EQ(is_even_permutation(p), is_even_permutation(permutation_index(p)));
+	}
+}
+
 TEST(permutation_index, size_1)
 {
 	EXPECT_EQ(permutation_index(0), 0);

@@ -106,11 +106,8 @@ bool EdgesCenter::is_solved() const
 	return *this == EdgesCenter{};
 }
 
-EdgesCenter EdgesCenter::from_index(uint32_t prm, uint16_t slice_loc_index, uint16_t ori)
+EdgesCenter EdgesCenter::from_index(uint8_t slice_prm, uint16_t non_slice_prm, uint16_t slice_loc_index, uint16_t ori)
 {
-	uint32_t slice_prm = prm / factorial(8);
-	uint32_t non_slice_prm = prm % factorial(8);
-
 	std::array<uint8_t, 4> slice;
 	nth_permutation(slice_prm, slice);
 
@@ -134,16 +131,49 @@ EdgesCenter EdgesCenter::from_index(uint32_t prm, uint16_t slice_loc_index, uint
 	return EdgesCenter{ e, o };
 }
 
-uint32_t EdgesCenter::prm_index() const
+//std::tuple<uint8_t, uint16_t, uint16_t> EdgesCenter::from_prm_index(uint32_t prm)
+//{
+//	auto slice_prm = prm % EdgesCenter::slice_prm_size;
+//	prm /= EdgesCenter::slice_prm_size;
+//	auto non_slice_prm = prm % EdgesCenter::non_slice_prm_size;
+//	prm /= EdgesCenter::non_slice_prm_size;
+//	auto slice_loc_index = prm;
+//	return {
+//		static_cast<uint8_t>(slice_prm),
+//		static_cast<uint16_t>(non_slice_prm),
+//		static_cast<uint16_t>(slice_loc_index)
+//	};
+//}
+
+//uint32_t EdgesCenter::prm_index(uint8_t slice_prm, uint16_t non_slice_prm, uint16_t slice_loc)
+//{
+//	uint32_t index = slice_prm;
+//	index = index * EdgesCenter::non_slice_prm_size + non_slice_prm;
+//	index = index * EdgesCenter::slice_loc_size + slice_loc;
+//	return index;
+//}
+//
+//uint32_t EdgesCenter::prm_index() const
+//{
+//	return prm_index(slice_prm_index(), non_slice_prm_index(), slice_loc_index());
+//}
+
+uint8_t EdgesCenter::slice_prm_index() const
 {
 	std::array<uint8_t, 4> slice;
-	std::array<uint8_t, 8> non_slice;
-	for (int i = 0, j = 0, k = 0; i < 12; i++)
+	for (int i = 0, j = 0; i < 12; i++)
 		if (cubie(i) > 7)
 			slice[j++] = cubie(i) - 8;
-		else
-			non_slice[k++] = cubie(i);
-	return static_cast<uint32_t>(permutation_index(slice) * factorial(8) + permutation_index(non_slice));
+	return static_cast<uint8_t>(permutation_index(slice));
+}
+
+uint16_t EdgesCenter::non_slice_prm_index() const
+{
+	std::array<uint8_t, 8> non_slice;
+	for (int i = 0, j = 0; i < 12; i++)
+		if (cubie(i) <= 7)
+			non_slice[j++] = cubie(i);
+	return static_cast<uint16_t>(permutation_index(non_slice));
 }
 
 uint16_t EdgesCenter::ori_index() const

@@ -9,12 +9,12 @@
 
 constexpr int64_t factorial(int64_t n)  
 {
-    constexpr int64_t precomputed[] = {  
-        1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880,  
-        3628800, 39916800, 479001600, 6227020800, 87178291200,  
-        1307674368000, 20922789888000, 355687428096000,  
-        6402373705728000, 121645100408832000, 2432902008176640000  
-    };  
+	constexpr int64_t precomputed[] = {
+		1, 1, 2, 6, 24, 120, 720, 5040, 40320, 362880,
+		3628800, 39916800, 479001600, 6227020800, 87178291200,
+		1307674368000, 20922789888000, 355687428096000,
+		6402373705728000, 121645100408832000, 2432902008176640000
+	};
 
     return precomputed[n];  
 }
@@ -31,20 +31,24 @@ bool is_even_permutation(const R& permutation)
 	return count % 2 == 0;
 }
 
+bool is_even_permutation(uint64_t lexicographical_index);
+
 template <std::ranges::random_access_range R>
 bool is_odd_permutation(const R& permutation)
 {
 	return not is_even_permutation(permutation);
 }
 
+bool is_odd_permutation(uint64_t lexicographical_index);
+
 int64_t permutation_index(const std::ranges::random_access_range auto& permutation)
 {
 	std::size_t size = std::ranges::distance(permutation);
 	int64_t index = 0;
-	uint32_t bitboard = 0;
+	uint64_t bitboard = 0;
 	for (std::size_t i = 0; i < size; ++i)
 	{
-		uint32_t mask = 1 << permutation[i];
+		uint64_t mask = 1ULL << permutation[i];
 
 		// Number of remaining elements smaller than the current element
 		// (total number of elements smaller than the current element) - (number of visited elements smaller than the current element)

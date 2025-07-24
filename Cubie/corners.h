@@ -26,8 +26,9 @@ class Corners : public Twistable<Corners>
 	std::array<uint8_t, 8> cubies() const;
 	std::array<uint8_t, 8> orientations() const;
 public:
-	static constexpr uint64_t prm_size = factorial(8);
-	static constexpr uint64_t ori_size = powi(3, 7);
+	static constexpr uint16_t prm_size = factorial(8);
+	static constexpr uint16_t ori_size = powi(3, 7);
+	static constexpr uint32_t size = prm_size * ori_size;
 
 	Corners() noexcept = default;
 	Corners(std::array<uint8_t, 8> cubies, std::array<uint8_t, 8> orientations) noexcept;
@@ -40,8 +41,10 @@ public:
 	bool is_solved() const;
 
 	static Corners from_index(uint16_t prm, uint16_t ori);
+	static Corners from_index(uint32_t);
 	uint16_t prm_index() const;
 	uint16_t ori_index() const;
+	uint32_t index() const;
 
 	friend std::string to_string(const Corners&);
 };

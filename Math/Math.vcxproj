@@ -82,6 +82,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="binomial.cpp" />
+    <ClCompile Include="permutation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Std\Std.vcxproj">

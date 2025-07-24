@@ -1,7 +1,6 @@
 #pragma once
-#include "Cube/cube.h"
+#include "Cubie/cubie.h"
 #include "neighbours.h"
-#include "tables.h"
-#include "brute_force.h"
 #include "one_phase.h"
+#include "tables.h"
 #include "two_phase.h"

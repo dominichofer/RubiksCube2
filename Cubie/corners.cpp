@@ -62,6 +62,14 @@ Corners Corners::from_index(uint16_t prm, uint16_t ori)
 	return { c, { o0, o1, o2, o3, o4, o5, o6, o7 } };
 }
 
+Corners Corners::from_index(uint32_t index)
+{
+	return from_index(
+		static_cast<uint16_t>(index / ori_size),
+		static_cast<uint16_t>(index % ori_size)
+	);
+}
+
 static std::array<uint8_t, 8> ori_swap_L(std::array<uint8_t, 8> s)
 {
 	for (int i : { 0, 2, 4, 6})
@@ -173,6 +181,11 @@ uint16_t Corners::ori_index() const
 		ret += orientation(i);
 	}
 	return ret;
+}
+
+uint32_t Corners::index() const
+{
+	return static_cast<uint32_t>(prm_index() * ori_size + ori_index());
 }
 
 std::string to_string(const Corners& c)

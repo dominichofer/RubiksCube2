@@ -76,6 +76,7 @@
     <ClCompile Include="cube3x3.cpp" />
     <ClCompile Include="cubie.h" />
     <ClCompile Include="edges_center.cpp" />
+    <ClCompile Include="subset.cpp" />
     <ClCompile Include="twist.cpp" />
   </ItemGroup>
   <ItemGroup>

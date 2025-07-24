@@ -4,6 +4,7 @@
 #include "Math/math.h"
 #include <array>
 #include <cstdint>
+#include <tuple>
 #include <vector>
 
 class EdgesCenter : public Twistable<EdgesCenter>
@@ -26,7 +27,8 @@ class EdgesCenter : public Twistable<EdgesCenter>
 	std::array<uint8_t, 12> cubies() const;
 	std::array<uint8_t, 12> orientations() const;
 public:
-	static constexpr uint64_t prm_size = factorial(8) * factorial(4);
+	static constexpr uint64_t slice_prm_size = factorial(4);
+	static constexpr uint64_t non_slice_prm_size = factorial(8);
 	static constexpr uint64_t slice_loc_size = binomial(12, 4);
 	static constexpr uint64_t ori_size = powi(2, 11);
 
@@ -40,8 +42,9 @@ public:
 
 	bool is_solved() const;
 
-	static EdgesCenter from_index(uint32_t prm, uint16_t slice_loc, uint16_t ori);
-	uint32_t prm_index() const;
+	static EdgesCenter from_index(uint8_t slice_prm, uint16_t non_slice_prm, uint16_t slice_loc, uint16_t ori);
+	uint8_t slice_prm_index() const;
+	uint16_t non_slice_prm_index() const;
 	uint16_t slice_loc_index() const;
 	uint16_t ori_index() const;
 

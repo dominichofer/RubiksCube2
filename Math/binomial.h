@@ -49,7 +49,7 @@ constexpr int64_t binomial(int64_t n, int64_t k)
 // in the lexicographically sorted list of all possible
 // combinations of n elements taken k at a time.
 template <std::ranges::random_access_range R>
-int64_t combination_index(int64_t n, R&& combination)
+constexpr int64_t combination_index(int64_t n, R&& combination)
 {
 	int64_t index = 0;
 	int64_t j = 0;

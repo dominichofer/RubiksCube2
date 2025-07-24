@@ -67,7 +67,6 @@
   <ItemGroup>
     <ClCompile Include="tables.cpp" />
     <ClCompile Include="neighbours.cpp" />
-    <ClCompile Include="one_phase.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
