@@ -2,21 +2,18 @@
 #include "twister.h"
 
 static const AllTwister<Corners, uint16_t> c_prm_table(
-	H0_twists,
 	&Corners::prm_index,
 	[](uint16_t i) { return Corners::from_index(i, 0); },
 	Corners::prm_size
 );
 
 static const AllTwister<EdgesCenter, uint8_t> e_slice_prm_table(
-	H0_twists,
 	&EdgesCenter::slice_prm_index,
 	[](uint8_t i) { return EdgesCenter::from_index(i, 0, EdgesCenter{}.slice_loc_index(), 0); },
 	EdgesCenter::slice_prm_size
 );
 
 static const AllTwister<EdgesCenter, uint16_t> e_non_slice_prm_table(
-	H0_twists,
 	&EdgesCenter::non_slice_prm_index,
 	[](uint16_t i) { return EdgesCenter::from_index(0, i, EdgesCenter{}.slice_loc_index(), 0); },
 	EdgesCenter::non_slice_prm_size
@@ -78,19 +75,16 @@ uint64_t SubsetCube::subset_index() const
 
 
 static const AllTwister<Corners, uint16_t> c_ori_table(
-	all_twists,
 	&Corners::ori_index,
 	[](uint16_t i) { return Corners::from_index(0, i); },
 	Corners::ori_size
 );
 static const AllTwister<EdgesCenter, uint16_t> e_ori_table(
-	all_twists,
 	&EdgesCenter::ori_index,
 	[](uint16_t i) { return EdgesCenter::from_index(0, 0, 0, i); },
 	EdgesCenter::ori_size
 );
 static const AllTwister<EdgesCenter, uint16_t> e_slice_loc_table(
-	all_twists,
 	[](const EdgesCenter& e) { return e.slice_loc_index(); },
 	[](uint16_t i) { return EdgesCenter::from_index(0, 0, i, 0); },
 	EdgesCenter::slice_loc_size

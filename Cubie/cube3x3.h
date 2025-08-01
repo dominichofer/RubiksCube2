@@ -26,6 +26,8 @@ public:
 
 	Cube3x3() noexcept;
 	static Cube3x3 impossible() noexcept;
+	static Cube3x3 from_subset(uint64_t) noexcept;
+	static Cube3x3 from_coset(uint64_t number, uint64_t index) noexcept;
 
 	auto operator<=>(const Cube3x3&) const = default;
 
